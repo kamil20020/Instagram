@@ -1,0 +1,65 @@
+﻿.nav-item {
+  border-radius: 20px;
+  padding: 4px 12px;
+  border: 0.5px solid white;
+}
+
+.nav-item:hover {
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.nav-item-active {
+  border-color: silver;
+}
+
+.nav-menu-item {
+  border-radius: 8px 8px 0 0;
+  padding: 12px;
+  border-bottom: 1px solid silver;
+}
+
+.nav-menu-item:nth-last-child(1) {
+  border-bottom: 0;
+  border-radius: 0 0 8px 8px;
+}
+
+.nav-menu-item:hover {
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.search-input {
+  margin: 0 20px;
+  margin-bottom: 24px;
+  padding: 3px 16px;
+  font-size: 18px;
+  border-radius: 6px;
+  height: 38px;
+  border: none;
+  background-color: rgb(235, 233, 233);
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.profile-header{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    padding: 10px 24px;
+}
+
+.profile-header:hover{
+    background-color: rgb(243, 243, 243);
+    cursor: pointer;
+}
+
+.profile-header:active{
+    opacity: 0.6;
+}
+
+.profile-photo{
+    border-radius: 50%;
+}
