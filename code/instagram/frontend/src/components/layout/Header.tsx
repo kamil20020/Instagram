@@ -39,6 +39,7 @@ const NavMenu = () => {
 
   return (
     <div
+      ref={ref as any ? ref as any : null}
       style={{ marginTop: "auto", display: "flex", flexDirection: "column" }}
     >
       {isActive && (
@@ -93,7 +94,6 @@ const NavMenu = () => {
         </React.Fragment>
       )}
       <NavNonLinkItem
-        ref={ref}
         content={<IconWithText iconName="menu" text="Menu" />}
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
