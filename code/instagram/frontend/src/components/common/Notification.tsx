@@ -33,11 +33,12 @@ const Notification = () => {
             position: "absolute",
             display: "flex",
             alignItems: "center",
-            right: "10px",
-            bottom: "10px",
-            width: "20%",
-            height: "10%",
+            right: "20px",
+            bottom: "20px",
+            width: "400px",
+            height: "60px",
             borderRadius: "4px",
+            padding: "0 22px",
             backgroundColor:
               notification.type === NotificationType.success
                 ? "rgb(237, 247, 237)"

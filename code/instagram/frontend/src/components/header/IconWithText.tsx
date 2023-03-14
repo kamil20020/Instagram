@@ -1,4 +1,4 @@
-﻿const IconWithText = (props: { iconName: string; text: string, iconStyle?: React.CSSProperties }) => {
+﻿const IconWithText = (props: { iconName: string; text?: string, iconStyle?: React.CSSProperties }) => {
     return (
       <div style={{ display: "flex", alignItems: "center"}}>
         <i

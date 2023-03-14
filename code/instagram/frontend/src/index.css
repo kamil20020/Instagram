@@ -13,7 +13,7 @@ a{
   color: black;
 }
 
-button{
+.blue-button{
   color: rgb(0, 149, 246);
   background-color: white;
   text-align: center;
@@ -23,8 +23,23 @@ button{
   font-weight: 600;
 }
 
-button:hover{
+.blue-button:hover{
   color: #00376b;
+  cursor: pointer;
+}
+
+.grey-button{
+  background-color: rgb(239, 239, 239);
+  border: none;
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.grey-button:hover{
+  background-color: rgb(219, 219, 219);
   cursor: pointer;
 }
 
@@ -33,12 +48,20 @@ h1{
   font-size: 16px;
 }
 
+h4{
+  margin: 0;
+}
+
 .material-symbols-outlined{
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
   align-items: center;
 }
 
 span:hover{
   cursor: pointer;
+}
+
+.normal-weight{
+  font-weight: normal;
 }

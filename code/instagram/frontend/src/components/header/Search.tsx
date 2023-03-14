@@ -8,7 +8,7 @@ import {
   userPreferencesSelector,
 } from "../../redux/slices/userPreferencesSlice";
 import UserAPIService from "../../services/UserAPIService";
-import Avatars from "../common/Avatars";
+import Avatar from "../common/Avatar";
 import useWindowSize from "../common/useWindowResize";
 import SubPanel from "./SubPanel";
 
@@ -24,15 +24,7 @@ const ProfileHeader = (props: {
       to={`/profile/${profile.userId}`}
       onClick={() => props.handleClick(profile.userId)}
     >
-      <img
-        className="profile-photo"
-        alt="Zdjęcie profilowe nick"
-        src={
-          profile.avatar ? profile.avatar : Avatars.getSmallAnonymousAvatar()
-        }
-        width="64"
-        height="64"
-      />
+      <Avatar image={profile.avatar} width={64} height={64}/>
       <div
         style={{
           display: "flex",
@@ -75,15 +67,7 @@ const LatestProfileHeader = (props: {
         }
       }}
     >
-      <img
-        className="profile-photo"
-        alt="Zdjęcie profilowe nick"
-        src={
-          profile.avatar ? profile.avatar : Avatars.getSmallAnonymousAvatar()
-        }
-        width="64"
-        height="64"
-      />
+      <Avatar image={profile.avatar} width={64} height={64}/>
       <div
         style={{
           display: "flex",
@@ -164,7 +148,7 @@ const Search = () => {
 
   return (
     <SubPanel id="search" iconName="search" text="Szukaj">
-      <div>
+      <React.Fragment>
         <div style={{ display: "grid" }}>
           <input
             className="search-input"
@@ -203,7 +187,7 @@ const Search = () => {
             >
               <h3>Ostatnie</h3>
               {latestProfilesIds.length > 0 && (
-                <button onClick={() => dispatch(clearLatestProfiles())}>
+                <button className="blue-button" onClick={() => dispatch(clearLatestProfiles())}>
                   Wyczyść wszystko
                 </button>
               )}
@@ -233,7 +217,7 @@ const Search = () => {
                 ))}
           </div>
         </div>
-      </div>
+      </React.Fragment>
     </SubPanel>
   );
 };

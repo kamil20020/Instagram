@@ -110,6 +110,7 @@ const Header = () => {
     <header
       style={{
         display: "flex",
+        height: "calc(100vh - 53px)",
         flexDirection: "column",
         padding: "33px 16px 20px 16px",
         borderRight: "1px solid silver",
