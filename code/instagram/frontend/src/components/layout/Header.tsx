@@ -39,7 +39,7 @@ const NavMenu = () => {
 
   return (
     <div
-      ref={ref as any ? ref as any : null}
+      ref={(ref as any) ? (ref as any) : null}
       style={{ marginTop: "auto", display: "flex", flexDirection: "column" }}
     >
       {isActive && (
@@ -107,60 +107,65 @@ const Header = () => {
   const { isAuthenticated } = useAuth0();
 
   return (
-    <header
-      style={{
-        display: "flex",
-        height: "calc(100vh - 53px)",
-        flexDirection: "column",
-        padding: "33px 16px 20px 16px",
-        borderRight: "1px solid silver",
-      }}
-    >
-      <Link
-        to="/"
+    <header style={{width: "100%"}}>
+      <div
         style={{
-          padding: "0 12px 16px 12px",
-          fontSize: 32,
-          marginBottom: "40px",
-        }}
-      >
-        Instagram
-      </Link>
-      <nav
-        style={{
+          position: "sticky",
+          top: 0,
           display: "flex",
-          height: "100%",
+          height: "calc(100vh - 53px)",
+          minWidth: "250px",
           flexDirection: "column",
-          alignItems: "stretch",
-          rowGap: "20px",
-          paddingLeft: 12,
-          paddingRight: 12,
+          padding: "33px 16px 20px 16px",
+          borderRight: "1px solid silver",
         }}
       >
-        <NavLinkItem
-          link="/"
-          content={<IconWithText iconName="home" text="Strona główna" />}
-        />
-        <Search/>
-        <NavLinkItem
-          link="/explore"
-          content={<IconWithText iconName="explore" text="Eksploruj" />}
-        />
-        {isAuthenticated && (
-          <React.Fragment>
-            <NavLinkItem
-              link="/chat"
-              content={<IconWithText iconName="chat" text="Wiadomości" />}
-            />
-            <Notifications/>
-            <NavNonLinkItem
-              content={<IconWithText iconName="add_box" text="Utwórz" />}
-              onClick={() => console.log("Utwórz")}
-            />
-          </React.Fragment>
-        )}
-        <NavMenu />
-      </nav>
+        <Link
+          to="/"
+          style={{
+            padding: "0 12px 16px 12px",
+            fontSize: 32,
+            marginBottom: "40px",
+          }}
+        >
+          Instagram
+        </Link>
+        <nav
+          style={{
+            display: "flex",
+            height: "100%",
+            flexDirection: "column",
+            alignItems: "stretch",
+            rowGap: "20px",
+            paddingLeft: 12,
+            paddingRight: 12,
+          }}
+        >
+          <NavLinkItem
+            link="/"
+            content={<IconWithText iconName="home" text="Strona główna" />}
+          />
+          <Search />
+          <NavLinkItem
+            link="/explore"
+            content={<IconWithText iconName="explore" text="Eksploruj" />}
+          />
+          {isAuthenticated && (
+            <React.Fragment>
+              <NavLinkItem
+                link="/chat"
+                content={<IconWithText iconName="chat" text="Wiadomości" />}
+              />
+              <Notifications />
+              <NavNonLinkItem
+                content={<IconWithText iconName="add_box" text="Utwórz" />}
+                onClick={() => console.log("Utwórz")}
+              />
+            </React.Fragment>
+          )}
+          <NavMenu />
+        </nav>
+      </div>
     </header>
   );
 };

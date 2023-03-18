@@ -26,10 +26,10 @@ const SubPanel = (props: {
         <div
           ref={ref as any}
           style={{
-            position: "fixed",
-            width: "26%",
-            height: "100%",
-            left: "16%",
+            position: "absolute",
+            height: "100vh",
+            left: "100%",
+            minWidth: "140%",
             top: 0,
             zIndex: 1,
             borderRadius: "0 16px 16px 0",

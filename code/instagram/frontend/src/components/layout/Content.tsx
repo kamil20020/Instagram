@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { Outlet } from "react-router-dom";
+import Search from "../header/Search";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Layout.css"
@@ -11,7 +12,8 @@ const Content = () => {
         style={{
           height: "100vh",
           display: "grid",
-          gridTemplateColumns: "16% 84%",
+          gridTemplateColumns: "1fr 5fr",
+          columnGap: 40
         }}
       >
         <Header />

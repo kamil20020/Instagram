@@ -11,27 +11,19 @@ const img4 = "https://s29.flog.pl/media/foto/13671790_kto-ma-zawsze-pod-gorke-te
 
 const UserPosts = () => {
   return (
-    <div
-      className="posts"
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        columnGap: 28,
-        rowGap: 28,
-      }}
-    >
-      <div className="post">
-        <img alt="Post" src={img1} width={300} height={300} />
-      </div>
-      <div className="post">
-        <img alt="Post" src={img2} width={300} height={300} />
-      </div>
-      <div className="post">
-        <img alt="Post" src={img3} width={300} height={300} />
-      </div>
-      <div className="post">
-        <img alt="Post" src={img4} width={300} height={300} />
-      </div>
+    <div className="posts">
+      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
+      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
     </div>
   );
 };
