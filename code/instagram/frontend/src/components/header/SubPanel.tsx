@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import useComponentVisible from "../common/useComponentVisible";
 import OutsideAlerter from "../common/useComponentVisible";
-import IconWithText from "./IconWithText";
+import IconWithText from "../common/IconWithText";
 import NavNonLinkItem from "./NavNonLinkItem";
 
 const SubPanel = (props: {

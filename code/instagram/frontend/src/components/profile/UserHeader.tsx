@@ -1,6 +1,6 @@
 ﻿import { Profile } from "../../models/Profile";
 import Avatar from "../common/Avatar";
-import IconWithText from "../header/IconWithText";
+import IconWithText from "../common/IconWithText";
 
 const UserHeader = (props: {userProfile?: Profile}) => {
   const userProfile = props.userProfile

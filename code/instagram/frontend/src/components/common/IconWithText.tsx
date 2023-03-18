@@ -1,4 +1,4 @@
-﻿const IconWithText = (props: { iconName: string; text?: string, iconStyle?: React.CSSProperties }) => {
+﻿const IconWithText = (props: { iconName: string; text?: string, iconStyle?: React.CSSProperties, textStyle?: React.CSSProperties}) => {
     return (
       <div style={{ display: "flex", alignItems: "center"}}>
         <i
@@ -7,7 +7,7 @@
         >
           {props.iconName} 
         </i>
-        <p>
+        <p style={props.textStyle}>
         {props.text}
         </p>
       </div>

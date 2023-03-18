@@ -4,7 +4,7 @@ import {
   NotificationType,
   useNotificationSelector,
 } from "../../redux/slices/notificationSlice";
-import IconWithText from "../header/IconWithText";
+import IconWithText from "./IconWithText";
 import useComponentVisible from "./useComponentVisible";
 
 const Notification = () => {

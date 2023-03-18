@@ -1,4 +1,5 @@
 ﻿import Avatar from "../common/Avatar";
+import PostHeader from "../post/PostHeader";
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";
@@ -12,18 +13,18 @@ const img4 = "https://s29.flog.pl/media/foto/13671790_kto-ma-zawsze-pod-gorke-te
 const UserPosts = () => {
   return (
     <div className="posts">
-      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img1})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img2})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img3})`}}></div>
-      <div className="post" style={{backgroundImage: `url(${img4})`}}></div>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
+      <PostHeader/>
     </div>
   );
 };

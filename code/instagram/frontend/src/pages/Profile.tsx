@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Avatar from "../components/common/Avatar";
-import IconWithText from "../components/header/IconWithText";
+import IconWithText from "../components/common/IconWithText";
 import UserHeader from "../components/profile/UserHeader";
 import UserPosts from "../components/profile/UserPosts";
 import UserStories from "../components/profile/UserStories";

@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import IconWithText from "./IconWithText";
+import IconWithText from "../common/IconWithText";
 import NavNonLinkItem from "./NavNonLinkItem";
 import SubPanel from "./SubPanel";
 

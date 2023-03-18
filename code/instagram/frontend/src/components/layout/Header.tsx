@@ -2,7 +2,7 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import useComponentVisible from "../common/useComponentVisible";
-import IconWithText from "../header/IconWithText";
+import IconWithText from "../common/IconWithText";
 import NavNonLinkItem from "../header/NavNonLinkItem";
 import Notifications from "../header/Notifications";
 import Search from "../header/Search";
