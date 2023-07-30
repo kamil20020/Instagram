@@ -13,20 +13,20 @@ public interface ByteArrayMapper {
     ByteArrayMapper INSTANCE = Mappers.getMapper(ByteArrayMapper.class);
 
     @Named("byteArrayToBase64")
-    default String byteArrayToBase64(Byte[] byteArr) {
+    default String byteArrayToBase64(byte[] byteArr) {
         if(byteArr == null){
             return null;
         }
-        byte[] primitiveByteArr = ArrayUtils.toPrimitive(byteArr);
-        return Base64.getMimeEncoder().encodeToString(primitiveByteArr);
+
+        return Base64.getEncoder().encodeToString(byteArr);
     }
 
     @Named("base64ToByteArray")
-    default Byte[] base64ToByteArray(String base64) {
+    default byte[] base64ToByteArray(String base64) {
         if(base64 == null){
             return null;
         }
-        byte[] byteArr = Base64.getMimeDecoder().decode(base64);
-        return ArrayUtils.toObject(byteArr);
+
+        return Base64.getDecoder().decode(base64);
     }
 }

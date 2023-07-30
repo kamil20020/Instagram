@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @RestController
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     ResponseEntity getUserById(@PathVariable("id") String userIdStr){
 
         Integer userId;
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(foundUserBasicData);
     }
 
-    @GetMapping(value = "/all")
+    @GetMapping
     ResponseEntity<List<UserEntity>> getAllUsers(){
 
         List<UserEntity> foundUsers = userService.getAllUsers();
@@ -53,8 +53,8 @@ public class UserController {
         return ResponseEntity.ok(foundUsers);
     }
 
-    @GetMapping(value = "/ids")
-    ResponseEntity getUsersByIds(@RequestParam(name = "ids") String[] idsStrs) throws UnsupportedEncodingException {
+    @GetMapping("/ids")
+    ResponseEntity getUsersByIds(@RequestParam(name = "ids") String[] idsStrs) {
 
         List<Integer> ids;
 
@@ -81,10 +81,10 @@ public class UserController {
         return ResponseEntity.ok(foundUsersBasicData);
     }
 
-    @GetMapping(value = "/search")
-    ResponseEntity<List<BasicUserData>> searchUser(@RequestParam(name = "input") String input){
+    @GetMapping("/search")
+    ResponseEntity<List<BasicUserData>> searchUser(@RequestParam(name = "phrase") String phrase){
 
-        List<UserEntity> foundUsers = userService.searchUsers(input);
+        List<UserEntity> foundUsers = userService.searchUsers(phrase);
         List<BasicUserData> foundUsersBasicData = userMapper.userEntityListToBasicUserDataList(foundUsers);
 
         return ResponseEntity.ok(foundUsersBasicData);

@@ -10,6 +10,7 @@ import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Slf4j
@@ -21,27 +22,29 @@ public class LoadDatabase {
 
         return args -> {
             UserEntity u1 = UserEntity.builder()
-                .userId(1)
-                .userAccountId("1")
+                .userAccountId(UUID.randomUUID())
                 .nickname("kamil_dywan")
                 .firstname("Kamil")
                 .surname("Dywan")
                 .email("kamil@wp.pl")
                 .creationDatetime(LocalDateTime.now())
+                .followers(0)
+                .followings(0)
                 .build();
 
             UserEntity u2 = UserEntity.builder()
-                    .userId(2)
-                    .userAccountId("2")
-                    .nickname("michal_nowak")
-                    .firstname("Michał")
-                    .surname("Nowak")
-                    .email("michal@wp.pl")
-                    .creationDatetime(LocalDateTime.now())
-                    .build();
+                .userAccountId(UUID.randomUUID())
+                .nickname("michal_nowak")
+                .firstname("Michał")
+                .surname("Nowak")
+                .email("michal@wp.pl")
+                .creationDatetime(LocalDateTime.now())
+                .followers(0)
+                .followings(0)
+                .build();
 
-            log.info("Preloading " + userRepository.save(u1));
-            log.info("Preloading " + userRepository.save(u2));
+            //log.info("Preloading " + userRepository.save(u1));
+            //log.info("Preloading " + userRepository.save(u2));
         };
     }
 }

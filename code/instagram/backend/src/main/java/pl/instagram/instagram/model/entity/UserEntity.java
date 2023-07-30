@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -14,12 +15,12 @@ import java.time.LocalDateTime;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id", insertable = false, updatable = false)
-    private Integer userId;
+    private UUID userId;
 
     @Column(name = "user_account_id", nullable = false, unique = true)
-    private String userAccountId;
+    private UUID userAccountId;
 
     @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
@@ -37,8 +38,23 @@ public class UserEntity {
     private String tel;
 
     @Column(name = "avatar")
-    private Byte[] avatar;
+    private byte[] avatar;
 
     @Column(name = "creation_datetime", nullable = false)
     private LocalDateTime creationDatetime;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "is_verified", nullable = false)
+    private boolean isVerified = false;
+
+    @Column(name = "is_private", nullable = false)
+    private boolean isPrivate = false;
+
+    @Column(name = "followers", nullable = false)
+    private Integer followers = 0;
+
+    @Column(name = "followings", nullable = false)
+    private Integer followings = 0;
 }

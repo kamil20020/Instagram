@@ -24,19 +24,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getUserById(Integer id) throws EntityNotFoundException {
-
-        Optional<UserEntity> foundUserEntityOpt = userRepository.findById(id);
-
-        if(foundUserEntityOpt.isEmpty()){
-            throw new EntityNotFoundException("Nie istnieje użytkownik o takim id");
-        }
-
-        return foundUserEntityOpt.get();
+        return userRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id")
+        );
     }
 
     @Override
     public List<UserEntity> getAllUsers() {
-
         return userRepository.findAll();
     }
 
@@ -53,11 +47,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> searchUsers(String input) {
+    public List<UserEntity> searchUsers(String phrase) {
 
-        if(input.matches(".*\\s.+")){
+        if(phrase.matches(".*\\s.+")){
 
-            String[] splitInput = input.split("\\s");
+            String[] splitInput = phrase.split("\\s");
 
             return userRepository.findAll(
                 where(
@@ -70,9 +64,9 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll(
             where(
-                UserSpecification.userAboutNickname(input).or(
-                    UserSpecification.userAboutFirstname(input).or(
-                        UserSpecification.userAboutSurname(input)
+                UserSpecification.userAboutNickname(phrase).or(
+                    UserSpecification.userAboutFirstname(phrase).or(
+                        UserSpecification.userAboutSurname(phrase)
                     )
                 )
             )

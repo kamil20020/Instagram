@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class BasicUserData {
 
-    private Integer userId;
+    private String userId;
     private String nickname;
     private String firstname;
     private String surname;

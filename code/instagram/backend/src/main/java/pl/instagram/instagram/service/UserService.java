@@ -9,5 +9,5 @@ public interface UserService {
     UserEntity getUserById(Integer id);
     List<UserEntity> getAllUsers();
     List<UserEntity> getUsersByIds(List<Integer> ids);
-    List<UserEntity> searchUsers(String input);
+    List<UserEntity> searchUsers(String phrase);
 }
