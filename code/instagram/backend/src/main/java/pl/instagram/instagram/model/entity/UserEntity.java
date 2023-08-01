@@ -22,17 +22,14 @@ public class UserEntity {
     @Column(name = "user_account_id", nullable = false, unique = true)
     private UUID userAccountId;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", unique = true)
     private String nickname;
 
-    @Column(name = "firstname", nullable = false)
+    @Column(name = "firstname")
     private String firstname;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname")
     private String surname;
-
-    @Column(name = "email", nullable = false)
-    private String email;
 
     @Column(name = "tel")
     private String tel;
@@ -57,4 +54,7 @@ public class UserEntity {
 
     @Column(name = "followings", nullable = false)
     private Integer followings = 0;
+
+    @Column(name = "number_of_posts", nullable = false)
+    private Integer numberOfPosts = 0;
 }

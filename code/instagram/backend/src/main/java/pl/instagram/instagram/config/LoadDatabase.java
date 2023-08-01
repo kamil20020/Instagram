@@ -26,10 +26,10 @@ public class LoadDatabase {
                 .nickname("kamil_dywan")
                 .firstname("Kamil")
                 .surname("Dywan")
-                .email("kamil@wp.pl")
                 .creationDatetime(LocalDateTime.now())
                 .followers(0)
                 .followings(0)
+                .numberOfPosts(0)
                 .build();
 
             UserEntity u2 = UserEntity.builder()
@@ -37,10 +37,10 @@ public class LoadDatabase {
                 .nickname("michal_nowak")
                 .firstname("Michał")
                 .surname("Nowak")
-                .email("michal@wp.pl")
                 .creationDatetime(LocalDateTime.now())
                 .followers(0)
                 .followings(0)
+                .numberOfPosts(0)
                 .build();
 
             //log.info("Preloading " + userRepository.save(u1));

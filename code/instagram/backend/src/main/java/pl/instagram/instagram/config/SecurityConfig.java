@@ -37,7 +37,9 @@ public class SecurityConfig {
 
         http
             .cors()
-            .and().oauth2ResourceServer().jwt();
+            .and()
+            .csrf().disable()
+            .oauth2ResourceServer().jwt();
 
         return http.build();
     }

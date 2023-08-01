@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicUserData {
+public class UserProfileInfo {
 
     private String userId;
     private String nickname;
@@ -15,4 +15,9 @@ public class BasicUserData {
     private String surname;
     private String avatar;
     private boolean isVerified;
+    private boolean isPrivate;
+    private String description;
+    private Integer followers;
+    private Integer followings;
+    private Integer numberOfPosts;
 }

@@ -4,18 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.response.BasicUserData;
+import pl.instagram.instagram.model.api.response.UserProfileInfo;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.UserService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,15 +26,15 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/basic")
     ResponseEntity getUserById(@PathVariable("id") String userIdStr){
 
-        Integer userId;
+        UUID userId;
 
         try{
-            userId = Integer.valueOf(userIdStr);
+            userId = UUID.fromString(userIdStr);
         }
-        catch(NumberFormatException e){
+        catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
         }
 
@@ -45,7 +44,25 @@ public class UserController {
         return ResponseEntity.ok(foundUserBasicData);
     }
 
-    @GetMapping
+    @GetMapping("/{id}/profile")
+    ResponseEntity getUserProfileInfo(@PathVariable("id") String userIdStr){
+
+        UUID userId;
+
+        try{
+            userId = UUID.fromString(userIdStr);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
+        }
+
+        UserEntity foundUser = userService.getUserById(userId);
+        UserProfileInfo foundUserProfileInfo = userMapper.userEntityToUserProfileInfo(foundUser);
+
+        return ResponseEntity.ok(foundUserProfileInfo);
+    }
+
+    @GetMapping("/all")
     ResponseEntity<List<UserEntity>> getAllUsers(){
 
         List<UserEntity> foundUsers = userService.getAllUsers();
@@ -56,15 +73,15 @@ public class UserController {
     @GetMapping("/ids")
     ResponseEntity getUsersByIds(@RequestParam(name = "ids") String[] idsStrs) {
 
-        List<Integer> ids;
+        List<UUID> ids;
 
         try{
             ids = Arrays.stream(idsStrs)
-                .map(idStr -> Integer.valueOf(idStr))
+                .map(idStr -> UUID.fromString(idStr))
                 .collect(Collectors.toList());
         }
-        catch(NumberFormatException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
         }
 
         List<UserEntity> foundUsers;
@@ -81,12 +98,34 @@ public class UserController {
         return ResponseEntity.ok(foundUsersBasicData);
     }
 
-    @GetMapping("/search")
+    @GetMapping
     ResponseEntity<List<BasicUserData>> searchUser(@RequestParam(name = "phrase") String phrase){
 
         List<UserEntity> foundUsers = userService.searchUsers(phrase);
         List<BasicUserData> foundUsersBasicData = userMapper.userEntityListToBasicUserDataList(foundUsers);
 
         return ResponseEntity.ok(foundUsersBasicData);
+    }
+
+    @PostMapping("/{userAccountId}")
+    ResponseEntity registerUser(@PathVariable("userAccountId") String userAccountIdStr){
+
+        UUID userAccountId;
+
+        try{
+            userAccountId = UUID.fromString(userAccountIdStr);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
+        }
+
+        try{
+            userService.createUser(userAccountId);
+        }
+        catch(ConflictException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
