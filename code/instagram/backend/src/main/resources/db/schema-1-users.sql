@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS USERS (
     firstname varchar(50),
     surname varchar(50),
     tel varchar(15),
-    avatar bytea,
+    avatar BYTEA,
     creation_datetime TIMESTAMP WITH TIME ZONE NOT NULL,
     description TEXT,
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,

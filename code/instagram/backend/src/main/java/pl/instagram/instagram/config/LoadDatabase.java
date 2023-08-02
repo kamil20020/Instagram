@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -18,9 +19,13 @@ import java.util.logging.Logger;
 public class LoadDatabase {
 
     @Bean
-    CommandLineRunner initDatabase(UserRepository userRepository) {
+    CommandLineRunner initDatabase(UserRepository userRepository, PostRepository postRepository) {
 
         return args -> {
+
+            //userRepository.deleteAll();
+            //postRepository.deleteAll();
+
             UserEntity u1 = UserEntity.builder()
                 .userAccountId(UUID.randomUUID())
                 .nickname("kamil_dywan")

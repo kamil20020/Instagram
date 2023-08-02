@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -57,4 +58,7 @@ public class UserEntity {
 
     @Column(name = "number_of_posts", nullable = false)
     private Integer numberOfPosts = 0;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostEntity> postEntityList;
 }
