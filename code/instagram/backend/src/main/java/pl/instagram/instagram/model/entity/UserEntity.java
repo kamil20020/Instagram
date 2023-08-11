@@ -1,10 +1,13 @@
 package pl.instagram.instagram.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Data
@@ -18,7 +21,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id", insertable = false, updatable = false)
-    private UUID userId;
+    private UUID Id;
 
     @Column(name = "user_account_id", nullable = false, unique = true)
     private UUID userAccountId;
@@ -59,6 +62,9 @@ public class UserEntity {
     @Column(name = "number_of_posts", nullable = false)
     private Integer numberOfPosts = 0;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<PostEntity> postEntityList;
 }

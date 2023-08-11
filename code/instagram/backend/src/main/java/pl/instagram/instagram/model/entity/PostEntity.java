@@ -1,12 +1,12 @@
 package pl.instagram.instagram.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Data
@@ -20,7 +20,7 @@ public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="post_id", insertable = false, updatable = false)
-    private UUID postId;
+    private UUID Id;
 
     @Column(name = "creation_datetime", nullable = false)
     private LocalDateTime creationDatetime;
@@ -37,7 +37,8 @@ public class PostEntity {
     @Column(name = "are_disabled_comments", nullable = false)
     private boolean areDisabledComments = false;
 
-    @ManyToOne(optional = false)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 }

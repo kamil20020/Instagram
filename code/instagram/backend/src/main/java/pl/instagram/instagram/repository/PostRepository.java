@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository <PostEntity, UUID> {
 
-    Page<PostEntity> findAllByUserEntityUserId(UUID userId, Pageable pageable);
+    Page<PostEntity> findAllByUserEntityId(UUID userId, Pageable pageable);
 }

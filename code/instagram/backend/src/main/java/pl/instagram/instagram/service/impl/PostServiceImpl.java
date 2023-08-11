@@ -4,7 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.model.entity.PostEntity;
@@ -13,6 +16,7 @@ import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 import pl.instagram.instagram.service.PostService;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -39,7 +43,11 @@ public class PostServiceImpl implements PostService {
             throw new EntityNotFoundException("Nie istnieje użytkownik o takim id");
         }
 
-        return postRepository.findAllByUserEntityUserId(userId, pageable);
+        pageable = PageRequest.of(
+                pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").descending()
+        );
+
+        return postRepository.findAllByUserEntityId(userId, pageable);
     }
 
     @Override
@@ -57,24 +65,24 @@ public class PostServiceImpl implements PostService {
             .areDisabledComments(postEntity.isAreDisabledComments())
             .userEntity(foundUserEntity)
             .build();
+        foundUserEntity.getPostEntityList().add(toCreatePostEntity);
 
         return postRepository.save(toCreatePostEntity);
     }
+
 
     @Transactional
     @Override
     public void updatePostById(UUID postId, PostEntity postEntity) throws EntityNotFoundException {
 
-        PostEntity foundPostEntity = postRepository.findById(postId).orElseThrow(() ->
-            new EntityNotFoundException("Nie istnieje post o takim id")
-        );
+        PostEntity foundPostEntity = getPostById(postId);
+
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println(principal);
 
         if(postEntity.getDescription() != null){
             foundPostEntity.setDescription(postEntity.getDescription());
-        }
-
-        if(postEntity.getImg() != null){
-            foundPostEntity.setImg(postEntity.getImg());
         }
 
         foundPostEntity.setAreHiddenLikes(postEntity.isAreHiddenLikes());

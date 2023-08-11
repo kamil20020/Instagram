@@ -32,6 +32,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/users/**").permitAll()
+            .requestMatchers("/posts/**").permitAll()
             .anyRequest().authenticated()
         );
 

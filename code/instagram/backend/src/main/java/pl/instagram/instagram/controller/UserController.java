@@ -1,15 +1,23 @@
 package pl.instagram.instagram.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.mapper.ByteArrayMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.response.BasicUserData;
+import pl.instagram.instagram.model.api.response.PostHeader;
 import pl.instagram.instagram.model.api.response.UserProfileInfo;
+import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.service.PostService;
 import pl.instagram.instagram.service.UserService;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +32,9 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final PostService postService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final ByteArrayMapper byteArrayMapper = ByteArrayMapper.INSTANCE;
 
     @GetMapping("/{id}/basic")
     ResponseEntity getUserById(@PathVariable("id") String userIdStr){
@@ -60,6 +70,34 @@ public class UserController {
         UserProfileInfo foundUserProfileInfo = userMapper.userEntityToUserProfileInfo(foundUser);
 
         return ResponseEntity.ok(foundUserProfileInfo);
+    }
+
+
+    @GetMapping("/{id}/posts")
+    ResponseEntity getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
+
+        if(pageable == null){
+            pageable = Pageable.unpaged();
+        }
+
+        UUID userId;
+
+        try{
+            userId = UUID.fromString(userIdStr);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
+        }
+
+        Page<PostEntity> foundPostsPage = postService.getUserPostsPage(userId, pageable);
+
+        Page<PostHeader> foundPostsHeaders = foundPostsPage.map(post -> PostHeader.builder()
+            .id(post.getId().toString())
+            .img(byteArrayMapper.byteArrayToBase64(post.getImg()))
+            .build()
+        );
+
+        return ResponseEntity.ok(foundPostsHeaders);
     }
 
     @GetMapping("/all")
