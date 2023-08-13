@@ -12,13 +12,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.ByteArrayMapper;
+import pl.instagram.instagram.mapper.DateTimeMapper;
 import pl.instagram.instagram.mapper.UserMapper;
+import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.CreatePost;
 import pl.instagram.instagram.model.api.request.CreatePostLike;
+import pl.instagram.instagram.model.api.request.UpdateComment;
 import pl.instagram.instagram.model.api.response.BasicPostLikeData;
 import pl.instagram.instagram.model.api.response.BasicUserData;
+import pl.instagram.instagram.model.api.response.CommentData;
+import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.PostLike;
+import pl.instagram.instagram.service.CommentService;
 import pl.instagram.instagram.service.PostLikeService;
 import pl.instagram.instagram.service.PostService;
 
@@ -34,8 +40,10 @@ public class PostController {
 
     private final PostService postService;
     private final PostLikeService postLikeService;
+    private final CommentService commentService;
     private final ByteArrayMapper byteArrayMapper = ByteArrayMapper.INSTANCE;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final DateTimeMapper dateTimeMapper = DateTimeMapper.INSTANCE;
 
     @GetMapping("/{id}")
     ResponseEntity getPostById(@PathVariable("id") String postIdStr) {
@@ -91,6 +99,43 @@ public class PostController {
         );
 
         return ResponseEntity.ok(likedByPage);
+    }
+
+    @GetMapping("/{id}/comments")
+    ResponseEntity getPostCommentsPage(@PathVariable("id") String postIdStr, Pageable pageable){
+
+        if(pageable == null){
+            pageable = Pageable.unpaged();
+        }
+
+        UUID postId;
+
+        try {
+            postId = UUID.fromString(postIdStr);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
+        }
+
+        Page<CommentEntity> foundCommentsPage;
+
+        try{
+            foundCommentsPage = commentService.getPostCommentsPage(postId, pageable);
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        Page<CommentData> convertedCommentsPage = foundCommentsPage.map(c ->
+            CommentData.builder()
+                .id(c.getId().toString())
+                .content(c.getContent())
+                .userData(userMapper.userEntityToBasicUserData(c.getUserEntity()))
+                .creationDatetime(dateTimeMapper.map(c.getCreationDatetime()))
+                .build()
+        );
+
+        return ResponseEntity.ok(convertedCommentsPage);
     }
 
     @PostMapping
@@ -154,6 +199,28 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(basicPostLikeData);
     }
 
+    @PostMapping("/{id}/comments")
+    ResponseEntity createPostComment(@PathVariable("id") String postIdStr, @RequestBody CreateComment createComment){
+
+        UUID postId;
+
+        try {
+            postId = UUID.fromString(postIdStr);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
+        }
+
+        try{
+            commentService.createComment(postId, createComment.getUserId(), null, createComment.getContent());
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @PatchMapping("/{id}")
     ResponseEntity updatePostById(@PathVariable("id") String postIdStr, @RequestBody PostEntity postEntity){
 
@@ -174,6 +241,28 @@ public class PostController {
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/comments/{id}")
+    ResponseEntity updateComment(@PathVariable("id") String commentIdStr, @RequestBody UpdateComment updateComment){
+
+        UUID commentId;
+
+        try{
+            commentId = UUID.fromString(commentIdStr);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator komentarza");
+        }
+
+        try{
+            commentService.updateComment(commentId, updateComment.getContent());
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -198,8 +287,8 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/like/{id}")
-    ResponseEntity likePost(@PathVariable("id") String postLikeIdStr){
+    @DeleteMapping("/likes/{id}")
+    ResponseEntity removeLike(@PathVariable("id") String postLikeIdStr){
 
         UUID postLikeId;
 
@@ -212,6 +301,28 @@ public class PostController {
 
         try{
             postLikeService.removeLike(postLikeId);
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/comments/{id}")
+    ResponseEntity removeComment(@PathVariable("id") String commentIdStr){
+
+        UUID commentId;
+
+        try{
+            commentId = UUID.fromString(commentIdStr);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator komentarza");
+        }
+
+        try{
+            commentService.deleteComment(commentId);
         }
         catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

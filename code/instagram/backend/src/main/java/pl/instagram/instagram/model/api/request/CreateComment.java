@@ -9,7 +9,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostLike {
+public class CreateComment {
 
     private UUID userId;
+    private String content;
 }

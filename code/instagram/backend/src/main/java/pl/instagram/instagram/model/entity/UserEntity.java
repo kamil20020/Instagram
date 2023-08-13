@@ -73,4 +73,10 @@ public class UserEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PostLike> postLikes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<CommentEntity> commentEntityList;
 }
