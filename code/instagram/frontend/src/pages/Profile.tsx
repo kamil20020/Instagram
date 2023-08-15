@@ -1,40 +1,31 @@
 ﻿import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import Avatar from "../components/common/Avatar";
-import IconWithText from "../components/common/IconWithText";
-import UserHeader from "../components/profile/UserHeader";
-import UserPosts from "../components/profile/UserPosts";
-import UserStories from "../components/profile/UserStories";
+import UserHeader from "../features/profile/UserHeader";
+import UserPosts from "../features/profile/UserPosts";
+import UserStories from "../features/profile/UserStories";
 import { Profile } from "../models/Profile";
 import {
   NotificationType,
   setNotification,
 } from "../redux/slices/notificationSlice";
-import {
-  setLatestProfiles,
-  userPreferencesSelector,
-} from "../redux/slices/userPreferencesSlice";
 import UserAPIService from "../services/UserAPIService";
-import "../components/profile/Profile.css";
+import "../features/profile/Profile.css";
+import HorizontalLine from "../features/profile/HorizontalLine";
 
 const ProfileView = () => {
-  let profileUserId: number = Number(useParams().id);
+  let profileUserId = useParams().id;
 
   const [userProfile, setUserProfile] = React.useState<Profile>();
-
-  const latestProfilesIds = useSelector(
-    userPreferencesSelector
-  ).latestProfilesIds;
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!Number.isInteger(profileUserId)) {
+    if (!profileUserId) {
       return;
     }
 
-    UserAPIService.getUserById(profileUserId)
+    UserAPIService.getUseProfileById(profileUserId)
       .then((response) => {
         setUserProfile(response.data);
       })
@@ -48,7 +39,7 @@ const ProfileView = () => {
       });
   }, [profileUserId]);
 
-  if (!Number.isInteger(profileUserId)) {
+  if (!profileUserId) {
     return <h1>Podano niewłaściwe id użytkownika</h1>;
   }
 
@@ -59,15 +50,7 @@ const ProfileView = () => {
     >
       <UserHeader userProfile={userProfile} />
       <UserStories />
-      <hr
-        style={{
-          width: "100%",
-          color: "silver",
-          border: 0,
-          backgroundColor: "silver",
-          height: 1,
-        }}
-      />
+      <HorizontalLine />
       <UserPosts />
     </div>
   );

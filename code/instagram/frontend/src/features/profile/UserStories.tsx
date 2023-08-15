@@ -1,4 +1,4 @@
-﻿import Avatar from "../common/Avatar";
+﻿import Avatar from "../../components/Avatar";
 
 const UserStories = () => {
   return (

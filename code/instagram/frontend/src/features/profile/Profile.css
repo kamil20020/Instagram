@@ -1,0 +1,70 @@
+﻿.user-header {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 80px;
+}
+
+.user-actions {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.user-actions-buttons {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr;
+  column-gap: 10px;
+  padding: 0 10px 0 22px;
+}
+
+.user-stats {
+  display: flex;
+  align-items: center;
+}
+
+.user-stat {
+  display: flex;
+  padding-right: 42px;
+  margin-right: 5px;
+}
+
+.user-info {
+  margin-top: 4;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.grey-button i{
+  margin-right: 0 !important;
+  justify-self: center;
+}
+
+.outlined-button {
+  border: 0 !important;
+  background-color: white !important;
+  font-weight: bold;
+}
+
+.outlined-button:hover {
+  cursor: pointer;
+}
+
+.outlined-button i {
+  font-size: 34px !important;
+  font-weight: bold;
+}

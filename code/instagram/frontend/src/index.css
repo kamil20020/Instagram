@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;
   height: 100vh;
 }
 
@@ -31,10 +31,10 @@ a{
 .grey-button{
   background-color: rgb(239, 239, 239);
   border: none;
-  padding: 10px 12px;
+  padding: 6px 20px;
   text-align: center;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
 }
 
@@ -45,7 +45,7 @@ a{
 
 h1{
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 h4{

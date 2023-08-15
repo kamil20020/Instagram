@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import {
   NotificationType,
   useNotificationSelector,
-} from "../../redux/slices/notificationSlice";
+} from "../redux/slices/notificationSlice";
 import IconWithText from "./IconWithText";
 import useComponentVisible from "./useComponentVisible";
 

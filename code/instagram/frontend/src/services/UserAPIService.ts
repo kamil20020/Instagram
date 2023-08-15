@@ -3,21 +3,25 @@ import qs from "qs"
 
 class UserAPIService {
 
-    api: string = "http://localhost:9000/user"
+    api: string = "http://localhost:9000/users"
 
-    getUserById(userId: number){
+    getUserById(userId: string){
         return axios.get(`${this.api}/${userId}`)
     }
 
+    getUseProfileById(userId: string){
+        return axios.get(`${this.api}/${userId}/profile`)
+    }
+
     searchUser(input: string){
-        return axios.get(`${this.api}/search?`, {
+        return axios.get(`${this.api}`, {
             params: {
-                input: input
+                phrase: input
             }
         })
     }
 
-    getUsersByIds(ids: number[]){
+    getUsersByIds(ids: string[]){
         return axios.get(`${this.api}/ids`, {
             params: {
                 ids: ids
@@ -29,7 +33,7 @@ class UserAPIService {
     }
 
     searchUserFetchAPi(input: string){
-        return fetch(`${this.api}/search/?${new URLSearchParams({input: input})}`)
+        return fetch(`${this.api}/?${new URLSearchParams({phrase: input})}`)
     }
 }
 

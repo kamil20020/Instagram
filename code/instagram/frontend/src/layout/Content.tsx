@@ -1,8 +1,8 @@
 ﻿import React from "react";
 import { Outlet } from "react-router-dom";
-import Search from "../header/Search";
+import Search from "../features/search-users/Search";
 import Footer from "./Footer";
-import Header from "./Header";
+import Header from "./header/Header";
 import "./Layout.css"
 
 const Content = () => {

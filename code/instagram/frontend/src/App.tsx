@@ -9,9 +9,9 @@ import {
 } from "react-router-dom";
 import { createRoutesFromElements } from "react-router";
 import Home from "./pages/Home";
-import Header from "./components/layout/Header";
-import Content from "./components/layout/Content";
-import Footer from "./components/layout/Footer";
+import Header from "./layout/header/Header";
+import Content from "./layout/Content";
+import Footer from "./layout/Footer";
 import NotFound from "./errors/NotFound";
 import Profile from "./pages/Profile";
 

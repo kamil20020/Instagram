@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import { Auth0Provider } from "@auth0/auth0-react";
 import {store} from "./redux/store";
-import Notification from "./components/common/Notification";
+import Notification from "./components/Notification";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);

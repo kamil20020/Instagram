@@ -3,7 +3,7 @@ import { Profile } from "../../models/Profile";
 import { RootState } from "../rootReducer";
 
 export interface UserPreferencesState {
-  latestProfilesIds: number[];
+  latestProfilesIds: string[];
 }
 
 export const initialState: UserPreferencesState = {
@@ -14,7 +14,7 @@ export const userPreferencesSlice = createSlice({
   name: "userPreferences",
   initialState,
   reducers: {
-    setLatestProfiles(state, action: PayloadAction<number[]>) {
+    setLatestProfiles(state, action: PayloadAction<string[]>) {
       state.latestProfilesIds = action.payload
     },
     clearLatestProfiles(state){

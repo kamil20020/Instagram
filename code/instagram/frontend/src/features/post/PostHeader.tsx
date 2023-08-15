@@ -1,4 +1,5 @@
-﻿import IconWithText from "../common/IconWithText";
+﻿import IconWithText from "../../components/IconWithText";
+import "./Post.css"
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";

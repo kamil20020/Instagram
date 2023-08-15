@@ -1,4 +1,4 @@
-﻿import Avatar from "../common/Avatar";
+﻿import Avatar from "../../components/Avatar";
 import PostHeader from "../post/PostHeader";
 
 const img1 =
