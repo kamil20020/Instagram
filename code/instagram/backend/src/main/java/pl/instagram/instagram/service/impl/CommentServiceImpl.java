@@ -1,5 +1,6 @@
 package pl.instagram.instagram.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -79,6 +80,7 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.save(toSaveComment);
     }
 
+    @Transactional
     @Override
     public CommentEntity updateComment(UUID commentId, String newContent) throws EntityNotFoundException {
 

@@ -9,10 +9,12 @@ import Search from "../../features/search-users/Search";
 import NavLinkItem from "./NavLinkItem";
 import NavMenu from "./NavMenu";
 import Icon from "./Icon";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import Avatar from "../../components/Avatar";
 
 const Header = () => {
   const { isAuthenticated } = useAuth0();
-
   return (
     <header style={{ width: "100%" }}>
       <div className="header">
@@ -37,6 +39,15 @@ const Header = () => {
               <NavNonLinkItem
                 content={<IconWithText iconName="add_box" text="Utwórz" />}
                 onClick={() => console.log("Utwórz")}
+              />
+              <NavLinkItem
+                link="/profile/a"
+                content={
+                  <div style={{display: "flex", alignItems: "center"}}>
+                    <Avatar width={48} height={48}/>
+                    <span style={{marginLeft: 12}}>Profil</span>
+                  </div>
+                }
               />
             </React.Fragment>
           )}

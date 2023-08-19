@@ -13,7 +13,6 @@ const Content = () => {
           height: "100vh",
           display: "grid",
           gridTemplateColumns: "1fr 5fr",
-          columnGap: 40
         }}
       >
         <Header />
@@ -24,7 +23,9 @@ const Content = () => {
             flexDirection: "column",
           }}
         >
-          <Outlet />
+          <div style={{width: "70%"}}>
+            <Outlet />
+          </div>
           <Footer />
         </div>
       </div>

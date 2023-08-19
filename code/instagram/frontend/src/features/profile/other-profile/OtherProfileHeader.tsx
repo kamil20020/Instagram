@@ -1,8 +1,8 @@
-﻿import { Profile } from "../../models/Profile";
-import Avatar from "../../components/Avatar";
-import IconWithText from "../../components/IconWithText";
+﻿import Avatar from "../../../components/Avatar";
+import IconWithText from "../../../components/IconWithText";
+import { Profile } from "../../../models/Profile";
 
-const UserHeader = (props: { userProfile?: Profile }) => {
+const OtherProfileHeader = (props: {userProfile: Profile}) => {
   const userProfile = props.userProfile;
   return (
     <div className="user-header">
@@ -47,4 +47,4 @@ const UserHeader = (props: { userProfile?: Profile }) => {
   );
 };
 
-export default UserHeader;
+export default OtherProfileHeader;

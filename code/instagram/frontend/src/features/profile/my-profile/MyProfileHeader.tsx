@@ -1,8 +1,8 @@
-﻿import { Profile } from "../../models/Profile";
-import Avatar from "../../components/Avatar";
-import IconWithText from "../../components/IconWithText";
+﻿import Avatar from "../../../components/Avatar";
+import IconWithText from "../../../components/IconWithText";
+import { Profile } from "../../../models/Profile";
 
-const UserHeader = (props: { userProfile?: Profile }) => {
+const MyProfileHeader = (props: { userProfile: Profile }) => {
   const userProfile = props.userProfile;
   return (
     <div className="user-header">
@@ -11,9 +11,8 @@ const UserHeader = (props: { userProfile?: Profile }) => {
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
-            <button className="blue-button-filled">Obserwuj</button>
-            <button className="grey-button">Obserwowanie</button>
-            <button className="grey-button">Wyślij wiadomość</button>
+            <button className="grey-button">Edytuj profil</button>
+            <button className="grey-button">Wyświetl archiwum</button>
             <button className="grey-button">
               <IconWithText iconName="person_add" />
             </button>
@@ -47,4 +46,4 @@ const UserHeader = (props: { userProfile?: Profile }) => {
   );
 };
 
-export default UserHeader;
+export default MyProfileHeader;

@@ -212,7 +212,7 @@ public class PostController {
         }
 
         try{
-            commentService.createComment(postId, createComment.getUserId(), null, createComment.getContent());
+            commentService.createComment(postId, createComment.getUserId(), createComment.getParentCommentId(), createComment.getContent());
         }
         catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

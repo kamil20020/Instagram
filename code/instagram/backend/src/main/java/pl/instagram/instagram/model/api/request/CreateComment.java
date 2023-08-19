@@ -13,4 +13,5 @@ public class CreateComment {
 
     private UUID userId;
     private String content;
+    private UUID parentCommentId;
 }

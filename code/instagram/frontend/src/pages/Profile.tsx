@@ -1,9 +1,6 @@
 ﻿import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import UserHeader from "../features/profile/UserHeader";
-import UserPosts from "../features/profile/UserPosts";
-import UserStories from "../features/profile/UserStories";
 import { Profile } from "../models/Profile";
 import {
   NotificationType,
@@ -11,7 +8,7 @@ import {
 } from "../redux/slices/notificationSlice";
 import UserAPIService from "../services/UserAPIService";
 import "../features/profile/Profile.css";
-import HorizontalLine from "../features/profile/HorizontalLine";
+import MyProfile from "../features/profile/my-profile/MyProfile";
 
 const ProfileView = () => {
   let profileUserId = useParams().id;
@@ -43,16 +40,14 @@ const ProfileView = () => {
     return <h1>Podano niewłaściwe id użytkownika</h1>;
   }
 
+  if(!userProfile){
+    return <div></div>
+  }
+
   return (
-    <div
-      className="profile"
-      style={{ display: "grid", rowGap: "50px", padding: "30px 20px 20px 0" }}
-    >
-      <UserHeader userProfile={userProfile} />
-      <UserStories />
-      <HorizontalLine />
-      <UserPosts />
-    </div>
+    <React.Fragment>
+      <MyProfile userProfile={userProfile}/>
+    </React.Fragment>
   );
 };
 

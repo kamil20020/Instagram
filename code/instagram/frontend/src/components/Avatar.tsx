@@ -1,5 +1,5 @@
 ﻿const Avatar = (props: {
-  image: string | undefined;
+  image?: string;
   width: number;
   height: number;
 }) => {
