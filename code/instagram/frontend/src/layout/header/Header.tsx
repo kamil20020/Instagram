@@ -12,6 +12,7 @@ import Icon from "./Icon";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import Avatar from "../../components/Avatar";
+import CreatePost from "../../features/post/create-post/CreatePost";
 
 const Header = () => {
   const { isAuthenticated } = useAuth0();
@@ -36,16 +37,13 @@ const Header = () => {
                 content={<IconWithText iconName="chat" text="Wiadomości" />}
               />
               <Notifications />
-              <NavNonLinkItem
-                content={<IconWithText iconName="add_box" text="Utwórz" />}
-                onClick={() => console.log("Utwórz")}
-              />
+              <CreatePost/>
               <NavLinkItem
                 link="/profile/a"
                 content={
                   <div style={{display: "flex", alignItems: "center"}}>
-                    <Avatar width={48} height={48}/>
-                    <span style={{marginLeft: 12}}>Profil</span>
+                    <Avatar width={32} height={32}/>
+                    <p style={{marginLeft: 16}}>Profil</p>
                   </div>
                 }
               />

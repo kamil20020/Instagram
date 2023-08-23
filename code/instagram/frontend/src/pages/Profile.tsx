@@ -9,6 +9,7 @@ import {
 import UserAPIService from "../services/UserAPIService";
 import "../features/profile/Profile.css";
 import MyProfile from "../features/profile/my-profile/MyProfile";
+import OtherProfile from "../features/profile/other-profile/OtherProfile";
 
 const ProfileView = () => {
   let profileUserId = useParams().id;
@@ -46,7 +47,7 @@ const ProfileView = () => {
 
   return (
     <React.Fragment>
-      <MyProfile userProfile={userProfile}/>
+      <OtherProfile userProfile={userProfile}/>
     </React.Fragment>
   );
 };

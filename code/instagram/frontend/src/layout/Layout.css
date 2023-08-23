@@ -15,7 +15,7 @@ nav {
   height: 100%;
   flex-direction: column;
   align-items: stretch;
-  row-gap: 20px;
+  row-gap: 10px;
   padding-left: 12px;
   padding-right: 12px;
 }

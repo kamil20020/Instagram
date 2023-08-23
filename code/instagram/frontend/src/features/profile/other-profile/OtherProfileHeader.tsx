@@ -4,15 +4,15 @@ import { Profile } from "../../../models/Profile";
 
 const OtherProfileHeader = (props: {userProfile: Profile}) => {
   const userProfile = props.userProfile;
+
   return (
     <div className="user-header">
-      <Avatar image={userProfile?.avatar} width={240} height={240} />
+      <Avatar image={userProfile?.avatar} width={200} height={200} />
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
             <button className="blue-button-filled">Obserwuj</button>
-            <button className="grey-button">Obserwowanie</button>
             <button className="grey-button">Wyślij wiadomość</button>
             <button className="grey-button">
               <IconWithText iconName="person_add" />
@@ -48,3 +48,4 @@ const OtherProfileHeader = (props: {userProfile: Profile}) => {
 };
 
 export default OtherProfileHeader;
+//            <button className="grey-button">Obserwowanie</button>

@@ -1,9 +1,10 @@
 ﻿import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { Profile } from "../../models/Profile";
+import { BasicUserData } from "../../models/BasicUserData";
 
 const ProfileHeader = (props: {
-  profile: Profile;
+  profile: BasicUserData;
   handleClick: (id: string) => void;
 }) => {
   const profile = props.profile;

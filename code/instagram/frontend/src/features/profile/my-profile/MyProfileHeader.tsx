@@ -13,13 +13,13 @@ const MyProfileHeader = (props: { userProfile: Profile }) => {
           <div className="user-actions-buttons">
             <button className="grey-button">Edytuj profil</button>
             <button className="grey-button">Wyświetl archiwum</button>
-            <button className="grey-button">
-              <IconWithText iconName="person_add" />
+            <button
+              className="grey-button"
+              style={{ backgroundColor: "white" }}
+            >
+              <IconWithText iconName="settings" />
             </button>
           </div>
-          <button className="outlined-button" style={{ marginLeft: 4 }}>
-            <IconWithText iconName="more_horiz" />
-          </button>
         </div>
         <div className="user-stats">
           <div className="user-stat">

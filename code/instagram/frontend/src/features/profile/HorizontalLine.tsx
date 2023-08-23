@@ -6,6 +6,7 @@
       border: 0,
       backgroundColor: "silver",
       height: 1,
+      margin: 0
     }}
   />
 );

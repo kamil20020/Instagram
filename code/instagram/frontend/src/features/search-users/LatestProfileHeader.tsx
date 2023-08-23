@@ -6,9 +6,10 @@ import {
   userPreferencesSelector,
   setLatestProfiles,
 } from "../../redux/slices/userPreferencesSlice";
+import { BasicUserData } from "../../models/BasicUserData";
 
 const LatestProfileHeader = (props: {
-  profile: Profile;
+  profile: BasicUserData;
   handleClick: (id: string) => void;
 }) => {
   const profile = props.profile;
