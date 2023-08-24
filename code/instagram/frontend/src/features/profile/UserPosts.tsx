@@ -1,5 +1,10 @@
-﻿import Avatar from "../../components/Avatar";
-import PostHeader from "../post/PostHeader";
+﻿import { useParams } from "react-router-dom";
+import Avatar from "../../components/Avatar";
+import UserAPIService from "../../services/UserAPIService";
+import PostHeaderView from "../post/PostHeaderView";
+import React from "react";
+import { PostHeader } from "../../models/PostHeader";
+import { Page } from "../../models/Page";
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";
@@ -11,20 +16,32 @@ const img4 = "https://s29.flog.pl/media/foto/13671790_kto-ma-zawsze-pod-gorke-te
 
 
 const UserPosts = () => {
+
+  const userId = useParams().id
+
+  const [posts, setPosts] = React.useState<PostHeader[]>([])
+
+  React.useEffect(() => {
+    if(!userId){
+      return;
+    }
+
+    UserAPIService.getUserPostsHeadersPage(userId, {page: 0, size: 200})
+    .then((response) => {
+      const pagedResponse: Page = response.data
+      setPosts(pagedResponse.content)
+    })
+}, [])
+
+  if(!userId){
+    return <></>
+  }
+
   return (
     <div className="posts">
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
-      <PostHeader/>
+      {posts.map((post: PostHeader) => (
+        <PostHeaderView key={post.id} postHeader={post}/>
+      ))}
     </div>
   );
 };

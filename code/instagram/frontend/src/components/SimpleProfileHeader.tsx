@@ -2,11 +2,17 @@
 
 const SimpleProfileHeader = (props: { avatar?: string; nickname: string }) => {
   return (
-    <div className="simple-profile-header">
-      <Avatar image={props.avatar} width={64} height={64} />
-      <div className="profile-header-info">
-        <span style={{ fontWeight: "bold" }}>{props.nickname}</span>
-      </div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: 22,
+        paddingBottom: 0,
+        columnGap: 12,
+      }}
+    >
+      <Avatar image={props.avatar} width={40} height={40} />
+      <span style={{ fontWeight: "bold" }}>{props.nickname}</span>
     </div>
   );
 };

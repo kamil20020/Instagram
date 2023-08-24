@@ -12,7 +12,7 @@ import Icon from "./Icon";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import Avatar from "../../components/Avatar";
-import CreatePost from "../../features/post/create-post/CreatePost";
+import CreatePostView from "../../features/post/create-post/CreatePostView";
 
 const Header = () => {
   const { isAuthenticated } = useAuth0();
@@ -37,7 +37,7 @@ const Header = () => {
                 content={<IconWithText iconName="chat" text="Wiadomości" />}
               />
               <Notifications />
-              <CreatePost/>
+              <CreatePostView/>
               <NavLinkItem
                 link="/profile/a"
                 content={

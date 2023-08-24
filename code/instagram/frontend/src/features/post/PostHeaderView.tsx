@@ -1,5 +1,6 @@
 ﻿import IconWithText from "../../components/IconWithText";
-import "./Post.css"
+import { PostHeader } from "../../models/PostHeader";
+import "./Post.css";
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";
@@ -14,9 +15,14 @@ const a = {
   FILL: 1,
 };
 
-const PostHeader = () => {
+const PostHeaderView = (props: { postHeader: PostHeader }) => {
   return (
-    <div className="post-header" style={{ backgroundImage: `url(${img1})` }}>
+    <div
+      className="post-header"
+      style={{
+        backgroundImage: `url(data:image/png;base64,${props.postHeader.img})`,
+      }}
+    >
       <div className="post-header-info">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <IconWithText
@@ -37,4 +43,4 @@ const PostHeader = () => {
   );
 };
 
-export default PostHeader;
+export default PostHeaderView;

@@ -1,5 +1,6 @@
 ﻿import axios from "axios"
 import qs from "qs"
+import { Pagination } from "../models/Pagination"
 
 class UserAPIService {
 
@@ -29,6 +30,12 @@ class UserAPIService {
             paramsSerializer: {
                 indexes: null
             }
+        })
+    }
+
+    getUserPostsHeadersPage(userId: string, pagination?: Pagination){
+        return axios.get(`${this.api}/${userId}/posts`, {
+            params: {...pagination},
         })
     }
 

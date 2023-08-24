@@ -1,7 +1,7 @@
 ﻿import axios from "axios";
 
 export interface CreatePost {
-  description: string;
+  description?: string;
   img: string;
   areHiddenLikes: boolean;
   areDisabledComments: boolean;
@@ -13,6 +13,10 @@ class PostAPIService {
 
   createPost(request: CreatePost) {
     return axios.post(`${this.api}`, request);
+  }
+
+  fixBase64(base64: string){
+    return base64.split(',')[1]
   }
 }
 

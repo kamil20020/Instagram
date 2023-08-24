@@ -1,7 +1,8 @@
 ﻿import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   NotificationType,
+  close,
   useNotificationSelector,
 } from "../redux/slices/notificationSlice";
 import IconWithText from "./IconWithText";
@@ -9,24 +10,22 @@ import useComponentVisible from "./useComponentVisible";
 
 const Notification = () => {
   const notification = useSelector(useNotificationSelector);
-
-  const [visible, setVisible] = React.useState<boolean>(false);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (notification.message === "") {
       return;
     }
-    setVisible(true);
     setTimeout(() => {
-      setVisible(false);
+      dispatch(close());
     }, 4000);
   }, [notification]);
 
-  const ref: any = useComponentVisible(() => setVisible(false));
+  const ref: any = useComponentVisible(() => dispatch(close()));
 
   return (
     <React.Fragment>
-      {visible && (
+      {notification.isVisible && (
         <div
           ref={ref}
           style={{
@@ -35,14 +34,15 @@ const Notification = () => {
             alignItems: "center",
             right: "20px",
             bottom: "20px",
-            width: "400px",
-            height: "60px",
-            borderRadius: "4px",
+            width: "300px",
+            height: "50px",
+            borderRadius: "12px",
             padding: "0 22px",
             backgroundColor:
               notification.type === NotificationType.success
                 ? "rgb(237, 247, 237)"
                 : "red",
+            zIndex: 1000
           }}
         >
           <IconWithText
