@@ -1,6 +1,8 @@
-﻿import IconWithText from "../../components/IconWithText";
+﻿import { Link, useNavigate } from "react-router-dom";
+import IconWithText from "../../components/IconWithText";
 import { PostHeader } from "../../models/PostHeader";
 import "./Post.css";
+import React from "react";
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";
@@ -16,11 +18,18 @@ const a = {
 };
 
 const PostHeaderView = (props: { postHeader: PostHeader }) => {
+
+  const navigate = useNavigate()
+
   return (
     <div
       className="post-header"
       style={{
         backgroundImage: `url(data:image/png;base64,${props.postHeader.img})`,
+      }}
+      onClick={() => {
+        navigate("", {state: {postId: props.postHeader.id}})
+        window.history.pushState(null, '', `/post/${props.postHeader.id}`)
       }}
     >
       <div className="post-header-info">

@@ -3,14 +3,19 @@
 const Dialog = (props: {
   content: React.ReactNode;
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  height?: number;
+  width?: number;
+  setIsOpen?: (isOpen: boolean) => void;
   handleClose?: () => void;
 }) => {
   const ref = useComponentVisible(() => {
     if (props.handleClose) {
       props.handleClose();
     }
-    props.setIsOpen(false);
+
+    if(props.setIsOpen){
+      props.setIsOpen(false);
+    }
   }) as any;
 
   if (!props.isOpen) {
@@ -30,16 +35,17 @@ const Dialog = (props: {
         width: "100vw",
         height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0.6)",
+        zIndex: 10
       }}
     >
       <div
         ref={ref ? ref : null}
         style={{
-          width: "60%",
-          height: "70%",
+          width: `${props.width ? props.width : 60}%`,
+          height:`${props.height ? props.height : 70}%`,
           backgroundColor: "white",
           borderRadius: 12,
-          zIndex: 2,
+          zIndex: 20,
         }}
       >
         {props.content}

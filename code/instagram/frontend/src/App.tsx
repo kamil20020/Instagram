@@ -14,12 +14,14 @@ import Content from "./layout/Content";
 import Footer from "./layout/Footer";
 import NotFound from "./errors/NotFound";
 import Profile from "./pages/Profile";
+import PostViewPage from "./pages/PostViewPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Content />}>
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
+      <Route path="/post/:id" element={<PostViewPage/>} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

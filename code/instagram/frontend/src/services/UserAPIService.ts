@@ -4,7 +4,7 @@ import { Pagination } from "../models/Pagination"
 
 class UserAPIService {
 
-    api: string = "http://localhost:9000/users"
+    private api: string = "http://localhost:9000/users"
 
     getUserById(userId: string){
         return axios.get(`${this.api}/${userId}`)

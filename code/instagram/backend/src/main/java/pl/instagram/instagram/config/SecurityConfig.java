@@ -33,6 +33,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/users/**").permitAll()
             .requestMatchers("/posts/**").permitAll()
+            .requestMatchers("/swagger-ui/**").permitAll()
+            .requestMatchers("/v3/api-docs/**").permitAll()
             .anyRequest().authenticated()
         );
 

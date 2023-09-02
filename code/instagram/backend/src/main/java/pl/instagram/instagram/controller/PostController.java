@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.ByteArrayMapper;
 import pl.instagram.instagram.mapper.DateTimeMapper;
+import pl.instagram.instagram.mapper.PostMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.CreatePost;
@@ -21,6 +22,7 @@ import pl.instagram.instagram.model.api.request.UpdateComment;
 import pl.instagram.instagram.model.api.response.BasicPostLikeData;
 import pl.instagram.instagram.model.api.response.BasicUserData;
 import pl.instagram.instagram.model.api.response.CommentData;
+import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.PostLike;
@@ -43,6 +45,7 @@ public class PostController {
     private final CommentService commentService;
     private final ByteArrayMapper byteArrayMapper = ByteArrayMapper.INSTANCE;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final PostMapper postMapper = PostMapper.INSTANCE;
     private final DateTimeMapper dateTimeMapper = DateTimeMapper.INSTANCE;
 
     @GetMapping("/{id}")
@@ -66,7 +69,9 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
-        return ResponseEntity.ok(foundPost);
+        PostDetails postDetails = postMapper.postEntityToPostDetails(foundPost);
+
+        return ResponseEntity.ok(postDetails);
     }
 
     @GetMapping("/{id}/likes")

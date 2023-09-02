@@ -1,10 +1,12 @@
-﻿import { useParams } from "react-router-dom";
+﻿import { useLocation, useParams } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import UserAPIService from "../../services/UserAPIService";
 import PostHeaderView from "../post/PostHeaderView";
 import React from "react";
 import { PostHeader } from "../../models/PostHeader";
 import { Page } from "../../models/Page";
+import PostView from "../post/post-view/PostView";
+import DialogPostView from "../post/post-view/DialogPostView";
 
 const img1 =
   "https://www.imperiumtapet.com/public/uploads/preview/piekne-widoki-7-3315352142308iyuwjrhvf.jpg";
@@ -18,6 +20,7 @@ const img4 = "https://s29.flog.pl/media/foto/13671790_kto-ma-zawsze-pod-gorke-te
 const UserPosts = () => {
 
   const userId = useParams().id
+  const location = useLocation()
 
   const [posts, setPosts] = React.useState<PostHeader[]>([])
 
@@ -42,6 +45,7 @@ const UserPosts = () => {
       {posts.map((post: PostHeader) => (
         <PostHeaderView key={post.id} postHeader={post}/>
       ))}
+      {location.state !== null && <DialogPostView/>}
     </div>
   );
 };

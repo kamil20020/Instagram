@@ -7,12 +7,13 @@ const SimpleProfileHeader = (props: { avatar?: string; nickname: string }) => {
         display: "flex",
         alignItems: "center",
         padding: 22,
-        paddingBottom: 0,
         columnGap: 12,
       }}
     >
       <Avatar image={props.avatar} width={40} height={40} />
-      <span style={{ fontWeight: "bold" }}>{props.nickname}</span>
+      <span style={{ fontWeight: "bold", marginLeft: 6 }}>
+        {props.nickname}
+      </span>
     </div>
   );
 };

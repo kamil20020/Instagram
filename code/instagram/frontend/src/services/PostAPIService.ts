@@ -9,7 +9,11 @@ export interface CreatePost {
 }
 
 class PostAPIService {
-  api: string = "http://localhost:9000/posts";
+  private api: string = "http://localhost:9000/posts";
+
+  getById(id: string) {
+    return axios.get(`${this.api}/${id}`)
+  }
 
   createPost(request: CreatePost) {
     return axios.post(`${this.api}`, request);

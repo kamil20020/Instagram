@@ -8,6 +8,7 @@ import HorizontalLine from "../../profile/HorizontalLine";
 import { CreatePost } from "../../../services/PostAPIService";
 import React from "react";
 import CustomCheckbox from "../../../components/CustomCheckbox";
+import PostImage from "../../../components/PostImage";
 
 export interface PostDeails {
   description?: string;
@@ -32,12 +33,7 @@ const SetPostDetails = (props: {
         gridTemplateRows: "1fr",
       }}
     >
-      <div
-        style={{
-          backgroundImage: `url(${props.img})`,
-          backgroundSize: "cover",
-        }}
-      ></div>
+      <PostImage img={props.img}/>
       <div>
         <SimpleProfileHeader nickname="kamil" />
         <SetPostDescription
