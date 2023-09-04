@@ -70,9 +70,19 @@ input[type=checkbox]{
 }
 
 .post-comments {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
   border-top: 0.1px solid silver;
   border-bottom: 0.1px solid silver;
   flex-grow: 1;
+  overflow-y: scroll;
+  max-height: 510px;
+  row-gap: 32px;
+}
+
+.post-comments::-webkit-scrollbar {
+  display: none;
 }
 
 .post-author-info{
@@ -83,4 +93,10 @@ input[type=checkbox]{
 .post-info {
   display: flex;
   flex-direction: column;
+  row-gap: 14px;
+  padding: 20px;
+}
+
+.post-info-actions{
+  margin-left: -6px;
 }

@@ -11,7 +11,7 @@ import "../features/profile/Profile.css";
 import MyProfile from "../features/profile/my-profile/MyProfile";
 import OtherProfile from "../features/profile/other-profile/OtherProfile";
 
-const ProfileView = () => {
+const ProfileView = (props: { isMyProfile?: boolean }) => {
   let profileUserId = useParams().id;
 
   const [userProfile, setUserProfile] = React.useState<Profile>();
@@ -41,13 +41,17 @@ const ProfileView = () => {
     return <h1>Podano niewłaściwe id użytkownika</h1>;
   }
 
-  if(!userProfile){
-    return <div></div>
+  if (!userProfile) {
+    return <div></div>;
   }
 
   return (
     <React.Fragment>
-      <OtherProfile userProfile={userProfile}/>
+      {props.isMyProfile ? (
+        <MyProfile userProfile={userProfile} />
+      ) : (
+        <OtherProfile userProfile={userProfile} />
+      )}
     </React.Fragment>
   );
 };

@@ -5,6 +5,7 @@ export interface Post {
     img: string,
     description: string,
     areDisabledComments: boolean,
+    creationDatetime: string,
     areHiddenLikes: boolean,
     userData: BasicUserData,
     numberOfLikes: number,

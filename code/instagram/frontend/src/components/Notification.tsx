@@ -29,7 +29,7 @@ const Notification = () => {
         <div
           ref={ref}
           style={{
-            position: "absolute",
+            position: "fixed",
             display: "flex",
             alignItems: "center",
             right: "20px",

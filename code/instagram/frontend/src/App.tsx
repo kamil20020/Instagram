@@ -21,7 +21,8 @@ const router = createBrowserRouter(
     <Route path="/" element={<Content />}>
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
-      <Route path="/post/:id" element={<PostViewPage/>} />
+      <Route path="/profile/:id/me" element={<Profile isMyProfile />} />
+      <Route path="/post/:id" element={<PostViewPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

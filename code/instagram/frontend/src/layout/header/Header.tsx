@@ -39,7 +39,7 @@ const Header = () => {
               <Notifications />
               <CreatePostView/>
               <NavLinkItem
-                link="/profile/a"
+                link="/profile/96f2e9fa-d4f0-4067-a272-04cc766f688b/me"
                 content={
                   <div style={{display: "flex", alignItems: "center"}}>
                     <Avatar width={32} height={32}/>

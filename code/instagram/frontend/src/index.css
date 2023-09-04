@@ -18,6 +18,15 @@ a{
   color: black;
 }
 
+.outlined-button{
+  background-color: none;
+  border: none;
+}
+
+button:hover{
+  cursor: pointer;
+}
+
 .blue-button{
   color: rgb(0, 149, 246);
   background-color: white;
@@ -64,6 +73,24 @@ a{
   cursor: pointer;
 }
 
+.grey-button-outlined{
+  background-color: white;
+  color: rgb(115, 115, 115);
+  border: none;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.show-on-hover{
+  opacity: 0;
+}
+
+.show-on-hover:hover{
+  opacity: 1;
+}
+
 h1{
   margin: 0;
   font-size: 18px;
@@ -77,6 +104,10 @@ h4{
   display: flex;
   justify-content: stretch;
   align-items: center;
+}
+
+.material-symbols-outlined:hover{
+  opacity: 0.6;
 }
 
 span:hover{

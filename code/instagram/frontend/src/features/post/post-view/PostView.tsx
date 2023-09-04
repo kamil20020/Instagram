@@ -5,13 +5,17 @@ import { Post } from "../../../models/Post";
 import SimpleProfileHeader from "../../../components/SimpleProfileHeader";
 import PostComments from "./PostComments";
 import IconWithText from "../../../components/IconWithText";
+import Icon from "../../../components/Icon";
+import CreateCommentView from "../../comment/CreateCommentView";
 
 const PostView = (props: { id: string }) => {
   const [post, setPost] = React.useState<Post>();
 
   React.useEffect(() => {
-    PostAPIService.getById(props.id).then((response) => {
+    PostAPIService.getById(props.id)
+    .then((response) => {
       setPost(response.data);
+      console.log(response.data);
     });
   }, []);
 
@@ -32,8 +36,24 @@ const PostView = (props: { id: string }) => {
             <IconWithText iconName="more_horiz" />
           </button>
         </div>
-        <PostComments />
-        <div className="post-info">AA</div>
+        <PostComments post={post}/>
+        <div className="post-info">
+          <div className="post-info-actions">
+            <button className="outlined-button">
+              <Icon iconName="favorite" />
+            </button>
+            <button className="outlined-button">
+              <Icon iconName="mode_comment" />
+            </button>
+          </div>
+          <div>
+            <h4>Liczba polubień: 77 197</h4>
+            <span style={{ color: "rgb(115, 115, 115)", marginTop: 2 }}>
+              {new Date(post.creationDatetime).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+        <CreateCommentView postId={props.id} />
       </div>
     </div>
   );
