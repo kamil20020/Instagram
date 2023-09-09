@@ -37,7 +37,7 @@ public class UserController {
     private final ByteArrayMapper byteArrayMapper = ByteArrayMapper.INSTANCE;
 
     @GetMapping("/{id}/basic")
-    ResponseEntity getUserById(@PathVariable("id") String userIdStr){
+    ResponseEntity getBasicUserById(@PathVariable("id") String userIdStr){
 
         UUID userId;
 
@@ -100,6 +100,23 @@ public class UserController {
         return ResponseEntity.ok(foundPostsHeaders);
     }
 
+    @GetMapping("/userAccount/{userAccountId}")
+    ResponseEntity getBasicUserByUserAccountId(@PathVariable("userAccountId") String userAccountId){
+
+        UserEntity foundUser;
+
+        try{
+            foundUser = userService.getUserByUserAccountId(userAccountId);
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        BasicUserData basicUserData = userMapper.userEntityToBasicUserData(foundUser);
+
+        return ResponseEntity.ok(basicUserData);
+    }
+
     @GetMapping("/all")
     ResponseEntity<List<UserEntity>> getAllUsers(){
 
@@ -145,25 +162,18 @@ public class UserController {
         return ResponseEntity.ok(foundUsersBasicData);
     }
 
-    @PostMapping("/{userAccountId}")
-    ResponseEntity registerUser(@PathVariable("userAccountId") String userAccountIdStr){
+    @PostMapping("/userAccount/{userAccountId}")
+    ResponseEntity registerUser(@PathVariable("userAccountId") String userAccountId){
 
-        UUID userAccountId;
-
-        try{
-            userAccountId = UUID.fromString(userAccountIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
-        }
+        UUID createdUserId;
 
         try{
-            userService.createUser(userAccountId);
+            createdUserId = userService.createUser(userAccountId);
         }
         catch(ConflictException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserId.toString());
     }
 }

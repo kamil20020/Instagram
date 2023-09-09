@@ -1,10 +1,12 @@
 package pl.instagram.instagram.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+@Slf4j
 class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     private final String audience;
 
@@ -18,6 +20,9 @@ class AudienceValidator implements OAuth2TokenValidator<Jwt> {
         if (jwt.getAudience().contains(audience)) {
             return OAuth2TokenValidatorResult.success();
         }
+
+        log.debug(error.toString());
+
         return OAuth2TokenValidatorResult.failure(error);
     }
 }

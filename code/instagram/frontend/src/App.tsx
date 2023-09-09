@@ -15,13 +15,28 @@ import Footer from "./layout/Footer";
 import NotFound from "./errors/NotFound";
 import Profile from "./pages/Profile";
 import PostViewPage from "./pages/PostViewPage";
+import ProtectedRoute from "./features/auth/ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Content />}>
+    <Route
+      path="/"
+      element={
+        <ProtectedRoute>
+          <Content />
+        </ProtectedRoute>
+      }
+    >
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
-      <Route path="/profile/:id/me" element={<Profile isMyProfile />} />
+      <Route
+        path="/profile/:id/me"
+        element={
+          <ProtectedRoute requiresLogin>
+            <Profile isMyProfile />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/post/:id" element={<PostViewPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>

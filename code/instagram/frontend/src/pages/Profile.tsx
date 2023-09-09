@@ -23,7 +23,7 @@ const ProfileView = (props: { isMyProfile?: boolean }) => {
       return;
     }
 
-    UserAPIService.getUseProfileById(profileUserId)
+    UserAPIService.getUserProfileById(profileUserId)
       .then((response) => {
         setUserProfile(response.data);
       })

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS USERS (
     user_id UUID PRIMARY KEY,
-    user_account_id UUID NOT NULL UNIQUE,
+    user_account_id varchar(50) NOT NULL UNIQUE,
     nickname varchar(255) UNIQUE,
     firstname varchar(50),
     surname varchar(50),

@@ -110,10 +110,6 @@ h4{
   opacity: 0.6;
 }
 
-span:hover{
-  cursor: pointer;
-}
-
 .normal-weight{
   font-weight: normal;
 }

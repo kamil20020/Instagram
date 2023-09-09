@@ -3,7 +3,10 @@ import { Outlet } from "react-router-dom";
 import Search from "../features/search-users/Search";
 import Footer from "./Footer";
 import Header from "./header/Header";
-import "./Layout.css"
+import "./Layout.css";
+import Login from "../features/auth/Login";
+import Register from "../features/auth/Register";
+import Notification from "../components/Notification";
 
 const Content = () => {
   return (
@@ -23,12 +26,15 @@ const Content = () => {
             flexDirection: "column",
           }}
         >
-          <div style={{width: "70%"}}>
+          <div style={{ width: "70%" }}>
             <Outlet />
           </div>
           <Footer />
         </div>
       </div>
+      <Login />
+      <Register />
+      <Notification/>
     </React.Fragment>
   );
 };

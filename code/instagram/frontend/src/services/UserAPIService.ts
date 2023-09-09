@@ -6,12 +6,16 @@ class UserAPIService {
 
     private api: string = "http://localhost:9000/users"
 
-    getUserById(userId: string){
-        return axios.get(`${this.api}/${userId}`)
+    getBasicUserById(userId: string){
+        return axios.get(`${this.api}/${userId}/basic`)
     }
 
-    getUseProfileById(userId: string){
+    getUserProfileById(userId: string){
         return axios.get(`${this.api}/${userId}/profile`)
+    }
+
+    getBasicUserByUserAccountId(userAccountId: string){
+        return axios.get(`${this.api}/userAccount/${userAccountId}`)
     }
 
     searchUser(input: string){
@@ -41,6 +45,10 @@ class UserAPIService {
 
     searchUserFetchAPi(input: string){
         return fetch(`${this.api}/?${new URLSearchParams({phrase: input})}`)
+    }
+
+    createUser(userAccountId: string){
+        return axios.post(`${this.api}/userAccount/${userAccountId}`)
     }
 }
 

@@ -23,7 +23,6 @@ root.render(
       >
         <App />
       </Auth0Provider>
-      <Notification/>
     </Provider>
   </React.StrictMode>
 );

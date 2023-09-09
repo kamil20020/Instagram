@@ -13,9 +13,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import Avatar from "../../components/Avatar";
 import CreatePostView from "../../features/post/create-post/CreatePostView";
+import { useAuthSelector } from "../../redux/slices/authSlice";
+import { BasicUserData } from "../../models/BasicUserData";
 
 const Header = () => {
-  const { isAuthenticated } = useAuth0();
+  const authData = useSelector(useAuthSelector)
+
   return (
     <header style={{ width: "100%" }}>
       <div className="header">
@@ -30,7 +33,7 @@ const Header = () => {
             link="/explore"
             content={<IconWithText iconName="explore" text="Eksploruj" />}
           />
-          {isAuthenticated && (
+          {authData.isAuthenticated && (
             <React.Fragment>
               <NavLinkItem
                 link="/chat"
@@ -39,7 +42,7 @@ const Header = () => {
               <Notifications />
               <CreatePostView/>
               <NavLinkItem
-                link="/profile/96f2e9fa-d4f0-4067-a272-04cc766f688b/me"
+                link={`/profile/${authData.user?.id}/me`}
                 content={
                   <div style={{display: "flex", alignItems: "center"}}>
                     <Avatar width={32} height={32}/>

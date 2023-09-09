@@ -33,6 +33,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UUID getUserIdByUserAccountId(String userAccountId) throws EntityNotFoundException {
+        return getUserByUserAccountId(userAccountId).getId();
+    }
+
+    @Override
+    public UserEntity getUserByUserAccountId(String userAccountId) throws EntityNotFoundException {
+        return userRepository.findByUserAccountId(userAccountId).orElseThrow(
+            () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id konta")
+        );
+    }
+
+    @Override
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
@@ -77,7 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UUID userAccountId) throws ConflictException {
+    public UUID createUser(String userAccountId) throws ConflictException {
 
         if(userRepository.existsByUserAccountId(userAccountId)){
             throw new ConflictException("Istnieje już użytkownik o takim id konta");
@@ -91,6 +103,6 @@ public class UserServiceImpl implements UserService {
             .numberOfPosts(0)
             .build();
 
-        userRepository.save(newUserEntity);
+        return userRepository.save(newUserEntity).getId();
     }
 }

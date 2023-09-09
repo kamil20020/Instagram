@@ -27,7 +27,7 @@ public class LoadDatabase {
             //postRepository.deleteAll();
 
             UserEntity u1 = UserEntity.builder()
-                .userAccountId(UUID.randomUUID())
+                .userAccountId("kamil")
                 .nickname("kamil_dywan")
                 .firstname("Kamil")
                 .surname("Dywan")
@@ -38,7 +38,7 @@ public class LoadDatabase {
                 .build();
 
             UserEntity u2 = UserEntity.builder()
-                .userAccountId(UUID.randomUUID())
+                .userAccountId("michal")
                 .nickname("michal_nowak")
                 .firstname("Michał")
                 .surname("Nowak")

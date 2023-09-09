@@ -13,5 +13,4 @@ public class CreatePost {
     private String img;
     private boolean areHiddenLikes = false;
     private boolean areDisabledComments = false;
-    private String userId;
 }
