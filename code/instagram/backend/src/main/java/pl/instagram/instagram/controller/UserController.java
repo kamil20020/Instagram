@@ -12,6 +12,7 @@ import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.ByteArrayMapper;
 import pl.instagram.instagram.mapper.UserMapper;
+import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.BasicUserData;
 import pl.instagram.instagram.model.api.response.PostHeader;
 import pl.instagram.instagram.model.api.response.UserProfileInfo;
@@ -22,6 +23,7 @@ import pl.instagram.instagram.service.UserService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,7 +102,7 @@ public class UserController {
         return ResponseEntity.ok(foundPostsHeaders);
     }
 
-    @GetMapping("/userAccount/{userAccountId}")
+    @GetMapping("/user-account/{userAccountId}")
     ResponseEntity getBasicUserByUserAccountId(@PathVariable("userAccountId") String userAccountId){
 
         UserEntity foundUser;
@@ -162,7 +164,7 @@ public class UserController {
         return ResponseEntity.ok(foundUsersBasicData);
     }
 
-    @PostMapping("/userAccount/{userAccountId}")
+    @PostMapping("/user-account/{userAccountId}")
     ResponseEntity registerUser(@PathVariable("userAccountId") String userAccountId){
 
         UUID createdUserId;
@@ -175,5 +177,24 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUserId.toString());
+    }
+
+    @PatchMapping("/basic")
+    ResponseEntity patchLoggedUserBasic(Principal principal, @RequestBody UpdateUser updateUser){
+
+        String userAccountId = principal.getName();
+
+        UserEntity patchedUser;
+
+        try{
+            patchedUser = userService.patchUser(userAccountId, userMapper.updateUserToUserEntity(updateUser));
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        BasicUserData patchedUserBasicData = userMapper.userEntityToBasicUserData(patchedUser);
+
+        return ResponseEntity.ok(patchedUserBasicData);
     }
 }

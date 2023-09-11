@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.BasicUserData;
 import pl.instagram.instagram.model.api.response.UserProfileInfo;
 import pl.instagram.instagram.model.entity.UserEntity;
@@ -19,6 +20,9 @@ public interface UserMapper {
     BasicUserData userEntityToBasicUserData(UserEntity userEntity);
 
     List<BasicUserData> userEntityListToBasicUserDataList(List<UserEntity> userEntityList);
+
+    @Mapping(source = "avatar", target = "avatar", qualifiedByName = "base64ToByteArray")
+    UserEntity updateUserToUserEntity(UpdateUser updateUser);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
     @Mapping(expression = "java(userEntity.getPostEntityList().size())", target = "numberOfPosts")

@@ -26,7 +26,7 @@ const Content = () => {
             flexDirection: "column",
           }}
         >
-          <div style={{ width: "70%" }}>
+          <div style={{ width: "70%", flexGrow: 1 }}>
             <Outlet />
           </div>
           <Footer />

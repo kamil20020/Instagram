@@ -14,9 +14,6 @@ const OtherProfileHeader = (props: {userProfile: Profile}) => {
           <div className="user-actions-buttons">
             <button className="blue-button-filled">Obserwuj</button>
             <button className="grey-button">Wyślij wiadomość</button>
-            <button className="grey-button">
-              <IconWithText iconName="person_add" />
-            </button>
           </div>
           <button className="outlined-button" style={{ marginLeft: 4 }}>
             <IconWithText iconName="more_horiz" />
@@ -49,3 +46,10 @@ const OtherProfileHeader = (props: {userProfile: Profile}) => {
 
 export default OtherProfileHeader;
 //            <button className="grey-button">Obserwowanie</button>
+
+
+/*
+<button className="grey-button">
+  <IconWithText iconName="person_add" />
+</button>
+*/

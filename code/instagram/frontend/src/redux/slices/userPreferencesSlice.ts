@@ -4,10 +4,12 @@ import { RootState } from "../rootReducer";
 
 export interface UserPreferencesState {
   latestProfilesIds: string[];
+  isCreatingComment: boolean
 }
 
 export const initialState: UserPreferencesState = {
   latestProfilesIds: [],
+  isCreatingComment: false
 };
 
 export const userPreferencesSlice = createSlice({
@@ -19,10 +21,13 @@ export const userPreferencesSlice = createSlice({
     },
     clearLatestProfiles(state){
       state.latestProfilesIds = []
+    },
+    switchIsCreatingComment(state){
+      state.isCreatingComment = !state.isCreatingComment
     }
   },
 });
 
-export const { setLatestProfiles, clearLatestProfiles } = userPreferencesSlice.actions
+export const { setLatestProfiles, clearLatestProfiles, switchIsCreatingComment } = userPreferencesSlice.actions
 export const userPreferencesSelector = (state: RootState) => state.userPreferences
 export default userPreferencesSlice.reducer

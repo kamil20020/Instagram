@@ -14,13 +14,13 @@ const Logout = () => {
 
   const handleLogout = () => {
 
-    logout({
-      logoutParams: { returnTo: window.location.origin },
-    })
-
     dispatch(logout1());
 
     AuthService.removeRequestsAccessToken()
+    
+    logout({
+      logoutParams: { returnTo: window.location.origin },
+    })
   };
 
   return <NavMenuItem content="Wyloguj" onClick={handleLogout} />;

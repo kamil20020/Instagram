@@ -6,9 +6,12 @@ import useComponentVisible from "../../components/useComponentVisible";
 import NavNonLinkItem from "./NavNonLinkItem";
 import NavMenuItem from "./NavMenuItem";
 import Logout from "../../features/auth/Logout";
+import { useSelector } from "react-redux";
+import { useAuthSelector } from "../../redux/slices/authSlice";
 
 const NavMenu = () => {
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
+  const isLogged = useSelector(useAuthSelector).isAuthenticated;
 
   const navigate = useNavigate();
 
@@ -56,7 +59,7 @@ const NavMenu = () => {
     >
       {isActive && (
         <div className="nav-menu-container" style={{ marginTop: 12 }}>
-          {!isAuthenticated ? (
+          {!isLogged ? (
             <React.Fragment>
               <LoginItem />
               <RegisterItem />

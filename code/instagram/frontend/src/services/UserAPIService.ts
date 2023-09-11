@@ -2,6 +2,13 @@
 import qs from "qs"
 import { Pagination } from "../models/Pagination"
 
+export interface PatchUser {
+    firstname?: string;
+    surname?: string;
+    nickname?: string;
+    avatar?: string;
+}
+
 class UserAPIService {
 
     private api: string = "http://localhost:9000/users"
@@ -15,7 +22,7 @@ class UserAPIService {
     }
 
     getBasicUserByUserAccountId(userAccountId: string){
-        return axios.get(`${this.api}/userAccount/${userAccountId}`)
+        return axios.get(`${this.api}/user-account/${userAccountId}`)
     }
 
     searchUser(input: string){
@@ -48,7 +55,11 @@ class UserAPIService {
     }
 
     createUser(userAccountId: string){
-        return axios.post(`${this.api}/userAccount/${userAccountId}`)
+        return axios.post(`${this.api}/user-account/${userAccountId}`)
+    }
+
+    patchLoggedUser(patchUser: PatchUser){
+        return axios.patch(`${this.api}/basic`, patchUser)
     }
 }
 

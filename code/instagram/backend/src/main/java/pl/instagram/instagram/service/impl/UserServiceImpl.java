@@ -1,10 +1,12 @@
 package pl.instagram.instagram.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 import pl.instagram.instagram.service.UserService;
@@ -104,5 +106,31 @@ public class UserServiceImpl implements UserService {
             .build();
 
         return userRepository.save(newUserEntity).getId();
+    }
+
+
+    @Override
+    @Transactional
+    public UserEntity patchUser(String userAccountId, UserEntity updateUser) throws EntityNotFoundException {
+
+        UserEntity loggedUser = getUserByUserAccountId(userAccountId);
+
+        if(updateUser.getNickname() != null){
+            loggedUser.setNickname(updateUser.getNickname());
+        }
+
+        if(updateUser.getFirstname() != null){
+            loggedUser.setFirstname(updateUser.getFirstname());
+        }
+
+        if(updateUser.getSurname() != null){
+            loggedUser.setSurname(updateUser.getSurname());
+        }
+
+        if(updateUser.getAvatar() != null){
+            loggedUser.setAvatar(updateUser.getAvatar());
+        }
+
+        return loggedUser;
     }
 }

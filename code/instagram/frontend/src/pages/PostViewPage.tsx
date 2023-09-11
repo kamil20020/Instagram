@@ -15,10 +15,12 @@ const PostViewPage = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: 20
+        paddingTop: 20,
+        paddingBottom: 20,
+        height: "calc(100% - 20px)"
       }}
     >
-      <div style={{ width: "100%", border: "1px solid silver" }}>
+      <div style={{ border: "1px solid silver", width: "100%", height: "100%",}}>
         <PostView id={postId} />
       </div>
     </div>

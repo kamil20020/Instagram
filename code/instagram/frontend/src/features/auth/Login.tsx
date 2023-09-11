@@ -7,6 +7,7 @@ import { useAuthSelector, login } from "../../redux/slices/authSlice";
 import UserAPIService from "../../services/UserAPIService";
 import { useSearchParams } from "react-router-dom";
 import AuthService from "../../services/AuthService";
+import axios, { AxiosResponse } from "axios";
 
 const Login = () => {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -18,8 +19,8 @@ const Login = () => {
     const accessToken = await getAccessTokenSilently({
       authorizationParams: {
         audience: "https://instagram.com/",
-        scope: "openid profile email"
-      }
+        scope: "openid profile email",
+      },
     });
     AuthService.setRequestsAccessToken(accessToken);
   };
@@ -38,6 +39,19 @@ const Login = () => {
         setSearchParams(searchParams);
 
         setAccessToken();
+
+        axios.interceptors.response.use(
+          (response: AxiosResponse<any, any>) => {
+            if (response.status === 401) {
+              console.log("Elapsed");
+            }
+
+            return response;
+          },
+          (error: any) => {
+            return Promise.reject(error.message);
+          }
+        );
       }
     );
   }, [isAuthenticated]);

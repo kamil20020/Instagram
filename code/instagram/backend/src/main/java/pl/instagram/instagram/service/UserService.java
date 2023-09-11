@@ -1,5 +1,6 @@
 package pl.instagram.instagram.service;
 
+import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface UserService {
     List<UserEntity> getUsersByIds(List<UUID> ids);
     List<UserEntity> searchUsers(String phrase);
     UUID createUser(String userAccountId);
+    UserEntity patchUser(String userAccountId, UserEntity updateUser);
 }

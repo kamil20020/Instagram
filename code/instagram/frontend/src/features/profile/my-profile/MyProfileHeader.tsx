@@ -6,19 +6,12 @@ const MyProfileHeader = (props: { userProfile: Profile }) => {
   const userProfile = props.userProfile;
   return (
     <div className="user-header">
-      <Avatar image={userProfile?.avatar} width={240} height={240} />
+      <Avatar myAvatar width={240} height={240} />
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
             <button className="grey-button">Edytuj profil</button>
-            <button className="grey-button">Wyświetl archiwum</button>
-            <button
-              className="grey-button"
-              style={{ backgroundColor: "white" }}
-            >
-              <IconWithText iconName="settings" />
-            </button>
           </div>
         </div>
         <div className="user-stats">
@@ -47,3 +40,13 @@ const MyProfileHeader = (props: { userProfile: Profile }) => {
 };
 
 export default MyProfileHeader;
+
+/*
+<button className="grey-button">Wyświetl archiwum</button>
+<button
+  className="grey-button"
+  style={{ backgroundColor: "white" }}
+>
+  <IconWithText iconName="settings" />
+</button>
+*/

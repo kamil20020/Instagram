@@ -11,7 +11,6 @@ const MyProfile = (props: {userProfile: Profile}) => {
       style={{ display: "grid", rowGap: "50px", padding: "30px 20px 20px 0" }}
     >
       <MyProfileHeader userProfile={props.userProfile} />
-      <UserStories />
       <HorizontalLine />
       <UserPosts />
     </div>

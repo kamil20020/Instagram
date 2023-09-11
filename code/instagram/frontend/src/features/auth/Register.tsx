@@ -7,6 +7,7 @@ import { BasicUserData } from "../../models/BasicUserData";
 import { login, useAuthSelector } from "../../redux/slices/authSlice";
 import { useSearchParams } from "react-router-dom";
 import AuthService from "../../services/AuthService";
+import axios, { AxiosResponse } from "axios";
 
 const Register = () => {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -37,6 +38,19 @@ const Register = () => {
       setSearchParams(searchParams);
 
       setAccessToken();
+
+      axios.interceptors.response.use(
+        (response: AxiosResponse<any, any>) => {
+          if (response.status === 401) {
+            console.log("Elapsed");
+          }
+
+          return response;
+        },
+        (error: any) => {
+          return Promise.reject(error.message);
+        }
+      );
     });
   }, [isAuthenticated]);
 

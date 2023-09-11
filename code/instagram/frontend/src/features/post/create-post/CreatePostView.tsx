@@ -8,6 +8,7 @@ import SetPostDetails, { PostDeails } from "./SetPostDetails";
 import PostAPIService, { CreatePost } from "../../../services/PostAPIService";
 import { useDispatch } from "react-redux";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
+import { useNavigate } from "react-router-dom";
 
 const CreatePostView = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -20,6 +21,7 @@ const CreatePostView = () => {
   });
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const setImg = (img: string) => {
     setForm({ ...form, img: img });
@@ -44,6 +46,7 @@ const CreatePostView = () => {
         })
       );
       setIsOpen(false)
+      //navigate("/profile/")
     })
     .catch((error) => {
       console.log(error)

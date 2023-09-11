@@ -29,17 +29,12 @@ const Header = () => {
             content={<IconWithText iconName="home" text="Strona główna" />}
           />
           <Search />
-          <NavLinkItem
-            link="/explore"
-            content={<IconWithText iconName="explore" text="Eksploruj" />}
-          />
           {authData.isAuthenticated && (
             <React.Fragment>
               <NavLinkItem
                 link="/chat"
                 content={<IconWithText iconName="chat" text="Wiadomości" />}
               />
-              <Notifications />
               <CreatePostView/>
               <NavLinkItem
                 link={`/profile/${authData.user?.id}/me`}
@@ -60,3 +55,11 @@ const Header = () => {
 };
 
 export default Header;
+
+/*
+<NavLinkItem
+  link="/explore"
+  content={<IconWithText iconName="explore" text="Eksploruj" />}
+/>
+<Notifications />
+*/

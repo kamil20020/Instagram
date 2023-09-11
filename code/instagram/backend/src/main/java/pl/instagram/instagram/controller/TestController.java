@@ -35,7 +35,7 @@ public class TestController {
     @GetMapping(value = "/email")
     public void sendEmail(){
 
-        String to = "jdywan@wp.pl";
+        String to = "mail@wp.pl";
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

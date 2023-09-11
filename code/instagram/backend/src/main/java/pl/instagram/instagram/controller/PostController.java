@@ -230,47 +230,23 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity updatePostById(@PathVariable("id") String postIdStr, @RequestBody PostEntity postEntity){
+    ResponseEntity updatePostById(@PathVariable("id") String postIdStr, @RequestBody PostEntity postEntity) {
 
         UUID postId;
 
-        try{
+        try {
             postId = UUID.fromString(postIdStr);
-        }
-        catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator posta");
         }
 
-        try{
+        try {
             postService.updatePostById(postId, postEntity);
-        }
-        catch(EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PutMapping("/comments/{id}")
-    ResponseEntity updateComment(@PathVariable("id") String commentIdStr, @RequestBody UpdateComment updateComment){
-
-        UUID commentId;
-
-        try{
-            commentId = UUID.fromString(commentIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator komentarza");
-        }
-
-        try{
-            commentService.updateComment(commentId, updateComment.getContent());
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -309,28 +285,6 @@ public class PostController {
 
         try{
             postLikeService.removeLike(postLikeId);
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/comments/{id}")
-    ResponseEntity removeComment(@PathVariable("id") String commentIdStr){
-
-        UUID commentId;
-
-        try{
-            commentId = UUID.fromString(commentIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator komentarza");
-        }
-
-        try{
-            commentService.deleteComment(commentId);
         }
         catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
