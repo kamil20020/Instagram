@@ -1,5 +1,7 @@
 # Instagram copy 
 
+Aplikacja została wdrożona przy pomocy chmury dostarczanej przez Render.
+
 ## Wymagania funkcjonalne:
 * Posty (w trakcie),
 * Komentarze postów (w trakcie),
@@ -22,9 +24,15 @@
     * TypeScript,
     * ReduxJS.
 * Backend:
+    * Java
     * Spring Boot,
     * Spring Data JPA,
     * Spring Security,
-    * PostgreSQL,
-    * REST,
-    * Auth0.
+ * Baza danych - PostgreSQL,
+ * Ogólne:
+    * Kominikacja i architektura - REST,
+    * Zewnętrzny serwer uwierzytelniający - Auth0.
+ * Wdrożenie:
+    * Docker,
+    * Docker Hub,
+    * Chmura - Render.
