@@ -1,6 +1,5 @@
 # Instagram copy 
-
-Aplikacja została wdrożona przy pomocy chmury dostarczanej przez Render.
+Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkcje oraz wygląd strony.
 
 ## Wymagania funkcjonalne:
 * Posty (w trakcie),
@@ -34,5 +33,5 @@ Aplikacja została wdrożona przy pomocy chmury dostarczanej przez Render.
     * Zewnętrzny serwer uwierzytelniający - Auth0.
  * Wdrożenie:
     * Docker,
-    * Docker Hub,
+    * Biblioteka obrazów dockerowych - Docker Hub,
     * Chmura - Render.
