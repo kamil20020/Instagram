@@ -14,7 +14,6 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 * Logowanie i rejestracja poprzez Auth0.
 
 ## Główny schemat bazy danych:
-
 ![Główny schemat bazy danych](project/instagram.png)
 
 ## Technologie:
