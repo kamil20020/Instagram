@@ -1,5 +1,5 @@
 # Instagram copy 
-Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkcje oraz wygląd strony. 
+Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkcje oraz wygląd strony.  
 
 ## Wymagania funkcjonalne:
 * Posty (w trakcie),
