@@ -10,7 +10,7 @@ export interface CreateComment {
 
 class CommentAPIService {
 
-    private api: string = "http://localhost:9000/posts";
+    private api: string = `${process.env.REACT_APP_API}/posts`;
     
     getCommentsPage(postId: string, pagination: Pagination){
         return axios.get(`${this.api}/${postId}/comments`, {

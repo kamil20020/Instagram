@@ -11,7 +11,7 @@ export interface PatchUser {
 
 class UserAPIService {
 
-    private api: string = "http://localhost:9000/users"
+    private api: string = `${process.env.REACT_APP_API}/users`;
 
     getBasicUserById(userId: string){
         return axios.get(`${this.api}/${userId}/basic`)
