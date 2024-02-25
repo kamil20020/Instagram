@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instagram-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instagram-db
+  template:
+    metadata:
+      labels:
+        app: instagram-db
+    spec:
+      containers:
+        - name: instagram-db
+          image: kamil20/instagram-db:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: db
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: port
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: password
+          volumeMounts:
+            - name: instagram-db-pv
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: instagram-db-pv
+          persistentVolumeClaim:
+            claimName: instagram-db-pv-claim
