@@ -10,9 +10,6 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 * Stories (w trakcie),
 * Prosty messenger (w trakcie).
 
-## Wymagania niefunkcjonalne:
-* Logowanie i rejestracja poprzez Auth0.
-
 ## Główny schemat bazy danych:
 ![Główny schemat bazy danych](project/instagram.png)
 
@@ -32,5 +29,6 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
     * Zewnętrzny serwer uwierzytelniający - Auth0.
  * Wdrożenie:
     * Docker,
-    * Biblioteka obrazów dockerowych - Docker Hub,
-    * Chmura - Render.
+    * Repozytorium obrazów dockerowych - Docker Hub,
+    * Orkiestracja - Kubernetes,
+    * Chmura - docelowo Azure.
