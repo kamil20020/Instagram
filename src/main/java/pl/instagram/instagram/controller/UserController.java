@@ -2,9 +2,7 @@ package pl.instagram.instagram.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +19,6 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.PostService;
 import pl.instagram.instagram.service.UserService;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;

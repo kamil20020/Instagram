@@ -14,7 +14,7 @@ public interface PostMapper {
     @Mapping(source = "img", target = "img", qualifiedByName = "byteArrayToBase64")
     @Mapping(source = "creationDatetime", target = "creationDatetime", qualifiedByName = "localDatetimeToOffsetDatetime")
     @Mapping(source = "userEntity", target = "userData")
-    @Mapping(expression = "java(postEntity.getPostLikes().size())", target = "numberOfLikes")
+    @Mapping(expression = "java(postEntity.getPostLikeEntities().size())", target = "numberOfLikes")
     @Mapping(expression = "java(postEntity.getCommentEntityList().size())", target = "numberOfComments")
     PostDetails postEntityToPostDetails(PostEntity postEntity);
 }

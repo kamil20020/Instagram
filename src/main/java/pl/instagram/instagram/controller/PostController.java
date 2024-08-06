@@ -15,15 +15,12 @@ import pl.instagram.instagram.mapper.PostMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.CreatePost;
-import pl.instagram.instagram.model.api.request.UpdateComment;
 import pl.instagram.instagram.model.api.response.BasicPostLikeData;
 import pl.instagram.instagram.model.api.response.BasicUserData;
 import pl.instagram.instagram.model.api.response.CommentData;
 import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
-import pl.instagram.instagram.model.entity.PostLike;
-import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.CommentService;
 import pl.instagram.instagram.service.PostLikeService;
 import pl.instagram.instagram.service.PostService;
@@ -90,7 +87,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
         }
 
-        Page<PostLike> foundPostLikesPage;
+        Page<PostLikeEntity> foundPostLikesPage;
 
         try {
             foundPostLikesPage = postLikeService.getPostLikes(postId, pageable);
@@ -146,6 +143,8 @@ public class PostController {
     @PostMapping
     ResponseEntity createPost(@RequestBody CreatePost createPost, Principal principal){
 
+		System.out.println(principal);
+
         String userAccountId = principal.getName();
 
         PostEntity toCreatePost = PostEntity.builder()
@@ -182,7 +181,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
         }
 
-        PostLike createdLike;
+        PostLikeEntity createdLike;
 
         try{
             UUID foundLoggedUserId = userService.getUserIdByUserAccountId(userAccountId);
@@ -205,8 +204,11 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments")
-    ResponseEntity createPostComment(@PathVariable("id") String postIdStr, @RequestBody CreateComment createComment, Principal principal){
-
+    ResponseEntity createPostComment(
+        @PathVariable("id") String postIdStr,
+        @RequestBody CreateComment createComment,
+        Principal principal
+    ){
         String userAccountId = principal.getName();
 
         UUID postId;
@@ -220,7 +222,12 @@ public class PostController {
 
         try{
             UUID foundLoggedUserId = userService.getUserIdByUserAccountId(userAccountId);
-            commentService.createComment(postId, foundLoggedUserId, createComment.getParentCommentId(), createComment.getContent());
+            commentService.createComment(
+                postId,
+                foundLoggedUserId,
+                createComment.getParentCommentId(),
+                createComment.getContent()
+            );
         }
         catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

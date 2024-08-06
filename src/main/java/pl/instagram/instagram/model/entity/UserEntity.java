@@ -3,11 +3,10 @@ package pl.instagram.instagram.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Data
@@ -15,18 +14,24 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="USERS")
+@Table(
+    name="USERS",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uq_users_account_id", columnNames = "account_id"),
+        @UniqueConstraint(name = "uq_users_nickname", columnNames = "nickname")
+    }
+)
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="user_id", insertable = false, updatable = false)
+    @Column(name="user_id", updatable = false)
     private UUID Id;
 
-    @Column(name = "user_account_id", nullable = false, unique = true)
-    private String userAccountId;
+    @Column(name = "account_id", nullable = false)
+    private String accountId;
 
-    @Column(name = "nickname", unique = true)
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "firstname")
@@ -41,6 +46,7 @@ public class UserEntity {
     @Column(name = "avatar")
     private byte[] avatar;
 
+    @CreationTimestamp
     @Column(name = "creation_datetime", nullable = false)
     private LocalDateTime creationDatetime;
 
@@ -63,20 +69,14 @@ public class UserEntity {
     private Integer numberOfPosts = 0;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<PostEntity> postEntityList;
+    private List<PostEntity> posts;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<PostLike> postLikes;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<CommentEntity> commentEntityList;
+    private List<CommentEntity> comments;
 }

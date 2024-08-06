@@ -27,6 +27,7 @@ public interface ByteArrayMapper {
             return null;
         }
 
-        return Base64.getDecoder().decode(base64);
+		var decoder = Base64.getMimeDecoder();
+        return decoder.decode(base64);
     }
 }
