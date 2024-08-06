@@ -9,7 +9,7 @@ export interface CreatePost {
 }
 
 class PostAPIService {
-  private api: string = "http://localhost:9000/posts";
+  private api: string = `${process.env.REACT_APP_API_URL}/posts`
 
   getById(id: string) {
     return axios.get(`${this.api}/${id}`)
