@@ -31,17 +31,4 @@ public class TestController {
     public String privateScopedEndpoint() {
         return "All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope";
     }
-
-    @GetMapping(value = "/email")
-    public void sendEmail(){
-
-        String to = "mail@wp.pl";
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Wiadomosc");
-        message.setText(":D");
-
-        mailSender.send(message);
-    }
 }

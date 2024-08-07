@@ -17,7 +17,7 @@ public class PostDetails {
     private String img;
     private boolean areHiddenLikes;
     private boolean areDisabledComments;
-    private BasicUserData userData;
+    private UserHeader userData;
     private Integer numberOfLikes;
     private Integer numberOfComments;
 }

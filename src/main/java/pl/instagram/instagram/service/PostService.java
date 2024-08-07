@@ -37,7 +37,11 @@ public class PostService {
             );
     }
 
-    public Page<PostEntity> getUserPostsPage(UUID authorId, Pageable pageable) throws EntityNotFoundException {
+    public Page<PostEntity> getUserPostsPage(UUID authorId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
+
+        if(pageable == null){
+            throw new IllegalArgumentException("Paginacja jest wymagana");
+        }
 
         if(!userService.existsById(authorId)){
             throw new EntityNotFoundException("Nie istnieje użytkownik o takim id");

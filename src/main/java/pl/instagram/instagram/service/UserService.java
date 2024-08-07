@@ -3,6 +3,8 @@ package pl.instagram.instagram.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
@@ -45,10 +47,6 @@ public class UserService {
             );
     }
 
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
-    }
-
     public List<UserEntity> getUsersByIds(List<UUID> ids) throws IllegalArgumentException {
 
         if(ids == null || ids.size() == 0){
@@ -58,7 +56,11 @@ public class UserService {
         return userRepository.findAllById(ids);
     }
 
-    public List<UserEntity> searchUsers(String phrase) {
+    public Page<UserEntity> searchUsers(String phrase, Pageable pageable) throws IllegalArgumentException {
+
+        if(pageable == null){
+            throw new IllegalArgumentException("Paginacja jest wymagana");
+        }
 
         if(phrase.matches(".+\\s.+")){
 
@@ -76,7 +78,8 @@ public class UserService {
                             userAboutFirstname(splitInput[1])
                         )
                     )
-                )
+                ),
+                pageable
             );
         }
 
@@ -87,7 +90,8 @@ public class UserService {
                     userAboutFirstname(phrase),
                     userAboutSurname(phrase)
                 )
-            )
+            ),
+            pageable
         );
     }
 

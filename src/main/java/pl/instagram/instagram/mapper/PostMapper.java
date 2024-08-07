@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.entity.PostEntity;
 
-@Mapper(uses = {ByteArrayMapper.class, DateTimeMapper.class, UserMapper.class})
+@Mapper(uses = {ByteArrayMapper.class, DateTimeMapper.class, UserMapper.class}, componentModel = "spring")
 public interface PostMapper {
 
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);

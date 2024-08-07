@@ -1,19 +1,21 @@
 package pl.instagram.instagram.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.ByteArrayMapper;
+import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.request.UpdateUser;
-import pl.instagram.instagram.model.api.response.BasicUserData;
+import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.PostHeader;
-import pl.instagram.instagram.model.api.response.UserProfileInfo;
+import pl.instagram.instagram.model.api.response.UserProfile;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.PostService;
@@ -21,7 +23,6 @@ import pl.instagram.instagram.service.UserService;
 
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -31,61 +32,38 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
+
     private final UserMapper userMapper;
     private final ByteArrayMapper byteArrayMapper;
+    private final UUIDMapper uuidMapper;
 
-    @GetMapping("/{id}/basic")
-    ResponseEntity getBasicUserById(@PathVariable("id") String userIdStr){
+    @GetMapping("/{id}")
+    ResponseEntity<UserHeader> getUserHeaderById(@PathVariable("id") String userIdStr){
 
-        UUID userId;
-
-        try{
-            userId = UUID.fromString(userIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
-        }
+        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
 
         UserEntity foundUser = userService.getUserById(userId);
-        BasicUserData foundUserBasicData = userMapper.userEntityToBasicUserData(foundUser);
+        UserHeader foundUserHeader = userMapper.userEntityToBasicUserData(foundUser);
 
-        return ResponseEntity.ok(foundUserBasicData);
+        return ResponseEntity.ok(foundUserHeader);
     }
 
     @GetMapping("/{id}/profile")
-    ResponseEntity getUserProfileInfo(@PathVariable("id") String userIdStr){
+    ResponseEntity<UserProfile> getUserProfile(@PathVariable("id") String userIdStr){
 
-        UUID userId;
-
-        try{
-            userId = UUID.fromString(userIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
-        }
+        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
 
         UserEntity foundUser = userService.getUserById(userId);
-        UserProfileInfo foundUserProfileInfo = userMapper.userEntityToUserProfileInfo(foundUser);
+        UserProfile foundUserProfile = userMapper.userEntityToUserProfileInfo(foundUser);
 
-        return ResponseEntity.ok(foundUserProfileInfo);
+        return ResponseEntity.ok(foundUserProfile);
     }
 
 
     @GetMapping("/{id}/posts")
-    ResponseEntity getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
+    ResponseEntity<Page<PostHeader>> getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
 
-        if(pageable == null){
-            pageable = Pageable.unpaged();
-        }
-
-        UUID userId;
-
-        try{
-            userId = UUID.fromString(userIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
-        }
+        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
 
         Page<PostEntity> foundPostsPage = postService.getUserPostsPage(userId, pageable);
 
@@ -99,98 +77,54 @@ public class UserController {
     }
 
     @GetMapping("/user-account/{userAccountId}")
-    ResponseEntity getBasicUserByUserAccountId(@PathVariable("userAccountId") String userAccountId){
+    ResponseEntity<UserHeader> getUserHeaderByUserAccountId(@PathVariable("userAccountId") String userAccountId){
 
-        UserEntity foundUser;
+        UserEntity foundUser = userService.getUserByUserAccountId(userAccountId);
+        UserHeader userHeader = userMapper.userEntityToBasicUserData(foundUser);
 
-        try{
-            foundUser = userService.getUserByUserAccountId(userAccountId);
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
-        BasicUserData basicUserData = userMapper.userEntityToBasicUserData(foundUser);
-
-        return ResponseEntity.ok(basicUserData);
-    }
-
-    @GetMapping("/all")
-    ResponseEntity<List<UserEntity>> getAllUsers(){
-
-        List<UserEntity> foundUsers = userService.getAllUsers();
-
-        return ResponseEntity.ok(foundUsers);
+        return ResponseEntity.ok(userHeader);
     }
 
     @GetMapping("/ids")
-    ResponseEntity getUsersByIds(@RequestParam(name = "ids") String[] idsStrs) {
+    ResponseEntity<List<UserHeader>> getUsersByIds(@RequestParam(name = "ids") String[] idsArr) {
 
-        List<UUID> ids;
+        List<String> idsList = Arrays.asList(idsArr);
+        List<UUID> ids = uuidMapper.strListToUUIDList(idsList, "użytkownika");
 
-        try{
-            ids = Arrays.stream(idsStrs)
-                .map(idStr -> UUID.fromString(idStr))
-                .collect(Collectors.toList());
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwe id użytkownika");
-        }
+        List<UserEntity> foundUsers = userService.getUsersByIds(ids);
+        List<UserHeader> foundUsersHeaders = userMapper.userEntityListToBasicUserDataList(foundUsers);
 
-        List<UserEntity> foundUsers;
-
-        try{
-            foundUsers = userService.getUsersByIds(ids);
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
-        List<BasicUserData> foundUsersBasicData = userMapper.userEntityListToBasicUserDataList(foundUsers);
-
-        return ResponseEntity.ok(foundUsersBasicData);
+        return ResponseEntity.ok(foundUsersHeaders);
     }
 
     @GetMapping
-    ResponseEntity<List<BasicUserData>> searchUser(@RequestParam(name = "phrase") String phrase){
+    ResponseEntity<Page<UserHeader>> searchUser(@RequestParam(name = "phrase") String phrase, Pageable pageable){
 
-        List<UserEntity> foundUsers = userService.searchUsers(phrase);
-        List<BasicUserData> foundUsersBasicData = userMapper.userEntityListToBasicUserDataList(foundUsers);
+        Page<UserEntity> foundUsers = userService.searchUsers(phrase, pageable);
+        Page<UserHeader> foundUsersHeaders = foundUsers.map(userMapper::userEntityToBasicUserData);
 
-        return ResponseEntity.ok(foundUsersBasicData);
+        return ResponseEntity.ok(foundUsersHeaders);
     }
 
-    @PostMapping("/user-account/{userAccountId}")
-    ResponseEntity registerUser(@PathVariable("userAccountId") String userAccountId){
+    @PostMapping("/register")
+    ResponseEntity<String> registerUser(@RequestParam String accountId){
 
-        UUID createdUserId;
+        UUID createdUserId = userService.createUser(accountId);
+        String createdUserIdStr = uuidMapper.uuidToStr(createdUserId);
 
-        try{
-            createdUserId = userService.createUser(userAccountId);
-        }
-        catch(ConflictException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserId.toString());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserIdStr);
     }
 
     @PatchMapping("/basic")
-    ResponseEntity patchLoggedUserBasic(Principal principal, @RequestBody UpdateUser updateUser){
+    ResponseEntity<UserHeader> patchLoggedUserBasic(Principal principal, @RequestBody UpdateUser updateRequest){
 
         String userAccountId = principal.getName();
 
-        UserEntity patchedUser;
+        UserEntity updateUser = userMapper.updateUserToUserEntity(updateRequest);
 
-        try{
-            patchedUser = userService.patchUser(userAccountId, userMapper.updateUserToUserEntity(updateUser));
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        UserEntity patchedUser = userService.patchUser(userAccountId, updateUser);
+        UserHeader patchedUserHeader = userMapper.userEntityToBasicUserData(patchedUser);
 
-        BasicUserData patchedUserBasicData = userMapper.userEntityToBasicUserData(patchedUser);
-
-        return ResponseEntity.ok(patchedUserBasicData);
+        return ResponseEntity.ok(patchedUserHeader);
     }
 }

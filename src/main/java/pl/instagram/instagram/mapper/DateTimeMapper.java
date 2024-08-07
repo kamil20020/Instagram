@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface DateTimeMapper {
 
     DateTimeMapper INSTANCE = Mappers.getMapper(DateTimeMapper.class);

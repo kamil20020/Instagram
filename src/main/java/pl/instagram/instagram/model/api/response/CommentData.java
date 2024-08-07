@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 public class CommentData {
 
     private String id;
-    private BasicUserData userData;
+    private UserHeader userData;
     private String content;
     private OffsetDateTime creationDatetime;
 }

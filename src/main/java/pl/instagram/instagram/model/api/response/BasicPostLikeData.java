@@ -10,5 +10,5 @@ import lombok.*;
 public class BasicPostLikeData {
 
     private String id;
-    private BasicUserData user;
+    private UserHeader user;
 }

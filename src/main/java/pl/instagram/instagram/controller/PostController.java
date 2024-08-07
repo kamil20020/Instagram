@@ -16,7 +16,7 @@ import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.CreatePost;
 import pl.instagram.instagram.model.api.response.BasicPostLikeData;
-import pl.instagram.instagram.model.api.response.BasicUserData;
+import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.CommentData;
 import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.entity.CommentEntity;
@@ -96,7 +96,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
-        Page<BasicUserData> likedByPage = foundPostLikesPage.map(l ->
+        Page<UserHeader> likedByPage = foundPostLikesPage.map(l ->
             userMapper.userEntityToBasicUserData(l.getUserEntity())
         );
 
@@ -194,7 +194,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
-        BasicUserData likeAuthorBasicData = userMapper.userEntityToBasicUserData(createdLike.getUserEntity());
+        UserHeader likeAuthorBasicData = userMapper.userEntityToBasicUserData(createdLike.getUserEntity());
         BasicPostLikeData basicPostLikeData = BasicPostLikeData.builder()
             .id(createdLike.getId().toString())
             .user(likeAuthorBasicData)
