@@ -11,10 +11,8 @@ import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.util.List;
 
-@Mapper(uses = {ByteArrayMapper.class})
+@Mapper(uses = {ByteArrayMapper.class}, componentModel = "spring")
 public interface UserMapper {
-
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
     BasicUserData userEntityToBasicUserData(UserEntity userEntity);

@@ -31,8 +31,8 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
-    private final ByteArrayMapper byteArrayMapper = ByteArrayMapper.INSTANCE;
+    private final UserMapper userMapper;
+    private final ByteArrayMapper byteArrayMapper;
 
     @GetMapping("/{id}/basic")
     ResponseEntity getBasicUserById(@PathVariable("id") String userIdStr){
@@ -91,7 +91,7 @@ public class UserController {
 
         Page<PostHeader> foundPostsHeaders = foundPostsPage.map(post -> PostHeader.builder()
             .id(post.getId().toString())
-            .img(byteArrayMapper.byteArrayToBase64(post.getImg()))
+            .img(byteArrayMapper.byteArrayToBase64(post.getContent()))
             .build()
         );
 

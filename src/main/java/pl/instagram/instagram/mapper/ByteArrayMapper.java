@@ -7,10 +7,8 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Base64;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ByteArrayMapper {
-
-    ByteArrayMapper INSTANCE = Mappers.getMapper(ByteArrayMapper.class);
 
     @Named("byteArrayToBase64")
     default String byteArrayToBase64(byte[] byteArr) {

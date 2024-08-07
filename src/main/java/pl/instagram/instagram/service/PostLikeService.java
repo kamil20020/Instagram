@@ -1,15 +1,19 @@
 package pl.instagram.instagram.service;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
+import pl.instagram.instagram.repository.UserRepository;
 
 import java.util.UUID;
 
@@ -18,46 +22,50 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostLikeService {
 
-    private final PostLikeRepository postLikeRepository;
-    private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    @Override
-    public Page<PostLikeEntity> getPostLikes(UUID postId, Pageable pageable) throws EntityNotFoundException {
+    public Page<UserEntity> getPostLikes(UUID postId, Pageable pageable) throws EntityNotFoundException {
 
-        if(!postRepository.existsById(postId)){
+        if(!postService.existsById(postId)){
             throw new EntityNotFoundException("Nie istnieje post o takim id");
         }
 
-        return postLikeRepository.getAllByPostEntityId(postId, pageable);
-    }
-
-    @Override
-    public PostLikeEntity addLike(UUID postId, UUID userId) throws EntityExistsException {
-
-        if(postLikeRepository.existsByUserEntityIdAndPostEntityId(postId, userId)){
-            throw new EntityExistsException("Istnieje już taki like");
-        }
-
-        PostEntity postEntity = postService.getPostById(postId);
-        UserEntity userEntity = userService.getUserById(userId);
-
-        return postLikeRepository.save(
-            PostLikeEntity.builder()
-                .userEntity(userEntity)
-                .postEntity(postEntity)
-                .build()
+        pageable = PageRequest.of(
+            pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").ascending()
         );
+
+        return userRepository.findByLikedPostsId(postId, pageable);
     }
 
-    @Override
-    public void removeLike(UUID likeId) {
+    @Transactional
+    public UserEntity addLike(UUID postId, UUID authorId) throws EntityNotFoundException, EntityExistsException {
 
-        if(!postLikeRepository.existsById(likeId)){
-            throw new EntityNotFoundException("Nie istnieje like o takim id");
+        PostEntity post = postService.getPostById(postId);
+        UserEntity author = userService.getUserById(authorId);
+
+        if(userRepository.existsByIdAndLikedPostsId(authorId, postId)){
+            throw new EntityExistsException("Istnieje już polubienie posta o takich id posta i użytkownika");
         }
 
-        postLikeRepository.deleteById(likeId);
+        post.setLikesCount(post.getLikesCount() + 1);
+        author.getLikedPosts().add(post);
+
+        return author;
+    }
+
+    @Transactional
+    public void removeLike(UUID postId, UUID authorId) throws EntityNotFoundException {
+
+        PostEntity post = postService.getPostById(postId);
+        UserEntity author = userService.getUserById(authorId);
+
+        if(!userRepository.existsByIdAndLikedPostsId(authorId, postId)){
+            throw new EntityNotFoundException("Nie istnieje polubienie posta o takich id użytkownika i posta");
+        }
+
+        post.setLikesCount(post.getLikesCount() - 1);
+        author.getLikedPosts().remove(post);
     }
 }

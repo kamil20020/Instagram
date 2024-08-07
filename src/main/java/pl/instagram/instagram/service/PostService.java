@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.model.entity.PostEntity;
@@ -15,7 +14,6 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,70 +23,71 @@ import java.util.UUID;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    @Override
-    public PostEntity getPostById(UUID postId) throws EntityNotFoundException {
-
-        return postRepository.findById(postId).orElseThrow(() ->
-            new EntityNotFoundException("Nie istnieje post o takim id")
-        );
+    public boolean existsById(UUID id){
+        return postRepository.existsById(id);
     }
 
-    @Override
-    public Page<PostEntity> getUserPostsPage(UUID userId, Pageable pageable) throws EntityNotFoundException {
+    public PostEntity getPostById(UUID postId) throws EntityNotFoundException {
 
-        if(!userRepository.existsById(userId)){
+        return postRepository.findById(postId)
+            .orElseThrow(() ->
+                new EntityNotFoundException("Nie istnieje post o takim id")
+            );
+    }
+
+    public Page<PostEntity> getUserPostsPage(UUID authorId, Pageable pageable) throws EntityNotFoundException {
+
+        if(!userService.existsById(authorId)){
             throw new EntityNotFoundException("Nie istnieje użytkownik o takim id");
         }
 
         pageable = PageRequest.of(
-                pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").descending()
+            pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").descending()
         );
 
-        return postRepository.findAllByUserEntityId(userId, pageable);
+        return postRepository.findAllByAuthorId(authorId, pageable);
     }
 
-    @Override
-    public PostEntity createPost(UUID userId, PostEntity postEntity) throws EntityNotFoundException{
+    @Transactional
+    public PostEntity createPost(UUID authorId, PostEntity postData) throws EntityNotFoundException{
 
-        UserEntity foundUserEntity = userRepository.findById(userId).orElseThrow(() ->
-            new EntityNotFoundException("Nie istnieje użytkownik o takim id")
-        );
+        UserEntity author = userService.getUserById(authorId);
 
-        PostEntity toCreatePostEntity = PostEntity.builder()
+        PostEntity newPost = PostEntity.builder()
             .creationDatetime(LocalDateTime.now())
-            .description(postEntity.getDescription())
-            .img(postEntity.getImg())
-            .areHiddenLikes(postEntity.isAreHiddenLikes())
-            .areDisabledComments(postEntity.isAreDisabledComments())
-            .userEntity(foundUserEntity)
+            .description(postData.getDescription())
+            .content(postData.getContent())
+            .areHiddenLikes(postData.isAreHiddenLikes())
+            .areDisabledComments(postData.isAreDisabledComments())
+            .author(author)
             .build();
-        foundUserEntity.getPostEntityList().add(toCreatePostEntity);
 
-        return postRepository.save(toCreatePostEntity);
+        author.getPosts().add(newPost);
+
+        return postRepository.save(newPost);
     }
 
 
     @Transactional
-    @Override
-    public void updatePostById(UUID postId, PostEntity postEntity) throws EntityNotFoundException {
+    public void patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException {
 
-        PostEntity foundPostEntity = getPostById(postId);
+        PostEntity foundPost = getPostById(postId);
 
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-
-        System.out.println(principal);
-
-        if(postEntity.getDescription() != null){
-            foundPostEntity.setDescription(postEntity.getDescription());
+        if(updateData.getDescription() != null){
+            foundPost.setDescription(updateData.getDescription());
         }
 
-        foundPostEntity.setAreHiddenLikes(postEntity.isAreHiddenLikes());
-        foundPostEntity.setAreDisabledComments(postEntity.isAreDisabledComments());
+        if(updateData.isAreHiddenLikes()){
+            updateData.setAreHiddenLikes(updateData.isAreHiddenLikes());
+        }
+
+        if(updateData.isAreDisabledComments()){
+            updateData.setAreDisabledComments(updateData.isAreDisabledComments());
+        }
     }
 
-    @Override
     public void deletePostById(UUID postId) throws EntityNotFoundException {
 
         if(!postRepository.existsById(postId)){

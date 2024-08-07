@@ -8,14 +8,13 @@ import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
-import pl.instagram.instagram.specification.UserSpecification;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static org.springframework.data.jpa.domain.Specification.where;
+import static org.springframework.data.jpa.domain.Specification.*;
+import static pl.instagram.instagram.specification.UserSpecification.*;
 
 @Slf4j
 @Service
@@ -24,56 +23,57 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Override
+    public boolean existsById(UUID id){
+        return userRepository.existsById(id);
+    }
+
     public UserEntity getUserById(UUID id) throws EntityNotFoundException {
-        return userRepository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id")
-        );
+        return userRepository.findById(id)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id")
+            );
     }
 
-    @Override
-    public UUID getUserIdByUserAccountId(String userAccountId) throws EntityNotFoundException {
-        return getUserByUserAccountId(userAccountId).getId();
+    public UUID getUserIdByUserAccountId(String accountId) throws EntityNotFoundException {
+        return getUserByUserAccountId(accountId).getId();
     }
 
-    @Override
-    public UserEntity getUserByUserAccountId(String userAccountId) throws EntityNotFoundException {
-        return userRepository.findByUserAccountId(userAccountId).orElseThrow(
-            () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id konta")
-        );
+    public UserEntity getUserByUserAccountId(String accountId) throws EntityNotFoundException {
+        return userRepository.findByAccountId(accountId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id konta")
+            );
     }
 
-    @Override
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Override
-    public List<UserEntity> getUsersByIds(List<UUID> ids) throws IllegalArgumentException, EntityNotFoundException{
+    public List<UserEntity> getUsersByIds(List<UUID> ids) throws IllegalArgumentException {
 
-        if(ids == null){
+        if(ids == null || ids.size() == 0){
             throw new IllegalArgumentException("Nie podano id użytkowników");
         }
 
-        return ids.stream()
-            .map(this::getUserById)
-            .collect(Collectors.toList());
+        return userRepository.findAllById(ids);
     }
 
-    @Override
     public List<UserEntity> searchUsers(String phrase) {
 
-        if(phrase.matches(".*\\s.+")){
+        if(phrase.matches(".+\\s.+")){
 
             String[] splitInput = phrase.split("\\s");
 
             return userRepository.findAll(
                 where(
-                    (UserSpecification.userAboutFirstname(splitInput[0]).and(
-                        UserSpecification.userAboutSurname(splitInput[1])
-                    )).or(
-                        UserSpecification.userAboutSurname(splitInput[0]).and(
-                            UserSpecification.userAboutFirstname(splitInput[1])
+                    anyOf(
+                        allOf(
+                            userAboutFirstname(splitInput[0]),
+                            userAboutSurname(splitInput[1])
+                        ),
+                        allOf(
+                            userAboutSurname(splitInput[0]),
+                            userAboutFirstname(splitInput[1])
                         )
                     )
                 )
@@ -82,54 +82,49 @@ public class UserService {
 
         return userRepository.findAll(
             where(
-                UserSpecification.userAboutNickname(phrase).or(
-                    UserSpecification.userAboutFirstname(phrase).or(
-                        UserSpecification.userAboutSurname(phrase)
-                    )
+                anyOf(
+                    userAboutNickname(phrase),
+                    userAboutFirstname(phrase),
+                    userAboutSurname(phrase)
                 )
             )
         );
     }
 
-    @Override
-    public UUID createUser(String userAccountId) throws ConflictException {
+    public UUID createUser(String accountId) throws ConflictException {
 
-        if(userRepository.existsByUserAccountId(userAccountId)){
+        if(userRepository.existsByAccountId(accountId)){
             throw new ConflictException("Istnieje już użytkownik o takim id konta");
         }
 
-        UserEntity newUserEntity = UserEntity.builder()
-            .userAccountId(userAccountId)
+        UserEntity newUser = UserEntity.builder()
+            .accountId(accountId)
             .creationDatetime(LocalDateTime.now())
-            .followers(0)
-            .followings(0)
-            .numberOfPosts(0)
             .build();
 
-        return userRepository.save(newUserEntity).getId();
+        return userRepository.save(newUser).getId();
     }
 
 
-    @Override
     @Transactional
-    public UserEntity patchUser(String userAccountId, UserEntity updateUser) throws EntityNotFoundException {
+    public UserEntity patchUser(String accountId, UserEntity updateData) throws EntityNotFoundException {
 
-        UserEntity loggedUser = getUserByUserAccountId(userAccountId);
+        UserEntity loggedUser = getUserByUserAccountId(accountId);
 
-        if(updateUser.getNickname() != null){
-            loggedUser.setNickname(updateUser.getNickname());
+        if(updateData.getNickname() != null){
+            loggedUser.setNickname(updateData.getNickname());
         }
 
-        if(updateUser.getFirstname() != null){
-            loggedUser.setFirstname(updateUser.getFirstname());
+        if(updateData.getFirstname() != null){
+            loggedUser.setFirstname(updateData.getFirstname());
         }
 
-        if(updateUser.getSurname() != null){
-            loggedUser.setSurname(updateUser.getSurname());
+        if(updateData.getSurname() != null){
+            loggedUser.setSurname(updateData.getSurname());
         }
 
-        if(updateUser.getAvatar() != null){
-            loggedUser.setAvatar(updateUser.getAvatar());
+        if(updateData.getAvatar() != null){
+            loggedUser.setAvatar(updateData.getAvatar());
         }
 
         return loggedUser;

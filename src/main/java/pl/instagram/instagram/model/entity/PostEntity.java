@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -52,19 +53,8 @@ public class PostEntity {
     private UserEntity author;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "POSTS_LIKES",
-        joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false, updatable = false),
-        inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false, updatable = false)
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<UserEntity> likes;
-
-    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<CommentEntity> comments;
+    private Set<CommentEntity> comments;
 }

@@ -248,7 +248,7 @@ public class PostController {
         }
 
         try {
-            postService.updatePostById(postId, postEntity);
+            postService.patchPostById(postId, postEntity);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

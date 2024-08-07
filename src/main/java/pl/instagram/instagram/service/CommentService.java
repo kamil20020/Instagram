@@ -24,77 +24,89 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
 
-    @Override
+    public CommentEntity getById(UUID commentId) throws EntityNotFoundException{
+        return commentRepository.findById(commentId)
+            .orElseThrow(() -> new EntityNotFoundException("Nie istnieje komentarz o takim id"));
+    }
+
     public Page<CommentEntity> getPostCommentsPage(UUID postId, Pageable pageable) throws EntityNotFoundException {
+
+        if(!postService.existsById(postId)){
+            throw new EntityNotFoundException("Nie istnieje post o takim id");
+        }
 
         pageable = PageRequest.of(
             pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").descending()
         );
 
-        if(!postRepository.existsById(postId)){
-            throw new EntityNotFoundException("Nie istnieje post o takim id");
-        }
-
-        return commentRepository.getAllByPostEntityId(postId, pageable);
+        return commentRepository.getAllByPostIdAndParentCommentIsNull(postId, pageable);
     }
 
-    @Override
     public Page<CommentEntity> getSubCommentsPage(UUID parentCommentId, Pageable pageable) throws EntityNotFoundException {
 
-        if(!postRepository.existsById(parentCommentId)){
+        if(!commentRepository.existsById(parentCommentId)){
             throw new EntityNotFoundException("Nie istnieje nadrzędny komentarz o takim id");
         }
+
+        pageable = PageRequest.of(
+            pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").ascending()
+        );
 
         return commentRepository.getAllByParentCommentId(parentCommentId, pageable);
     }
 
-    @Override
-    public CommentEntity createComment(
-        UUID postId,
-        UUID userId,
-        UUID parentCommentId,
-        String content
-    ) throws EntityNotFoundException {
-        
-        PostEntity postEntity = postService.getPostById(postId);
-        UserEntity userEntity = userService.getUserById(userId);
+    @Transactional
+    public CommentEntity createComment(UUID postId, UUID authorId, UUID parentCommentId, String content)
+        throws EntityNotFoundException
+    {
+        PostEntity post = postService.getPostById(postId);
+        UserEntity author = userService.getUserById(authorId);
 
-        CommentEntity toSaveComment =  CommentEntity.builder()
+        CommentEntity newComment = CommentEntity.builder()
             .content(content)
-            .postEntity(postEntity)
-            .userEntity(userEntity)
+            .author(author)
+            .post(post)
             .creationDatetime(LocalDateTime.now())
             .build();
 
+        CommentEntity createdComment;
+
         if(parentCommentId != null) {
-            toSaveComment.setParentComment(
-                commentRepository.findById(parentCommentId).orElseThrow(() ->
+
+            CommentEntity parentComment = commentRepository.findById(parentCommentId)
+                .orElseThrow(() ->
                     new EntityNotFoundException("Nie istnieje nadrzędny komentarz o takim id")
-                )
-            );
+                );
+
+            newComment.setParentComment(parentComment);
+
+            createdComment = commentRepository.save(newComment);
+
+            parentComment.getSubComments().add(createdComment);
+        }
+        else{
+            createdComment = commentRepository.save(newComment);
         }
 
-        return commentRepository.save(toSaveComment);
+        author.getComments().add(createdComment);
+        post.getComments().add(createdComment);
+
+        return createdComment;
     }
 
     @Transactional
-    @Override
     public CommentEntity updateComment(UUID commentId, String newContent) throws EntityNotFoundException {
 
-        CommentEntity foundComment = commentRepository.findById(commentId).orElseThrow(() ->
-            new EntityNotFoundException("Nie istnieje komentarz o takim id")
-        );
+        CommentEntity foundComment = getById(commentId);
 
         foundComment.setContent(newContent);
 
         return foundComment;
     }
 
-    @Override
     public void deleteComment(UUID commentId) throws EntityNotFoundException{
 
         if(!commentRepository.existsById(commentId)){

@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -42,7 +43,7 @@ public class CommentEntity {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<CommentEntity> subComments;
+    private Set<CommentEntity> subComments;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
