@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
@@ -132,5 +133,21 @@ public class UserService {
         }
 
         return loggedUser;
+    }
+
+    @Transactional
+    public UserEntity fillPersonalData(String userAccountId, UserEntity userPersonalData) throws EntityNotFoundException, ConflictException {
+
+        UserEntity foundUser = getUserByUserAccountId(userAccountId);
+
+        if(userRepository.existsByNickname(userPersonalData.getNickname())){
+            throw new ConflictException("Istnieje już użytkownik o takim pseudonimie");
+        }
+
+        foundUser.setFirstname(userPersonalData.getFirstname());
+        foundUser.setSurname(userPersonalData.getSurname());
+        foundUser.setNickname(userPersonalData.getNickname());
+
+        return foundUser;
     }
 }

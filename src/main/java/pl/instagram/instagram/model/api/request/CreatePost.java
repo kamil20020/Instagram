@@ -1,16 +1,16 @@
 package pl.instagram.instagram.model.api.request;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreatePost {
+public record CreatePost (
 
-    private String description;
-    private String img;
-    private boolean areHiddenLikes = false;
-    private boolean areDisabledComments = false;
-}
+    @NotBlank(message = "Opis jest wymagany")
+    String description,
+
+    @NotNull(message = "Zawartość postu nie może być pusta")
+    String content,
+
+    boolean areHiddenLikes,
+    boolean areDisabledComments
+){}

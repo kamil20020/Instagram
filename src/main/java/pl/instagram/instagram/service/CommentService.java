@@ -32,38 +32,33 @@ public class CommentService {
             .orElseThrow(() -> new EntityNotFoundException("Nie istnieje komentarz o takim id"));
     }
 
-    public Page<CommentEntity> getPostCommentsPage(UUID postId, Pageable pageable) throws EntityNotFoundException {
+    public Page<CommentEntity> getPostCommentsPage(UUID postId, UUID parentCommentId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
+
+        if(pageable == null){
+            throw new IllegalArgumentException("Paginacja jest wymagana");
+        }
 
         if(!postService.existsById(postId)){
             throw new EntityNotFoundException("Nie istnieje post o takim id");
+        }
+
+        if(parentCommentId != null && !commentRepository.existsById(parentCommentId)){
+            throw new EntityNotFoundException("Nie istnieje nadrzędny komentarz o takim id");
         }
 
         pageable = PageRequest.of(
             pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").descending()
         );
 
-        return commentRepository.getAllByPostIdAndParentCommentIsNull(postId, pageable);
-    }
-
-    public Page<CommentEntity> getSubCommentsPage(UUID parentCommentId, Pageable pageable) throws EntityNotFoundException {
-
-        if(!commentRepository.existsById(parentCommentId)){
-            throw new EntityNotFoundException("Nie istnieje nadrzędny komentarz o takim id");
-        }
-
-        pageable = PageRequest.of(
-            pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").ascending()
-        );
-
-        return commentRepository.getAllByParentCommentId(parentCommentId, pageable);
+        return commentRepository.getAllByPostIdAndParentCommentId(postId, parentCommentId, pageable);
     }
 
     @Transactional
-    public CommentEntity createComment(UUID postId, UUID authorId, UUID parentCommentId, String content)
+    public CommentEntity createComment(UUID postId, String authorAccountId, UUID parentCommentId, String content)
         throws EntityNotFoundException
     {
         PostEntity post = postService.getPostById(postId);
-        UserEntity author = userService.getUserById(authorId);
+        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
 
         CommentEntity newComment = CommentEntity.builder()
             .content(content)
@@ -84,7 +79,6 @@ public class CommentService {
             newComment.setParentComment(parentComment);
 
             createdComment = commentRepository.save(newComment);
-
             parentComment.getSubComments().add(createdComment);
         }
         else{

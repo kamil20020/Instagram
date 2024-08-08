@@ -2,6 +2,7 @@ package pl.instagram.instagram.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import pl.instagram.instagram.model.api.request.PersonalData;
 import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.UserProfile;
@@ -12,15 +13,16 @@ import java.util.List;
 @Mapper(uses = {ByteArrayMapper.class}, componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
-    UserHeader userEntityToBasicUserData(UserEntity userEntity);
-
-    List<UserHeader> userEntityListToBasicUserDataList(List<UserEntity> userEntityList);
-
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "base64ToByteArray")
     UserEntity updateUserToUserEntity(UpdateUser updateUser);
 
+    UserEntity userPersonalDataToUserEntity(PersonalData personalData);
+
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
-    @Mapping(expression = "java(userEntity.getPostEntityList().size())", target = "numberOfPosts")
+    UserHeader userEntityToUserHeader(UserEntity userEntity);
+
+    @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
     UserProfile userEntityToUserProfileInfo(UserEntity userEntity);
+
+    List<UserHeader> userEntityListToUserHeaderList(List<UserEntity> userEntityList);
 }

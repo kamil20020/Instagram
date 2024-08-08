@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<UserEntity, UUID>, JpaSpecificationExecutor<UserEntity> {
 
     boolean existsByAccountId(String accountId);
+    boolean existsByNickname(String nickname);
     Optional<UserEntity> findByAccountId(String accountId);
     Page<UserEntity> findByLikedPostsId(UUID postId, Pageable pageable);
     boolean existsByIdAndLikedPostsId(UUID userId, UUID postId);

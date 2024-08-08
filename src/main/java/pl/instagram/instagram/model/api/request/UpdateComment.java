@@ -1,13 +1,7 @@
 package pl.instagram.instagram.model.api.request;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class UpdateComment {
-
-    private String content;
-}
+public record UpdateComment(
+    String content
+){}

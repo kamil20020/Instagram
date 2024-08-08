@@ -12,6 +12,7 @@ import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.ByteArrayMapper;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.mapper.UserMapper;
+import pl.instagram.instagram.model.api.request.PersonalData;
 import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.PostHeader;
@@ -31,19 +32,19 @@ import java.util.*;
 public class UserController {
 
     private final UserService userService;
-    private final PostService postService;
 
     private final UserMapper userMapper;
-    private final ByteArrayMapper byteArrayMapper;
     private final UUIDMapper uuidMapper;
 
-    @GetMapping("/{id}")
+    private static final String USER_MAPPER_MESSAGE = "użytkownika";
+
+    @GetMapping("/{id}/header")
     ResponseEntity<UserHeader> getUserHeaderById(@PathVariable("id") String userIdStr){
 
-        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
+        UUID userId = uuidMapper.strToUUID(userIdStr, USER_MAPPER_MESSAGE);
 
         UserEntity foundUser = userService.getUserById(userId);
-        UserHeader foundUserHeader = userMapper.userEntityToBasicUserData(foundUser);
+        UserHeader foundUserHeader = userMapper.userEntityToUserHeader(foundUser);
 
         return ResponseEntity.ok(foundUserHeader);
     }
@@ -51,7 +52,7 @@ public class UserController {
     @GetMapping("/{id}/profile")
     ResponseEntity<UserProfile> getUserProfile(@PathVariable("id") String userIdStr){
 
-        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
+        UUID userId = uuidMapper.strToUUID(userIdStr, USER_MAPPER_MESSAGE);
 
         UserEntity foundUser = userService.getUserById(userId);
         UserProfile foundUserProfile = userMapper.userEntityToUserProfileInfo(foundUser);
@@ -59,28 +60,11 @@ public class UserController {
         return ResponseEntity.ok(foundUserProfile);
     }
 
-
-    @GetMapping("/{id}/posts")
-    ResponseEntity<Page<PostHeader>> getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
-
-        UUID userId = uuidMapper.strToUUID(userIdStr, "użytkownika");
-
-        Page<PostEntity> foundPostsPage = postService.getUserPostsPage(userId, pageable);
-
-        Page<PostHeader> foundPostsHeaders = foundPostsPage.map(post -> PostHeader.builder()
-            .id(post.getId().toString())
-            .img(byteArrayMapper.byteArrayToBase64(post.getContent()))
-            .build()
-        );
-
-        return ResponseEntity.ok(foundPostsHeaders);
-    }
-
-    @GetMapping("/user-account/{userAccountId}")
+    @GetMapping("/user-account/{userAccountId}/header")
     ResponseEntity<UserHeader> getUserHeaderByUserAccountId(@PathVariable("userAccountId") String userAccountId){
 
         UserEntity foundUser = userService.getUserByUserAccountId(userAccountId);
-        UserHeader userHeader = userMapper.userEntityToBasicUserData(foundUser);
+        UserHeader userHeader = userMapper.userEntityToUserHeader(foundUser);
 
         return ResponseEntity.ok(userHeader);
     }
@@ -89,19 +73,19 @@ public class UserController {
     ResponseEntity<List<UserHeader>> getUsersByIds(@RequestParam(name = "ids") String[] idsArr) {
 
         List<String> idsList = Arrays.asList(idsArr);
-        List<UUID> ids = uuidMapper.strListToUUIDList(idsList, "użytkownika");
+        List<UUID> ids = uuidMapper.strListToUUIDList(idsList, USER_MAPPER_MESSAGE);
 
         List<UserEntity> foundUsers = userService.getUsersByIds(ids);
-        List<UserHeader> foundUsersHeaders = userMapper.userEntityListToBasicUserDataList(foundUsers);
+        List<UserHeader> foundUsersHeaders = userMapper.userEntityListToUserHeaderList(foundUsers);
 
         return ResponseEntity.ok(foundUsersHeaders);
     }
 
     @GetMapping
-    ResponseEntity<Page<UserHeader>> searchUser(@RequestParam(name = "phrase") String phrase, Pageable pageable){
+    ResponseEntity<Page<UserHeader>> searchUsers(@RequestParam(name = "phrase") String phrase, Pageable pageable){
 
         Page<UserEntity> foundUsers = userService.searchUsers(phrase, pageable);
-        Page<UserHeader> foundUsersHeaders = foundUsers.map(userMapper::userEntityToBasicUserData);
+        Page<UserHeader> foundUsersHeaders = foundUsers.map(userMapper::userEntityToUserHeader);
 
         return ResponseEntity.ok(foundUsersHeaders);
     }
@@ -115,15 +99,27 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUserIdStr);
     }
 
-    @PatchMapping("/basic")
-    ResponseEntity<UserHeader> patchLoggedUserBasic(Principal principal, @RequestBody UpdateUser updateRequest){
+    @PostMapping("/fill-personal-data")
+    ResponseEntity<UserHeader> fillPersonalData(@Valid @RequestBody PersonalData personalData, Principal principal){
 
-        String userAccountId = principal.getName();
+        String loggedUserAccountId = principal.getName();
+        UserEntity userPersonalData = userMapper.userPersonalDataToUserEntity(personalData);
+
+        UserEntity updatedUser = userService.fillPersonalData(loggedUserAccountId, userPersonalData);
+        UserHeader updatedUserHeader = userMapper.userEntityToUserHeader(updatedUser);
+
+        return ResponseEntity.ok(updatedUserHeader);
+    }
+
+    @PatchMapping
+    ResponseEntity<UserHeader> patchLoggedUser(@RequestBody UpdateUser updateRequest, Principal principal){
+
+        String loggedUserAccountId = principal.getName();
 
         UserEntity updateUser = userMapper.updateUserToUserEntity(updateRequest);
 
-        UserEntity patchedUser = userService.patchUser(userAccountId, updateUser);
-        UserHeader patchedUserHeader = userMapper.userEntityToBasicUserData(patchedUser);
+        UserEntity patchedUser = userService.patchUser(loggedUserAccountId, updateUser);
+        UserHeader patchedUserHeader = userMapper.userEntityToUserHeader(patchedUser);
 
         return ResponseEntity.ok(patchedUserHeader);
     }

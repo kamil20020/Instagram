@@ -12,7 +12,6 @@ import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
-import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -55,9 +54,9 @@ public class PostService {
     }
 
     @Transactional
-    public PostEntity createPost(UUID authorId, PostEntity postData) throws EntityNotFoundException{
+    public PostEntity createPost(String authorAccountId, PostEntity postData) throws EntityNotFoundException{
 
-        UserEntity author = userService.getUserById(authorId);
+        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
 
         PostEntity newPost = PostEntity.builder()
             .creationDatetime(LocalDateTime.now())
@@ -69,13 +68,13 @@ public class PostService {
             .build();
 
         author.getPosts().add(newPost);
+        author.setNumberOfPosts(author.getNumberOfPosts() + 1);
 
         return postRepository.save(newPost);
     }
 
-
     @Transactional
-    public void patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException {
+    public PostEntity patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException {
 
         PostEntity foundPost = getPostById(postId);
 
@@ -90,6 +89,8 @@ public class PostService {
         if(updateData.isAreDisabledComments()){
             updateData.setAreDisabledComments(updateData.isAreDisabledComments());
         }
+
+        return foundPost;
     }
 
     public void deletePostById(UUID postId) throws EntityNotFoundException {

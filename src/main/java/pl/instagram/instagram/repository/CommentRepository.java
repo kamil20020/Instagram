@@ -12,6 +12,5 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, UUID> {
 
-    Page<CommentEntity> getAllByPostIdAndParentCommentIsNull(UUID postId, Pageable pageable);
-    Page<CommentEntity> getAllByParentCommentId(UUID parentCommentId, Pageable pageable);
+    Page<CommentEntity> getAllByPostIdAndParentCommentId(UUID postId, UUID parentCommentId, Pageable pageable);
 }

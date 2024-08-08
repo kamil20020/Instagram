@@ -48,6 +48,9 @@ public class PostEntity {
     @Column(name = "likes_count", nullable = false)
     private Integer likesCount = 0;
 
+    @Column(name = "comments_count", nullable = false)
+    private Integer commentsCount = 0;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "author_id", nullable = false, updatable = false)
     private UserEntity author;
