@@ -26,27 +26,27 @@ public class LoadDatabase {
             //userRepository.deleteAll();
             //postRepository.deleteAll();
 
-            UserEntity u1 = UserEntity.builder()
-                .userAccountId("kamil")
-                .nickname("kamil_dywan")
-                .firstname("Kamil")
-                .surname("Dywan")
-                .creationDatetime(LocalDateTime.now())
-                .followers(0)
-                .followings(0)
-                .numberOfPosts(0)
-                .build();
-
-            UserEntity u2 = UserEntity.builder()
-                .userAccountId("michal")
-                .nickname("michal_nowak")
-                .firstname("Michał")
-                .surname("Nowak")
-                .creationDatetime(LocalDateTime.now())
-                .followers(0)
-                .followings(0)
-                .numberOfPosts(0)
-                .build();
+//            UserEntity u1 = UserEntity.builder()
+//                .userAccountId("kamil")
+//                .nickname("kamil_dywan")
+//                .firstname("Kamil")
+//                .surname("Dywan")
+//                .creationDatetime(LocalDateTime.now())
+//                .followers(0)
+//                .followings(0)
+//                .numberOfPosts(0)
+//                .build();
+//
+//            UserEntity u2 = UserEntity.builder()
+//                .userAccountId("michal")
+//                .nickname("michal_nowak")
+//                .firstname("Michał")
+//                .surname("Nowak")
+//                .creationDatetime(LocalDateTime.now())
+//                .followers(0)
+//                .followings(0)
+//                .numberOfPosts(0)
+//                .build();
 
             //log.info("Preloading " + userRepository.save(u1));
             //log.info("Preloading " + userRepository.save(u2));

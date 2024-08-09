@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS COMMENTS (
     CONSTRAINT fk_comments_parent_comment FOREIGN KEY (parent_comment_id) REFERENCES COMMENTS(comment_id)
 );
 
-CREATE IF NOT EXISTS ix_comments_parent_comment_id ON COMMENTS (parent_comment_id);
-CREATE IF NOT EXISTS INDEX ix_comments_creation_datetime ON COMMENTS (creation_datetime);
+CREATE INDEX IF NOT EXISTS ix_comments_parent_comment_id ON COMMENTS (parent_comment_id);
+CREATE INDEX IF NOT EXISTS ix_comments_creation_datetime ON COMMENTS (creation_datetime);

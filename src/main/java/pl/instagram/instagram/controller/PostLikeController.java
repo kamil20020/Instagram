@@ -8,8 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.mapper.UUIDMapper;
+import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.response.BasicPostLikeData;
 import pl.instagram.instagram.model.api.response.UserHeader;
+import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.service.PostLikeService;
 
 import java.security.Principal;
 import java.util.UUID;
@@ -20,92 +24,45 @@ import java.util.UUID;
 @RequestMapping("/posts")
 public class PostLikeController {
 
+    private final PostLikeService postLikeService;
+
+    private final UserMapper userMapper;
+    private final UUIDMapper uuidMapper;
+
+    private static final String POST_MAPPER_MESSAGE = "post";
+
     @GetMapping("/{id}/likes")
-    ResponseEntity getPostLikesPage(@PathVariable("id") String postIdStr, Pageable pageable) {
+    ResponseEntity<Page<UserHeader>> getPostLikesPage(@PathVariable("id") String postIdStr, Pageable pageable) {
 
-        if(pageable == null){
-            pageable = Pageable.unpaged();
-        }
+        UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);
 
-        UUID postId;
+        Page<UserEntity> foundPostLikesUsers = postLikeService.getPostLikes(postId, pageable);
+        Page<UserHeader> foundPostsLikesUsersHeaders = foundPostLikesUsers.map(userMapper::userEntityToUserHeader);
 
-        try {
-            postId = UUID.fromString(postIdStr);
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
-        }
-
-        Page<PostLikeEntity> foundPostLikesPage;
-
-        try {
-            foundPostLikesPage = postLikeService.getPostLikes(postId, pageable);
-        }
-        catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
-        Page<UserHeader> likedByPage = foundPostLikesPage.map(l ->
-                userMapper.userEntityToBasicUserData(l.getUserEntity())
-        );
-
-        return ResponseEntity.ok(likedByPage);
+        return ResponseEntity.ok(foundPostsLikesUsersHeaders);
     }
 
     @PostMapping("/{id}/likes")
-    ResponseEntity createPostLike(@PathVariable("id") String postIdStr, Principal principal){
+    ResponseEntity<UserHeader> createPostLike(@PathVariable("id") String postIdStr, Principal principal){
 
-        String userAccountId = principal.getName();
+        String loggedUserAccountId = principal.getName();
 
-        UUID postId;
+        UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);
 
-        try {
-            postId = UUID.fromString(postIdStr);
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niepoprawne id posta");
-        }
+        UserEntity likeAuthor = postLikeService.addLike(postId, loggedUserAccountId);
+        UserHeader likeAuthorHeader = userMapper.userEntityToUserHeader(likeAuthor);
 
-        PostLikeEntity createdLike;
-
-        try{
-            UUID foundLoggedUserId = userService.getUserIdByUserAccountId(userAccountId);
-            createdLike = postLikeService.addLike(postId, foundLoggedUserId);
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch(EntityExistsException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-
-        UserHeader likeAuthorBasicData = userMapper.userEntityToBasicUserData(createdLike.getUserEntity());
-        BasicPostLikeData basicPostLikeData = BasicPostLikeData.builder()
-                .id(createdLike.getId().toString())
-                .user(likeAuthorBasicData)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(basicPostLikeData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(likeAuthorHeader);
     }
 
     @DeleteMapping("/likes/{id}")
-    ResponseEntity deletePostLike(@PathVariable("id") String postLikeIdStr){
+    ResponseEntity<Void> deletePostLike(@PathVariable("id") String postLikeIdStr, Principal principal){
 
-        UUID postLikeId;
+        String loggedUserAccountId = principal.getName();
 
-        try{
-            postLikeId = UUID.fromString(postLikeIdStr);
-        }
-        catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Podano niewłaściwy identyfikator like posta");
-        }
+        UUID postLikeId = uuidMapper.strToUUID(postLikeIdStr, POST_MAPPER_MESSAGE);
 
-        try{
-            postLikeService.removeLike(postLikeId);
-        }
-        catch(EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        postLikeService.removeLike(postLikeId, loggedUserAccountId);
 
         return ResponseEntity.noContent().build();
     }

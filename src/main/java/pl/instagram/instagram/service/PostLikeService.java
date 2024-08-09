@@ -26,7 +26,11 @@ public class PostLikeService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Page<UserEntity> getPostLikes(UUID postId, Pageable pageable) throws EntityNotFoundException {
+    public Page<UserEntity> getPostLikes(UUID postId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
+
+        if(pageable == null){
+            throw new IllegalArgumentException("Paginacja jest wymagana");
+        }
 
         if(!postService.existsById(postId)){
             throw new EntityNotFoundException("Nie istnieje post o takim id");
@@ -40,12 +44,12 @@ public class PostLikeService {
     }
 
     @Transactional
-    public UserEntity addLike(UUID postId, UUID authorId) throws EntityNotFoundException, EntityExistsException {
+    public UserEntity addLike(UUID postId, String authorAccountId) throws EntityNotFoundException, EntityExistsException {
 
         PostEntity post = postService.getPostById(postId);
-        UserEntity author = userService.getUserById(authorId);
+        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
 
-        if(userRepository.existsByIdAndLikedPostsId(authorId, postId)){
+        if(userRepository.existsByIdAndLikedPostsId(author.getId(), postId)){
             throw new EntityExistsException("Istnieje już polubienie posta o takich id posta i użytkownika");
         }
 
@@ -56,12 +60,12 @@ public class PostLikeService {
     }
 
     @Transactional
-    public void removeLike(UUID postId, UUID authorId) throws EntityNotFoundException {
+    public void removeLike(UUID postId, String authorAccountId) throws EntityNotFoundException {
 
         PostEntity post = postService.getPostById(postId);
-        UserEntity author = userService.getUserById(authorId);
+        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
 
-        if(!userRepository.existsByIdAndLikedPostsId(authorId, postId)){
+        if(!userRepository.existsByIdAndLikedPostsId(author.getId(), postId)){
             throw new EntityNotFoundException("Nie istnieje polubienie posta o takich id użytkownika i posta");
         }
 

@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS POSTS (
     CONSTRAINT fk_posts_author FOREIGN KEY (author_id) REFERENCES USERS(user_id)
 );
 
-CREATE IF NOT EXISTS INDEX ix_posts_author_id ON POSTS (author_id);
-CREATE IF NOT EXISTS INDEX ix_posts_creation_datetime ON POSTS (creation_datetime);
+CREATE INDEX IF NOT EXISTS ix_posts_author_id ON POSTS (author_id);
+CREATE INDEX IF NOT EXISTS ix_posts_creation_datetime ON POSTS (creation_datetime);
