@@ -60,13 +60,13 @@ public class UserEntity {
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate = false;
 
-    @Column(name = "followers", nullable = false)
+    @Column(name = "followers_count", nullable = false)
     private Integer followers = 0;
 
-    @Column(name = "followings", nullable = false)
+    @Column(name = "followings_count", nullable = false)
     private Integer followings = 0;
 
-    @Column(name = "number_of_posts", nullable = false)
+    @Column(name = "posts_count", nullable = false)
     private Integer numberOfPosts = 0;
 
     @JsonIgnore

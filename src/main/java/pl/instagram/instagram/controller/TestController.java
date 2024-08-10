@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
-    private final JavaMailSender mailSender;
-
     @GetMapping(value = "/public")
     public String publicEndpoint() {
         return "All good. You DO NOT need to be authenticated to call /api/public.";

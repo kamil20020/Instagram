@@ -39,6 +39,9 @@ public class CommentEntity {
     @Column(name = "likes_count", nullable = false)
     private Integer likesCount = 0;
 
+    @Column(name = "sub_comments_count", nullable = false)
+    private Integer subCommentsCount = 0;
+
     @JsonIgnore
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude

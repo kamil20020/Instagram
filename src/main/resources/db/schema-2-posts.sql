@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS POSTS (
     content BYTEA NOT NULL,
     are_hidden_likes BOOLEAN NOT NULL DEFAULT FALSE,
     are_disabled_comments BOOLEAN NOT NULL DEFAULT FALSE,
-    likes_count INT NOT NULL DEFAULT 0 CHECK (likes_count > 0),
-    comments_count INT NOT NULL DEFAULT 0 CHECK (comments_count > 0),
+    likes_count INT NOT NULL DEFAULT 0 CHECK (likes_count >= 0),
+    comments_count INT NOT NULL DEFAULT 0 CHECK (comments_count >= 0),
     CONSTRAINT fk_posts_author FOREIGN KEY (author_id) REFERENCES USERS(user_id)
 );
 
