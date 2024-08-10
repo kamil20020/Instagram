@@ -1,0 +1,55 @@
+databaseChangeLog:
+- changeSet:
+    id: 1723330075835-1
+    author: Kamil (generated)
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: comments_likes
+        constraintName: fk_comments_likes_author
+- changeSet:
+    id: 1723330075835-2
+    author: Kamil (generated)
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: comments_likes
+        constraintName: fk_comments_likes_comment
+- changeSet:
+    id: 1723330075835-3
+    author: Kamil (generated)
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: comments
+        constraintName: fk_comments_parent_comment
+- changeSet:
+    id: 1723330075835-4
+    author: Kamil (generated)
+    changes:
+    - dropTable:
+        tableName: comments_likes
+- changeSet:
+    id: 1723330075835-5
+    author: Kamil (generated)
+    changes:
+    - dropTable:
+        tableName: databasechangelog
+- changeSet:
+    id: 1723330075835-6
+    author: Kamil (generated)
+    changes:
+    - dropTable:
+        tableName: databasechangeloglock
+- changeSet:
+    id: 1723330075835-7
+    author: Kamil (generated)
+    changes:
+    - dropColumn:
+        columnName: comment_id
+        tableName: comments
+- changeSet:
+    id: 1723330075835-8
+    author: Kamil (generated)
+    changes:
+    - dropColumn:
+        columnName: post_like_id
+        tableName: posts_likes
+
