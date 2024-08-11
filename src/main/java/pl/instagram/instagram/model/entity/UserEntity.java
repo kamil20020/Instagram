@@ -29,19 +29,19 @@ public class UserEntity {
     @Column(name="user_id", updatable = false)
     private UUID Id;
 
-    @Column(name = "account_id", nullable = false)
+    @Column(name = "account_id", nullable = false, length = 50)
     private String accountId;
 
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "firstname")
+    @Column(name = "firstname", length = 50)
     private String firstname;
 
-    @Column(name = "surname")
+    @Column(name = "surname", length = 50)
     private String surname;
 
-    @Column(name = "tel")
+    @Column(name = "tel", length = 15)
     private String tel;
 
     @Column(name = "avatar")

@@ -7,5 +7,5 @@ mvn liquibase:generateChangeLog -Dliquibase.outputChangeLogFile=src/main/resourc
 
 Liquibase generate diff changelog:
 ```console
-mvn clean install liquibase:diff -DskipTests=true
+mvn liquibase:diff
 ```

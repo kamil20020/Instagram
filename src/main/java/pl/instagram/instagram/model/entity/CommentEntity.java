@@ -49,7 +49,7 @@ public class CommentEntity {
     private Set<CommentEntity> subComments;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id", updatable = false)
     private CommentEntity parentComment;
 

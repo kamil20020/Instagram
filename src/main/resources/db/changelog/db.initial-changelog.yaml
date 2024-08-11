@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1723317314014-1
+      id: 1723398576553-1
       author: Kamil (generated)
       changes:
         - createTable:
@@ -72,7 +72,7 @@ databaseChangeLog:
                   type: INTEGER
             tableName: users
   - changeSet:
-      id: 1723317314014-2
+      id: 1723398576553-2
       author: Kamil (generated)
       changes:
         - createTable:
@@ -128,7 +128,7 @@ databaseChangeLog:
                   type: INTEGER
             tableName: posts
   - changeSet:
-      id: 1723317314014-3
+      id: 1723398576553-3
       author: Kamil (generated)
       changes:
         - createTable:
@@ -177,7 +177,7 @@ databaseChangeLog:
                   type: INTEGER
             tableName: comments
   - changeSet:
-      id: 1723317314014-4
+      id: 1723398576553-4
       author: Kamil (generated)
       changes:
         - addUniqueConstraint:
@@ -185,7 +185,7 @@ databaseChangeLog:
             constraintName: uq_users_account_id
             tableName: users
   - changeSet:
-      id: 1723317314014-5
+      id: 1723398576553-5
       author: Kamil (generated)
       changes:
         - addUniqueConstraint:
@@ -193,7 +193,7 @@ databaseChangeLog:
             constraintName: uq_users_nickname
             tableName: users
   - changeSet:
-      id: 1723317314014-6
+      id: 1723398576553-6
       author: Kamil (generated)
       changes:
         - createIndex:
@@ -203,7 +203,7 @@ databaseChangeLog:
             indexName: ix_posts_author_id
             tableName: posts
   - changeSet:
-      id: 1723317314014-7
+      id: 1723398576553-7
       author: Kamil (generated)
       changes:
         - createIndex:
@@ -213,7 +213,7 @@ databaseChangeLog:
             indexName: ix_posts_creation_datetime
             tableName: posts
   - changeSet:
-      id: 1723317314014-8
+      id: 1723398576553-8
       author: Kamil (generated)
       changes:
         - createIndex:
@@ -223,7 +223,7 @@ databaseChangeLog:
             indexName: ix_comments_parent_comment_id
             tableName: comments
   - changeSet:
-      id: 1723317314014-9
+      id: 1723398576553-9
       author: Kamil (generated)
       changes:
         - createIndex:
@@ -233,7 +233,7 @@ databaseChangeLog:
             indexName: ix_comments_creation_datetime
             tableName: comments
   - changeSet:
-      id: 1723317314014-10
+      id: 1723398576553-10
       author: Kamil (generated)
       changes:
         - createTable:
@@ -257,7 +257,7 @@ databaseChangeLog:
                   type: UUID
             tableName: comments_likes
   - changeSet:
-      id: 1723317314014-11
+      id: 1723398576553-11
       author: Kamil (generated)
       changes:
         - createTable:
@@ -266,22 +266,19 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: posts_likes_pkey
-                  name: post_like_id
-                  type: UUID
-              - column:
-                  constraints:
-                    nullable: false
+                    primaryKeyName: posts_likespk
                   name: author_id
                   type: UUID
               - column:
                   constraints:
                     nullable: false
+                    primaryKey: true
+                    primaryKeyName: posts_likespk
                   name: post_id
                   type: UUID
             tableName: posts_likes
   - changeSet:
-      id: 1723317314014-12
+      id: 1723398576553-12
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -296,7 +293,7 @@ databaseChangeLog:
             referencedTableName: users
             validate: true
   - changeSet:
-      id: 1723317314014-13
+      id: 1723398576553-13
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -311,7 +308,7 @@ databaseChangeLog:
             referencedTableName: users
             validate: true
   - changeSet:
-      id: 1723317314014-14
+      id: 1723398576553-14
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -326,7 +323,7 @@ databaseChangeLog:
             referencedTableName: comments
             validate: true
   - changeSet:
-      id: 1723317314014-15
+      id: 1723398576553-15
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -341,7 +338,7 @@ databaseChangeLog:
             referencedTableName: comments
             validate: true
   - changeSet:
-      id: 1723317314014-16
+      id: 1723398576553-16
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -356,7 +353,7 @@ databaseChangeLog:
             referencedTableName: posts
             validate: true
   - changeSet:
-      id: 1723317314014-17
+      id: 1723398576553-17
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -371,7 +368,7 @@ databaseChangeLog:
             referencedTableName: users
             validate: true
   - changeSet:
-      id: 1723317314014-18
+      id: 1723398576553-18
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -386,7 +383,7 @@ databaseChangeLog:
             referencedTableName: users
             validate: true
   - changeSet:
-      id: 1723317314014-19
+      id: 1723398576553-19
       author: Kamil (generated)
       changes:
         - addForeignKeyConstraint:
@@ -400,4 +397,3 @@ databaseChangeLog:
             referencedColumnNames: post_id
             referencedTableName: posts
             validate: true
-

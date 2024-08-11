@@ -18,7 +18,7 @@
 		<springboot.version>${project.parent.version}</springboot.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
-		<org.liquibase.version>4.29.1</org.liquibase.version>
+		<org.liquibase.version>4.27.0</org.liquibase.version>
 		<maven.build.timestamp.format>dd-MM-yyyy_HH-mm-ss</maven.build.timestamp.format>
 	</properties>
 	<dependencies>
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
+			<version>42.6.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -151,9 +151,9 @@
 						<version>${springboot.version}</version>
 					</dependency>
 					<dependency>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-starter-validation</artifactId>
-						<version>${springboot.version}</version>
+						<groupId>org.hibernate.validator</groupId>
+						<artifactId>hibernate-validator</artifactId>
+						<version>8.0.1.Final</version>
 					</dependency>
 				</dependencies>
 				<configuration>

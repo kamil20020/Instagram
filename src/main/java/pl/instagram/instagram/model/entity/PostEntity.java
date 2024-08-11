@@ -36,7 +36,7 @@ public class PostEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private byte[] content;
 
     @Column(name = "are_hidden_likes", nullable = false)
