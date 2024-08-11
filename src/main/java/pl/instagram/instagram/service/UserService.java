@@ -5,16 +5,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static org.springframework.data.jpa.domain.Specification.*;
 import static pl.instagram.instagram.specification.UserSpecification.*;
@@ -25,6 +32,14 @@ import static pl.instagram.instagram.specification.UserSpecification.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
+
+    public UserEntity getLoggedUser() throws UserIsNotResourceAuthorException, EntityNotFoundException {
+
+        String loggedUserAccountId = authService.getLoggedUserAccountId();
+
+        return getUserByUserAccountId(loggedUserAccountId);
+    }
 
     public boolean existsById(UUID id){
         return userRepository.existsById(id);
@@ -112,11 +127,16 @@ public class UserService {
 
 
     @Transactional
-    public UserEntity patchUser(String accountId, UserEntity updateData) throws EntityNotFoundException {
+    public UserEntity patchUser(UserEntity updateData) throws UserIsNotResourceAuthorException, EntityNotFoundException, ConflictException {
 
-        UserEntity loggedUser = getUserByUserAccountId(accountId);
+        UserEntity loggedUser = getLoggedUser();
 
         if(updateData.getNickname() != null){
+
+            if(userRepository.existsByNickname(updateData.getNickname())){
+                throw new ConflictException("Istnieje już użytkownik o takim pseudonimie");
+            }
+
             loggedUser.setNickname(updateData.getNickname());
         }
 
@@ -136,18 +156,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity fillPersonalData(String userAccountId, UserEntity userPersonalData) throws EntityNotFoundException, ConflictException {
+    public UserEntity fillPersonalData(UserEntity userPersonalData) throws UserIsNotResourceAuthorException, EntityNotFoundException, ConflictException {
 
-        UserEntity foundUser = getUserByUserAccountId(userAccountId);
+        UserEntity loggedUser = getLoggedUser();
 
         if(userRepository.existsByNickname(userPersonalData.getNickname())){
             throw new ConflictException("Istnieje już użytkownik o takim pseudonimie");
         }
 
-        foundUser.setFirstname(userPersonalData.getFirstname());
-        foundUser.setSurname(userPersonalData.getSurname());
-        foundUser.setNickname(userPersonalData.getNickname());
+        loggedUser.setFirstname(userPersonalData.getFirstname());
+        loggedUser.setSurname(userPersonalData.getSurname());
+        loggedUser.setNickname(userPersonalData.getNickname());
 
-        return foundUser;
+        return loggedUser;
     }
 }

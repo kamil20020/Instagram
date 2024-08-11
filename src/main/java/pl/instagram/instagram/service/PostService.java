@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
@@ -23,6 +25,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final AuthService authService;
 
     public boolean existsById(UUID id){
         return postRepository.existsById(id);
@@ -54,9 +57,9 @@ public class PostService {
     }
 
     @Transactional
-    public PostEntity createPost(String authorAccountId, PostEntity postData) throws EntityNotFoundException{
+    public PostEntity createPost(PostEntity postData) throws UserIsNotResourceAuthorException, EntityNotFoundException{
 
-        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
+        UserEntity loggedUser = userService.getLoggedUser();
 
         PostEntity newPost = PostEntity.builder()
             .creationDatetime(LocalDateTime.now())
@@ -64,19 +67,21 @@ public class PostService {
             .content(postData.getContent())
             .areHiddenLikes(postData.isAreHiddenLikes())
             .areDisabledComments(postData.isAreDisabledComments())
-            .author(author)
+            .author(loggedUser)
             .build();
 
-        author.getPosts().add(newPost);
-        author.setNumberOfPosts(author.getNumberOfPosts() + 1);
+        loggedUser.getPosts().add(newPost);
+        loggedUser.setNumberOfPosts(loggedUser.getNumberOfPosts() + 1);
 
         return postRepository.save(newPost);
     }
 
     @Transactional
-    public PostEntity patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException {
+    public PostEntity patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
         PostEntity foundPost = getPostById(postId);
+
+        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthor_AccountId);
 
         if(updateData.getDescription() != null){
             foundPost.setDescription(updateData.getDescription());
@@ -93,11 +98,13 @@ public class PostService {
         return foundPost;
     }
 
-    public void deletePostById(UUID postId) throws EntityNotFoundException {
+    public void deletePostById(UUID postId) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
         if(!postRepository.existsById(postId)){
             throw new EntityNotFoundException("Nie istnieje post o takim id");
         }
+
+        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthor_AccountId);
 
         postRepository.deleteById(postId);
     }

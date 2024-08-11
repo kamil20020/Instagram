@@ -100,25 +100,22 @@ public class UserController {
     }
 
     @PostMapping("/fill-personal-data")
-    ResponseEntity<UserHeader> fillPersonalData(@Valid @RequestBody PersonalData personalData, Principal principal){
+    ResponseEntity<UserHeader> fillPersonalData(@Valid @RequestBody PersonalData personalData){
 
-        String loggedUserAccountId = principal.getName();
         UserEntity userPersonalData = userMapper.userPersonalDataToUserEntity(personalData);
 
-        UserEntity updatedUser = userService.fillPersonalData(loggedUserAccountId, userPersonalData);
+        UserEntity updatedUser = userService.fillPersonalData(userPersonalData);
         UserHeader updatedUserHeader = userMapper.userEntityToUserHeader(updatedUser);
 
         return ResponseEntity.ok(updatedUserHeader);
     }
 
     @PatchMapping
-    ResponseEntity<UserHeader> patchLoggedUser(@RequestBody UpdateUser updateRequest, Principal principal){
-
-        String loggedUserAccountId = principal.getName();
+    ResponseEntity<UserHeader> patchLoggedUser(@RequestBody UpdateUser updateRequest){
 
         UserEntity updateUser = userMapper.updateUserToUserEntity(updateRequest);
 
-        UserEntity patchedUser = userService.patchUser(loggedUserAccountId, updateUser);
+        UserEntity patchedUser = userService.patchUser(updateUser);
         UserHeader patchedUserHeader = userMapper.userEntityToUserHeader(patchedUser);
 
         return ResponseEntity.ok(patchedUserHeader);

@@ -83,6 +83,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(response);
     }
 
+    @ExceptionHandler(value = {UserIsNotResourceAuthorException.class})
+    public ResponseEntity<ExceptionResponse> handleUserIsNotResourceAuthorException(UserIsNotResourceAuthorException e){
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ExceptionResponse response = new ExceptionResponse(
+                status,
+                e.getMessage(),
+                OffsetDateTime.now()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ExceptionResponse> defaultExceptionHandler(Exception e){
 

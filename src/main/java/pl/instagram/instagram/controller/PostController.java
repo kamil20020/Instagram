@@ -61,12 +61,11 @@ public class PostController {
     }
 
     @PostMapping
-    ResponseEntity<PostDetails> createPost(@Valid @RequestBody CreatePost createPost, Principal principal){
+    ResponseEntity<PostDetails> createPost(@Valid @RequestBody CreatePost createPost){
 
-        String loggedUserAccountId = principal.getName();
         PostEntity toCreatePost = postMapper.createPostToPostEntity(createPost);
 
-        PostEntity createdPost = postService.createPost(loggedUserAccountId, toCreatePost);
+        PostEntity createdPost = postService.createPost(toCreatePost);
         PostDetails postDetails = postMapper.postEntityToPostDetails(createdPost);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postDetails);
