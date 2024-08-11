@@ -23,12 +23,19 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
     * Spring Boot,
     * Spring Data JPA,
     * Spring Security,
+	* Spring Cloud (docelowo),
+	* Liquibase,
+	* REST Assured (docelowo),
+	* Testcontainers (docelowo).
  * Baza danych - PostgreSQL,
  * Ogólne:
-    * Kominikacja i architektura - REST,
+    * Kominikacja - REST,
+	* Architektura - mikroserwisy (osobno podstawowe funkcje instagrama i komunikator)
     * Zewnętrzny serwer uwierzytelniający - Auth0.
  * Wdrożenie:
     * Docker,
     * Repozytorium obrazów dockerowych - Docker Hub,
+	* Broker wiadomości - Kafka (docelowo),
+	* CI/CD - GitHub Actions (docelowo) i ArgoCD (docelowo)
     * Orkiestracja - Kubernetes,
-    * Chmura - docelowo Azure.
+    * Chmura - Azure AKS (docelowo).
