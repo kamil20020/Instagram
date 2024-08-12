@@ -78,8 +78,8 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "POSTS_LIKES",
-        joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false, updatable = false),
-        inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false, updatable = false)
+        joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
