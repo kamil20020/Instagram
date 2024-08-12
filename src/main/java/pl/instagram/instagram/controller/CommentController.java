@@ -1,13 +1,11 @@
 package pl.instagram.instagram.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.CommentMapper;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.model.api.request.CreateComment;
@@ -16,7 +14,6 @@ import pl.instagram.instagram.model.api.response.CommentData;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.service.CommentService;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -36,7 +33,6 @@ public class CommentController {
     ResponseEntity<Page<CommentData>> getPostCommentsPage(
         @PathVariable("id") String postIdStr, @RequestParam(required = false) String parentCommentIdStr, Pageable pageable
     ){
-
         UUID postId = uuidMapper.strToUUID(postIdStr, COMMENT_MAPPER_MESSAGE);
         UUID parentCommentId = null;
 
@@ -53,16 +49,12 @@ public class CommentController {
     @PostMapping("/{id}/comments")
     ResponseEntity<CommentData> createPostComment(
         @PathVariable("id") String postIdStr,
-        @RequestBody CreateComment createComment,
-        Principal principal
+        @RequestBody CreateComment createComment
     ){
-        String loggedUserAccountId = principal.getName();
-
         UUID postId = uuidMapper.strToUUID(postIdStr, COMMENT_MAPPER_MESSAGE);
 
         CommentEntity createdComment = commentService.createComment(
             postId,
-            loggedUserAccountId,
             createComment.parentCommentId(),
             createComment.content()
         );

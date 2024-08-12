@@ -5,23 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
-import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
-import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import static org.springframework.data.jpa.domain.Specification.*;
 import static pl.instagram.instagram.specification.UserSpecification.*;
@@ -34,15 +26,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    public UserEntity getLoggedUser() throws UserIsNotResourceAuthorException, EntityNotFoundException {
+    public boolean existsById(UUID id){
+        return userRepository.existsById(id);
+    }
+
+    public UserEntity getLoggedUser() throws EntityNotFoundException {
 
         String loggedUserAccountId = authService.getLoggedUserAccountId();
 
         return getUserByUserAccountId(loggedUserAccountId);
-    }
-
-    public boolean existsById(UUID id){
-        return userRepository.existsById(id);
     }
 
     public UserEntity getUserById(UUID id) throws EntityNotFoundException {
@@ -50,10 +42,6 @@ public class UserService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id")
             );
-    }
-
-    public UUID getUserIdByUserAccountId(String accountId) throws EntityNotFoundException {
-        return getUserByUserAccountId(accountId).getId();
     }
 
     public UserEntity getUserByUserAccountId(String accountId) throws EntityNotFoundException {
@@ -127,7 +115,7 @@ public class UserService {
 
 
     @Transactional
-    public UserEntity patchUser(UserEntity updateData) throws UserIsNotResourceAuthorException, EntityNotFoundException, ConflictException {
+    public UserEntity patchUser(UserEntity updateData) throws EntityNotFoundException, ConflictException {
 
         UserEntity loggedUser = getLoggedUser();
 
@@ -156,7 +144,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity fillPersonalData(UserEntity userPersonalData) throws UserIsNotResourceAuthorException, EntityNotFoundException, ConflictException {
+    public UserEntity fillPersonalData(UserEntity userPersonalData) throws EntityNotFoundException, ConflictException {
 
         UserEntity loggedUser = getLoggedUser();
 

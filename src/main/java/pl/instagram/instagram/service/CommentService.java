@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.CommentRepository;
-import pl.instagram.instagram.repository.PostRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,6 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final UserService userService;
+    private final AuthService authService;
 
     public CommentEntity getById(UUID commentId) throws EntityNotFoundException{
         return commentRepository.findById(commentId)
@@ -54,15 +55,14 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentEntity createComment(UUID postId, String authorAccountId, UUID parentCommentId, String content)
-        throws EntityNotFoundException
-    {
+    public CommentEntity createComment(UUID postId, UUID parentCommentId, String content) throws EntityNotFoundException {
+
         PostEntity post = postService.getPostById(postId);
-        UserEntity author = userService.getUserByUserAccountId(authorAccountId);
+        UserEntity loggedUser = userService.getLoggedUser();
 
         CommentEntity newComment = CommentEntity.builder()
             .content(content)
-            .author(author)
+            .author(loggedUser)
             .post(post)
             .creationDatetime(LocalDateTime.now())
             .build();
@@ -85,27 +85,31 @@ public class CommentService {
             createdComment = commentRepository.save(newComment);
         }
 
-        author.getComments().add(createdComment);
+        loggedUser.getComments().add(createdComment);
         post.getComments().add(createdComment);
 
         return createdComment;
     }
 
     @Transactional
-    public CommentEntity updateComment(UUID commentId, String newContent) throws EntityNotFoundException {
+    public CommentEntity updateComment(UUID commentId, String newContent) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
         CommentEntity foundComment = getById(commentId);
+
+        authService.checkLoggedUserResourceAuthorship(commentRepository::existsByAuthor_AccountId);
 
         foundComment.setContent(newContent);
 
         return foundComment;
     }
 
-    public void deleteComment(UUID commentId) throws EntityNotFoundException{
+    public void deleteComment(UUID commentId) throws EntityNotFoundException, UserIsNotResourceAuthorException{
 
         if(!commentRepository.existsById(commentId)){
             throw new EntityNotFoundException("Nie istnieje komentarz o takim id");
         }
+
+        authService.checkLoggedUserResourceAuthorship(commentRepository::existsByAuthor_AccountId);
 
         commentRepository.deleteById(commentId);
     }

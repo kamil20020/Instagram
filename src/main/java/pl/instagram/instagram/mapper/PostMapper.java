@@ -2,7 +2,6 @@ package pl.instagram.instagram.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import pl.instagram.instagram.model.api.request.CreatePost;
 import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.PostHeader;

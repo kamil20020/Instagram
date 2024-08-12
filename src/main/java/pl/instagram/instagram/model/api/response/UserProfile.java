@@ -1,7 +1,5 @@
 package pl.instagram.instagram.model.api.response;
 
-import lombok.*;
-
 public record UserProfile(
     String id,
     String nickname,

@@ -3,21 +3,26 @@ package pl.instagram.instagram.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
-import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.security.Principal;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    public boolean isUserLogged(){
+
+        Optional<Authentication> authenticationOpt = Optional.ofNullable(getLoggedUserDetails());
+
+        return authenticationOpt.isPresent() && authenticationOpt.get().isAuthenticated();
+    }
 
     public void checkLoggedUserResourceAuthorship(Predicate<String> isAuthorPredicate) throws UserIsNotResourceAuthorException{
 

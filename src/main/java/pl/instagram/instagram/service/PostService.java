@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
@@ -57,7 +56,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostEntity createPost(PostEntity postData) throws UserIsNotResourceAuthorException, EntityNotFoundException{
+    public PostEntity createPost(PostEntity postData) throws EntityNotFoundException{
 
         UserEntity loggedUser = userService.getLoggedUser();
 

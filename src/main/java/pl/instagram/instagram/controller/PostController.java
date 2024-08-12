@@ -1,6 +1,5 @@
 package pl.instagram.instagram.controller;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,19 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.*;
-import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.CreatePost;
 import pl.instagram.instagram.model.api.response.*;
-import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
-import pl.instagram.instagram.service.CommentService;
-import pl.instagram.instagram.service.PostLikeService;
 import pl.instagram.instagram.service.PostService;
-import pl.instagram.instagram.service.UserService;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @Slf4j

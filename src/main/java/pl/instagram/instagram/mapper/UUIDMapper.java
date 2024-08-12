@@ -1,7 +1,6 @@
 package pl.instagram.instagram.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Named;
 
 import java.util.ArrayList;
 import java.util.List;
