@@ -25,7 +25,7 @@ public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="post_id", updatable = false)
+    @Column(name="post_id")
     private UUID Id;
 
     @CreationTimestamp

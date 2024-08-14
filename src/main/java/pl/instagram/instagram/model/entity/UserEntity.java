@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="user_id", updatable = false)
+    @Column(name="user_id")
     private UUID Id;
 
     @Column(name = "account_id", nullable = false, length = 50)
@@ -72,7 +73,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<PostEntity> posts;
+    private Set<PostEntity> posts = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -83,11 +84,11 @@ public class UserEntity {
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<PostEntity> likedPosts;
+    private Set<PostEntity> likedPosts = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<CommentEntity> comments;
+    private Set<CommentEntity> comments = new HashSet<>();
 }

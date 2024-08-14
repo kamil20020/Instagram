@@ -68,35 +68,10 @@ public class UserService {
 
         if(phrase.matches(".+\\s.+")){
 
-            String[] splitInput = phrase.split("\\s");
-
-            return userRepository.findAll(
-                where(
-                    anyOf(
-                        allOf(
-                            userAboutFirstname(splitInput[0]),
-                            userAboutSurname(splitInput[1])
-                        ),
-                        allOf(
-                            userAboutSurname(splitInput[0]),
-                            userAboutFirstname(splitInput[1])
-                        )
-                    )
-                ),
-                pageable
-            );
+            return userRepository.searchByFirstnameAndSurname(phrase, pageable);
         }
 
-        return userRepository.findAll(
-            where(
-                anyOf(
-                    userAboutNickname(phrase),
-                    userAboutFirstname(phrase),
-                    userAboutSurname(phrase)
-                )
-            ),
-            pageable
-        );
+        return userRepository.searchByFirstnameOrSurnameOrNickname(phrase, pageable);
     }
 
     public UUID createUser(String accountId) throws ConflictException {
@@ -121,7 +96,7 @@ public class UserService {
 
         if(updateData.getNickname() != null){
 
-            if(userRepository.existsByNickname(updateData.getNickname())){
+            if(userRepository.existsByNicknameContainingIgnoreCase(updateData.getNickname())){
                 throw new ConflictException("Istnieje już użytkownik o takim pseudonimie");
             }
 
@@ -148,7 +123,7 @@ public class UserService {
 
         UserEntity loggedUser = getLoggedUser();
 
-        if(userRepository.existsByNickname(userPersonalData.getNickname())){
+        if(userRepository.existsByNicknameContainingIgnoreCase(userPersonalData.getNickname())){
             throw new ConflictException("Istnieje już użytkownik o takim pseudonimie");
         }
 

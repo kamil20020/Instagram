@@ -25,7 +25,7 @@ public class CommentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "comment_id", updatable = false)
+    @Column(name = "comment_id")
     private UUID id;
 
     @Column(name = "content", nullable = false)
