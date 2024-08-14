@@ -1,11 +1,18 @@
 package pl.instagram.instagram.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.mapper.*;
@@ -30,6 +37,30 @@ public class PostController {
     private static final String POST_MAPPER_MESSAGE = "posta";
     private static final String USER_MAPPER_MESSAGE = "użytkownika";
 
+    @Operation(
+        summary = "Get post details by its id",
+        parameters = @Parameter(name = "id", description = "Post id")
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Found post details",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = PostDetails.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid id was given",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Post was not found",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}")
     ResponseEntity<PostDetails> getPostById(@PathVariable("id") String postIdStr) {
 
@@ -41,6 +72,32 @@ public class PostController {
         return ResponseEntity.ok(postDetails);
     }
 
+    @Operation(
+        summary = "Get user's posts basic infos page by user's id",
+        parameters = {
+            @Parameter(name = "id", description = "User id")
+        }
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Found user's posts basic info",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = Page.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid id was given or pagination settings were not included in request",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User was not found",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/posts")
     ResponseEntity<Page<PostHeader>> getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
 
@@ -52,6 +109,25 @@ public class PostController {
         return ResponseEntity.ok(foundPostsHeaders);
     }
 
+    @Operation(
+        summary = "Create post",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "New post data")
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Post was created",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(description = "Created post details", implementation = PostDetails.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Author was not found",
+            content = @Content
+        )
+    })
     @PostMapping
     ResponseEntity<PostDetails> createPost(@Valid @RequestBody CreatePost createPost){
 
@@ -63,6 +139,37 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postDetails);
     }
 
+    @Operation(
+        summary = "Patch post by its id",
+        parameters = @Parameter(name = "id", description = "Post id")
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Post data were patched",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(
+                    description = "Patched post details", implementation = PostDetails.class
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid id was given",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Logged user is not an author of given post",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Post was not found",
+            content = @Content
+        ),
+    })
     @PatchMapping("/{id}")
     ResponseEntity<PostDetails> patchPostById(@PathVariable("id") String postIdStr, @RequestBody PostEntity postEntity) {
 
@@ -74,6 +181,32 @@ public class PostController {
         return ResponseEntity.ok(changedPostDetails);
     }
 
+    @Operation(
+        summary = "Delete post by its id",
+        parameters = @Parameter(name = "id", description = "Post id")
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "204",
+            description = "Post was deleted",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Given post id is invalid",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Logged user is not an author of given post",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Post was not found",
+            content = @Content
+        )
+    })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deletePostById(@PathVariable("id") String postIdStr){
 

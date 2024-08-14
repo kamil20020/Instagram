@@ -199,7 +199,7 @@ public class UserController {
     }
 
     @Operation(
-        description = "Register user",
+        summary = "Register user",
         parameters = @Parameter(name = "accountId", description = "User's id of account created in external auth provider")
     )
     @ApiResponses(value = {
@@ -227,7 +227,7 @@ public class UserController {
     }
 
     @Operation(
-        description = "Fill logged user's personal data",
+        summary = "Fill logged user's personal data",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User's personal data")
     )
     @ApiResponses(value = {
@@ -262,7 +262,7 @@ public class UserController {
     }
 
     @Operation(
-        description = "Patch user's data",
+        summary = "Patch user's data",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User's new data")
     )
     @ApiResponses(value = {

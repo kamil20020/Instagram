@@ -16,6 +16,7 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.CommentRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentEntity createComment(UUID postId, UUID parentCommentId, String content) throws EntityNotFoundException {
+    public CommentEntity createComment(UUID postId, Optional<UUID> parentCommentIdOpt, String content) throws EntityNotFoundException {
 
         PostEntity post = postService.getPostById(postId);
         UserEntity loggedUser = userService.getLoggedUser();
@@ -69,7 +70,9 @@ public class CommentService {
 
         CommentEntity createdComment;
 
-        if(parentCommentId != null) {
+        if(parentCommentIdOpt.isPresent()) {
+
+            UUID parentCommentId = parentCommentIdOpt.get();
 
             CommentEntity parentComment = commentRepository.findById(parentCommentId)
                 .orElseThrow(() ->
