@@ -15,9 +15,9 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 
 ![Użytkownik](project/user.png)
 
-![Unlogged user](project/unlogged user.png)
+![Unlogged user](project/unlogged-user.png)
 
-![Logged user](project/logged.png)
+![Logged user](project/logged-user.png)
 
 ## Główny schemat bazy danych:
 ![Główny schemat bazy danych](project/instagram.png)
