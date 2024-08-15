@@ -43,7 +43,7 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 	* Spring Cloud (docelowo),
 	* Liquibase,
 	* REST Assured (docelowo),
-	* Testcontainers (docelowo).
+	* Testcontainers.
  * Baza danych - PostgreSQL,
  * Ogólne:
     * Kominikacja - REST,
