@@ -11,13 +11,21 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 * Prosty messenger (w trakcie).
 
 ## Przypadki użycia:
-![Dziedziczenie aktorów](project/inheritance.png){ style="display: block; margin: 0 auto" }
+<p align="center">
+    <img src="project/inheritance.png">
+<p>
 
-![Użytkownik](project/user.png){ style="display: block; margin: 0 auto" }
+<p align="center">
+    <img src="project/user.png">
+<p>
 
-![Unlogged user](project/unlogged-user.png){ style="display: block; margin: 0 auto" }
+<p align="center">
+    <img src="project/unlogged-user.png">
+<p>
 
-![Logged user](project/logged-user.png){ style="display: block; margin: 0 auto" }
+<p align="center">
+    <img src="project/logged-user.png">
+<p>
 
 ## Główny schemat bazy danych:
 ![Główny schemat bazy danych](project/instagram.png)
