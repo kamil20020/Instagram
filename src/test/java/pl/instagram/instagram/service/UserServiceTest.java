@@ -14,10 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.exception.NonLoggedException;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 
 @ExtendWith(value = MockitoExtension.class)
 class UserServiceTest {
@@ -36,6 +40,74 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private AuthService authService;
+
+    @Test
+    void shouldGetLoggedUserWithExistingAccountId(){
+
+        //when
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+            .accountId(loggedUserAccountId)
+            .build();
+
+        //given
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        UserEntity gotUser = userService.getLoggedUser();
+
+        //then
+        assertThat(gotUser).isEqualTo(loggedUser);
+
+        ArgumentCaptor<String> userAccountIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(userAccountIdCaptor.capture());
+
+        String capturedAccountId = userAccountIdCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+    }
+
+    @Test
+    void shouldNotGetLoggedUserWithUnloggedUser(){
+
+        //when
+        //given
+        Mockito.when(authService.getLoggedUserAccountId()).thenThrow(new NonLoggedException());
+
+        //then
+        assertThrows(NonLoggedException.class, () -> userService.getLoggedUser());
+    }
+
+    @Test
+    void shouldNotGetLoggedUserWithNonExistingAccountId(){
+
+        //when
+        String loggedUserAccountId = "A";
+
+        //given
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(
+            EntityNotFoundException.class,
+            () -> userService.getLoggedUser(),
+            "Nie istnieje użytkownik o takim id konta"
+        );
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(accountIdCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+
+        assertEquals(loggedUserAccountId, capturedAccountId);
+    }
 
     @Test
     void shouldCheckIfExistsById(){
@@ -226,7 +298,7 @@ class UserServiceTest {
         "kamil kowalski, 1",
         " kamil         kowalski , 1",
     })
-    void shouldSearchUsersWithFirstnameAndSurnamePhrase(String phrase, int usersCount) {
+    void shouldSearchUsersWithFirstnameAndSurnamePhrase(String phrase, int expectedUsersCount) {
 
         //given
 
@@ -243,9 +315,9 @@ class UserServiceTest {
         Page<UserEntity> gotUsersPage = userService.searchUsers(phrase, pageable);
 
         //then
-        assertEquals(usersCount, gotUsersPage.getTotalElements());
+        assertEquals(expectedUsersCount, gotUsersPage.getTotalElements());
 
-        if(usersCount == 1){
+        if(expectedUsersCount == 1){
 
             UserEntity gotUser = gotUsersPage.getContent().get(0);
 
@@ -267,11 +339,36 @@ class UserServiceTest {
     @ParameterizedTest
     @CsvSource(value = {
             "kamil, 1",
-            " kamil         kowalski, 1",
+            " kaMil , 1",
     })
-    void shouldSearchUsersWithFirstnameOrSurnameOrNicknamePhrase(String phrase, int usersCount) {
+    void shouldSearchUsersWithFirstnameOrSurnameOrNicknamePhrase(String phrase, int expectedUsersCount) {
 
+        //given
+        List<UserEntity> users = List.of(
+            UserEntity.builder().firstname("marcin").surname("nowak").build(),
+            UserEntity.builder().firstname("kamil").surname("kowalski").build()
+        );
 
+        Pageable pageable = PageRequest.of(0, 5);
+
+        //when
+        Mockito.when(userRepository.searchByFirstnameOrSurnameOrNickname(phrase, pageable)).thenReturn(new PageImpl<>(users.subList(0, 1)));
+
+        Page<UserEntity> foundUsersPage = userService.searchUsers(phrase, pageable);
+
+        //then
+        assertEquals(expectedUsersCount, foundUsersPage.getTotalElements());
+
+        ArgumentCaptor<String> phraseCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+
+        Mockito.verify(userRepository).searchByFirstnameOrSurnameOrNickname(phraseCaptor.capture(), pageableCaptor.capture());
+
+        String capturedPhrase = phraseCaptor.getValue();
+        Pageable gotPageable = pageableCaptor.getValue();
+
+        assertEquals(phrase, capturedPhrase);
+        assertEquals(gotPageable, pageable);
     }
 
     @Test
@@ -290,14 +387,373 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser() {
+    void shouldCreateUserWithValidData() {
+
+        //given
+        String accountId = "A";
+
+        UserEntity u1 = UserEntity.builder()
+            .accountId("A")
+            .creationDatetime(LocalDateTime.now())
+            .build();
+
+        u1.setId(UUID.randomUUID());
+
+        //when
+        Mockito.when(userRepository.existsByAccountId(accountId)).thenReturn(false);
+        Mockito.when(userRepository.save(any())).thenReturn(u1);
+
+        UUID createdUserId = userService.createUser(accountId);
+
+        //then
+        assertNotNull(createdUserId);
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
+
+        Mockito.verify(userRepository).existsByAccountId(accountIdCaptor.capture());
+        Mockito.verify(userRepository).save(userCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+        UserEntity capturedUser = userCaptor.getValue();
+
+        assertEquals(accountId, capturedAccountId);
+        assertEquals(u1.getAccountId(), capturedUser.getAccountId());
+        assertNotNull(capturedUser.getCreationDatetime());
     }
 
     @Test
-    void patchUser() {
+    void shouldNotCreateUserWithAlreadyExistingAccountId() {
+
+        //given
+        String accountId = "A";
+
+        //when
+        Mockito.when(userRepository.existsByAccountId(accountId)).thenReturn(true);
+
+        //then
+        assertThatThrownBy(() -> userService.createUser(accountId))
+            .isInstanceOf(ConflictException.class)
+            .hasMessage("Istnieje już użytkownik o takim id konta");
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).existsByAccountId(captor.capture());
+
+        String capturedAccountId = captor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(accountId);
     }
 
     @Test
-    void fillPersonalData() {
+    void shouldPatchUserWithAllGivenData() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+            .nickname("kamil")
+            .firstname("Kamil")
+            .surname("Dywan")
+            .avatar(("kamil").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        UserEntity newData = UserEntity.builder()
+            .nickname("michał")
+            .firstname("Michał")
+            .surname("Kowalski")
+            .avatar(("michał").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        Mockito.when(userRepository.existsByNicknameContainingIgnoreCase(newData.getNickname())).thenReturn(false);
+
+        UserEntity userWithPatchedData = userService.patchUser(newData);
+
+        //then
+        assertThat(userWithPatchedData).isEqualTo(newData);
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> nicknameCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(accountIdCaptor.capture());
+        Mockito.verify(userRepository).existsByNicknameContainingIgnoreCase(nicknameCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+        String capturedNickname = nicknameCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+        assertThat(capturedNickname).isEqualTo(newData.getNickname());
+    }
+
+    @Test
+    void shouldPatchUserWithNoGivenData() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+            .nickname("kamil")
+            .firstname("Kamil")
+            .surname("Dywan")
+            .avatar(("kamil").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        UserEntity newData = UserEntity.builder()
+            .nickname(null)
+            .firstname(null)
+            .surname(null)
+            .avatar(null)
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        UserEntity userWithPatchedData = userService.patchUser(newData);
+
+        //then
+        assertThat(userWithPatchedData).isEqualTo(loggedUser);
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(accountIdCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+    }
+
+    @Test
+    void shouldNotPatchUserWithUnloggedUser() {
+
+        //given
+        UserEntity newData = UserEntity.builder()
+            .nickname("michał")
+            .firstname("Michał")
+            .surname("Kowalski")
+            .avatar(("michał").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenThrow(new NonLoggedException());
+
+        //then
+        assertThatThrownBy(() -> userService.patchUser(newData))
+            .isInstanceOf(NonLoggedException.class);
+    }
+
+    @Test
+    void shouldNotPatchUserWithNotFoundUser() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity newData = UserEntity.builder()
+            .nickname("michał")
+            .firstname("Michał")
+            .surname("Kowalski")
+            .avatar(("michał").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(
+            EntityNotFoundException.class,
+            () -> userService.patchUser(newData),
+            "Nie istnieje użytkownik o takim id konta"
+        );
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(accountIdCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+
+        assertEquals(loggedUserAccountId, capturedAccountId);
+    }
+
+    @Test
+    void shouldNotPatchUserWithConflictNickname() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+            .nickname("kamil")
+            .firstname("Kamil")
+            .surname("Dywan")
+            .avatar(("kamil").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        UserEntity newData = UserEntity.builder()
+            .nickname("michał")
+            .firstname("Michał")
+            .surname("Kowalski")
+            .avatar(("michał").getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        Mockito.when(userRepository.existsByNicknameContainingIgnoreCase(newData.getNickname())).thenReturn(true);
+
+        //then
+        assertThatThrownBy(() -> userService.patchUser(newData))
+            .isInstanceOf(ConflictException.class)
+            .hasMessage("Istnieje już użytkownik o takim pseudonimie");
+
+        ArgumentCaptor<String> accountIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> nicknameCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(accountIdCaptor.capture());
+        Mockito.verify(userRepository).existsByNicknameContainingIgnoreCase(nicknameCaptor.capture());
+
+        String capturedAccountId = accountIdCaptor.getValue();
+        String capturedNickname = nicknameCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+        assertThat(capturedNickname).isEqualTo(newData.getNickname());
+    }
+
+    @Test
+    void shouldFillPersonalDataWithValidData() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+            .firstname("Marcin")
+            .surname("Nowak")
+            .nickname("marcin")
+            .build();
+
+        UserEntity newPersonalData = UserEntity.builder()
+            .firstname("Kamil")
+            .surname("Kowalski")
+            .nickname("kamil")
+            .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        Mockito.when(userRepository.existsByNicknameContainingIgnoreCase(newPersonalData.getNickname())).thenReturn(false);
+
+        UserEntity userWithUpdatedData = userService.fillPersonalData(newPersonalData);
+
+        //then
+        assertThat(userWithUpdatedData).isEqualTo(newPersonalData);
+
+        ArgumentCaptor<String> userAccountIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> nicknameCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(userAccountIdCaptor.capture());
+        Mockito.verify(userRepository).existsByNicknameContainingIgnoreCase(nicknameCaptor.capture());
+
+        String capturedAccountId = userAccountIdCaptor.getValue();
+        String capturedNickname = nicknameCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+        assertThat(capturedNickname).isEqualTo(newPersonalData.getNickname());
+    }
+
+    @Test
+    void shouldNotFillPersonalDataWithUnloggedUser() {
+
+        //given
+
+        UserEntity newPersonalData = UserEntity.builder()
+                .firstname("Kamil")
+                .surname("Kowalski")
+                .nickname("kamil")
+                .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenThrow(new NonLoggedException());
+
+        //then
+        assertThatThrownBy(() -> userService.fillPersonalData(newPersonalData))
+            .isInstanceOf(NonLoggedException.class);
+    }
+
+    @Test
+    void shouldNotFillPersonalDataWithNotExistingAccountId() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity newPersonalData = UserEntity.builder()
+                .firstname("Kamil")
+                .surname("Kowalski")
+                .nickname("kamil")
+                .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> userService.fillPersonalData(newPersonalData))
+            .isInstanceOf(EntityNotFoundException.class)
+            .hasMessage("Nie istnieje użytkownik o takim id konta");
+
+
+        ArgumentCaptor<String> userAccountIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(userAccountIdCaptor.capture());
+
+        String capturedAccountId = userAccountIdCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+    }
+
+    @Test
+    void shouldNotFillPersonalDataWithConflictNickname() {
+
+        //given
+        String loggedUserAccountId = "A";
+
+        UserEntity loggedUser = UserEntity.builder()
+                .firstname("Marcin")
+                .surname("Nowak")
+                .nickname("marcin")
+                .build();
+
+        UserEntity newPersonalData = UserEntity.builder()
+                .firstname("Kamil")
+                .surname("Kowalski")
+                .nickname("kamil")
+                .build();
+
+        //when
+        Mockito.when(authService.getLoggedUserAccountId()).thenReturn(loggedUserAccountId);
+        Mockito.when(userRepository.findByAccountId(loggedUserAccountId)).thenReturn(Optional.of(loggedUser));
+
+        Mockito.when(userRepository.existsByNicknameContainingIgnoreCase(newPersonalData.getNickname())).thenReturn(true);
+
+        //then
+        assertThatThrownBy(() -> userService.fillPersonalData(newPersonalData))
+                .isInstanceOf(ConflictException.class)
+                .hasMessage("Istnieje już użytkownik o takim pseudonimie");
+
+        ArgumentCaptor<String> userAccountIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> nicknameCaptor = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(userRepository).findByAccountId(userAccountIdCaptor.capture());
+        Mockito.verify(userRepository).existsByNicknameContainingIgnoreCase(nicknameCaptor.capture());
+
+        String capturedAccountId = userAccountIdCaptor.getValue();
+        String capturedNickname = nicknameCaptor.getValue();
+
+        assertThat(capturedAccountId).isEqualTo(loggedUserAccountId);
+        assertThat(capturedNickname).isEqualTo(newPersonalData.getNickname());
     }
 }

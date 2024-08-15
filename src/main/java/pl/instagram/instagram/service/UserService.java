@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.exception.NonLoggedException;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
@@ -30,7 +31,7 @@ public class UserService {
         return userRepository.existsById(id);
     }
 
-    public UserEntity getLoggedUser() throws EntityNotFoundException {
+    public UserEntity getLoggedUser() throws NonLoggedException, EntityNotFoundException {
 
         String loggedUserAccountId = authService.getLoggedUserAccountId();
 
@@ -88,9 +89,8 @@ public class UserService {
         return userRepository.save(newUser).getId();
     }
 
-
     @Transactional
-    public UserEntity patchUser(UserEntity updateData) throws EntityNotFoundException, ConflictException {
+    public UserEntity patchUser(UserEntity updateData) throws NonLoggedException, EntityNotFoundException, ConflictException {
 
         UserEntity loggedUser = getLoggedUser();
 
@@ -119,7 +119,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity fillPersonalData(UserEntity userPersonalData) throws EntityNotFoundException, ConflictException {
+    public UserEntity fillPersonalData(UserEntity userPersonalData) throws NonLoggedException, EntityNotFoundException, ConflictException {
 
         UserEntity loggedUser = getLoggedUser();
 

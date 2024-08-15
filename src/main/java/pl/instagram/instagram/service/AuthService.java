@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import pl.instagram.instagram.exception.NonLoggedException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 
 import java.security.Principal;
@@ -24,7 +26,7 @@ public class AuthService {
         return authenticationOpt.isPresent() && authenticationOpt.get().isAuthenticated();
     }
 
-    public void checkLoggedUserResourceAuthorship(Predicate<String> isAuthorPredicate) throws UserIsNotResourceAuthorException{
+    public void checkLoggedUserResourceAuthorship(Predicate<String> isAuthorPredicate) throws NonLoggedException, UserIsNotResourceAuthorException{
 
         String loggedUserAccountId = getLoggedUserAccountId();
 
@@ -33,12 +35,19 @@ public class AuthService {
         }
     }
 
-    public Authentication getLoggedUserDetails() {
+    public Authentication getLoggedUserDetails() throws NonLoggedException{
 
-        return SecurityContextHolder.getContext().getAuthentication();
+        Authentication authDetails = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authDetails == null){
+            throw new NonLoggedException();
+        }
+
+        return authDetails;
     }
 
-    public String getLoggedUserAccountId() {
+    public String getLoggedUserAccountId() throws NonLoggedException {
+
         return ((Principal) getLoggedUserDetails().getPrincipal()).getName();
     }
 }
