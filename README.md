@@ -10,6 +10,15 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
 * Stories (w trakcie),
 * Prosty messenger (w trakcie).
 
+## Przypadki użycia:
+![Dziedziczenie aktorów](project/inheritance.png)
+
+![Użytkownik](project/user.png)
+
+![Unlogged user](project/unlogged user.png)
+
+![Logged user](project/logged.png)
+
 ## Główny schemat bazy danych:
 ![Główny schemat bazy danych](project/instagram.png)
 
