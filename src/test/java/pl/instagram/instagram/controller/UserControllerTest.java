@@ -1,40 +1,381 @@
 package pl.instagram.instagram.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.shaded.com.google.common.net.MediaType;
+import pl.instagram.instagram.config.SecurityConfig;
+import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.mapper.UUIDMapper;
+import pl.instagram.instagram.mapper.UserMapper;
+import pl.instagram.instagram.model.api.response.UserHeader;
+import pl.instagram.instagram.model.api.response.UserProfile;
+import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.service.UserService;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest(value = UserController.class)
+@Import(SecurityConfig.class)
+//@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 class UserControllerTest {
 
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private UserMapper userMapper;
+
+    @MockBean
+    private UUIDMapper uuidMapper;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final String urlPrefix = "/users/";
+
+    private static final String USER_MAPPER_MESSAGE = "użytkownika";
+
     @Test
-    void getUserHeaderById() {
+    void shouldGetUserHeaderById() throws Exception {
+
+        //given
+        UUID userId = UUID.randomUUID();
+
+        UserEntity user = new UserEntity();
+        UserHeader userHeader = new UserHeader(
+            userId.toString(),
+            "kamil",
+            "Kamil",
+            "Kowalski",
+            "avatar",
+            false
+        );
+
+        //when
+        Mockito.when(uuidMapper.strToUUID(anyString(), anyString())).thenReturn(userId);
+        Mockito.when(userService.getUserById(any())).thenReturn(user);
+
+        Mockito.when(userMapper.userEntityToUserHeader(any())).thenReturn(userHeader);
+
+        MvcResult mvcResult = mockMvc
+            .perform(
+                get(urlPrefix + userId + "/header")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        Object objectResponse = objectMapper.readValue(jsonResponse, UserHeader.class);
+
+        Mockito.verify(uuidMapper).strToUUID(userId.toString(), USER_MAPPER_MESSAGE);
+        Mockito.verify(userService).getUserById(userId);
+        Mockito.verify(userMapper).userEntityToUserHeader(any(UserEntity.class));
     }
 
     @Test
-    void getUserProfile() {
+    void shouldNotGetUserHeaderByIdWhenUserIdIsInvalid() throws Exception {
+
+        //given
+        String userId = "A";
+
+        //when
+        Mockito.when(uuidMapper.strToUUID(anyString(), anyString())).thenThrow(IllegalArgumentException.class);
+
+        mockMvc
+            .perform(get(urlPrefix + userId + "/header"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+
+        //then
+        Mockito.verify(uuidMapper).strToUUID(userId, USER_MAPPER_MESSAGE);
     }
 
     @Test
-    void getUserHeaderByUserAccountId() {
+    void shouldNotGetUserHeaderByIdWhenUserIdIsNotFound() throws Exception {
+
+        //given
+        UUID userId = UUID.randomUUID();
+
+        //when
+        Mockito.when(uuidMapper.strToUUID(anyString(), anyString())).thenReturn(userId);
+        Mockito.when(userService.getUserById(any())).thenThrow(EntityNotFoundException.class);
+
+        mockMvc
+            .perform(get(urlPrefix + userId + "/header"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        //then
+        Mockito.verify(uuidMapper).strToUUID(userId.toString(), USER_MAPPER_MESSAGE);
+        Mockito.verify(userService).getUserById(userId);
     }
 
     @Test
-    void getUsersByIds() {
+    void shouldGetUserProfileByUserId() throws Exception {
+
+        //given
+        UUID userId = UUID.randomUUID();
+
+        UserEntity user = new UserEntity();
+        UserProfile userProfile = new UserProfile(
+            userId.toString(),
+            "kamil",
+            "Kamil",
+            "Kowalski",
+            "avatar",
+            false,
+            false,
+            "Opis",
+            0,
+            0,
+            0
+        );
+
+        //when
+        Mockito.when(uuidMapper.strToUUID(anyString(), anyString())).thenReturn(userId);
+        Mockito.when(userService.getUserById(any())).thenReturn(user);
+        Mockito.when(userMapper.userEntityToUserProfileInfo(any())).thenReturn(userProfile);
+
+        //then
+        MvcResult mvcResult = mockMvc
+            .perform(get(urlPrefix + userId + "/profile"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        Object objectResponse = objectMapper.readValue(jsonResponse, UserProfile.class);
+
+        Mockito.verify(uuidMapper).strToUUID(userId.toString(), USER_MAPPER_MESSAGE);
+        Mockito.verify(userService).getUserById(userId);
+        Mockito.verify(userMapper).userEntityToUserProfileInfo(user);
     }
 
     @Test
-    void searchUsers() {
+    void shouldGetUserHeaderByUserAccountId() throws Exception {
+
+        //given
+        String accountId = "A";
+
+        UserEntity user = new UserEntity();
+        UserHeader userHeader = new UserHeader(
+            UUID.randomUUID().toString(),
+            "kamil",
+            "Kamil",
+            "Kowalski",
+            "avatar",
+            false
+        );
+
+        //when
+        Mockito.when(userService.getUserByUserAccountId(anyString())).thenReturn(user);
+        Mockito.when(userMapper.userEntityToUserHeader(any())).thenReturn(userHeader);
+
+        //then
+        MvcResult mvcResult = mockMvc
+            .perform(
+                get(urlPrefix + "user-account/" + accountId + "/header")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        Object objectResponse = objectMapper.readValue(jsonResponse, UserHeader.class);
+
+        Mockito.verify(userService).getUserByUserAccountId(accountId);
+        Mockito.verify(userMapper).userEntityToUserHeader(user);
+
     }
 
     @Test
-    void registerUser() {
+    void shouldGetUsersByIds() throws Exception {
+
+        //given
+        ArrayList<UUID> ids = new ArrayList<>(List.of(UUID.randomUUID(), UUID.randomUUID()));
+        List<String> idsStrs = ids.stream()
+            .map(UUID::toString)
+            .toList();
+
+        List<UserEntity> users = List.of(new UserEntity(), new UserEntity());
+        List<UserHeader> usersHeaders = List.of(
+            new UserHeader(
+                idsStrs.get(0),
+                "kamil",
+                "Kamil",
+                "Kowalski",
+                "avatar",
+                false
+            ),
+            new UserHeader(
+                idsStrs.get(1),
+                "kamil",
+                "Kamil",
+                "Kowalski",
+                "avatar",
+                false
+            )
+        );
+
+        //when
+        Mockito.when(uuidMapper.strListToUUIDList(anyList(), anyString())).thenReturn(ids);
+        Mockito.when(userService.getUsersByIds(anyList())).thenReturn(users);
+        Mockito.when(userMapper.userEntityListToUserHeaderList(anyList())).thenReturn(usersHeaders);
+
+        //then
+        MvcResult mvcResult = mockMvc
+            .perform(
+                get(urlPrefix + "ids")
+                .param("ids", idsStrs.toArray(new String[0]))
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        UserHeader[] objectResponse = objectMapper.readValue(jsonResponse, UserHeader[].class);
+
+        assertThat(objectResponse.length).isEqualTo(2);
+
+        Mockito.verify(uuidMapper).strListToUUIDList(idsStrs, USER_MAPPER_MESSAGE);
+        Mockito.verify(userService).getUsersByIds(ids);
+        Mockito.verify(userMapper).userEntityListToUserHeaderList(users);
     }
 
     @Test
-    void fillPersonalData() {
+    void shouldSearchUsers() throws Exception {
+
+        //given
+        String phrase = "kamil kowalski";
+
+        int page = 0;
+        int size = 5;
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        UserEntity user = new UserEntity();
+
+        Page<UserEntity> usersPage = new PageImpl<>(
+            List.of(user)
+        );
+
+        UserHeader userHeader = new UserHeader(
+            UUID.randomUUID().toString(),
+            "kamil",
+            "Kamil",
+            "Kowalski",
+            "avatar",
+            false
+        );
+
+        Page<UserHeader> usersHeadersPage = new PageImpl<>(
+            List.of(userHeader)
+        );
+
+        //when
+        Mockito.when(userService.searchUsers(anyString(), any())).thenReturn(usersPage);
+        Mockito.when(userMapper.userEntityToUserHeader(any())).thenReturn(userHeader);
+
+        //then
+        MvcResult mvcResult = mockMvc
+            .perform(
+                get("/users")
+                .param("phrase", phrase)
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size))
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(jsonResponse.contains("totalPages"));
+        assertTrue(jsonResponse.contains("totalElements"));
+        assertTrue(jsonResponse.contains("size"));
+        assertTrue(jsonResponse.contains("content"));
+
+        Mockito.verify(userService).searchUsers(phrase, pageable);
+        Mockito.verify(userMapper).userEntityToUserHeader(user);
     }
 
     @Test
-    void patchLoggedUser() {
+    void shouldRegisterUser() throws Exception {
+
+        //given
+        String accountId = "A";
+        UUID userId = UUID.randomUUID();
+
+        //when
+        Mockito.when(userService.createUser(anyString())).thenReturn(userId);
+        Mockito.when(uuidMapper.uuidToStr(any())).thenReturn(userId.toString());
+
+        //then
+        mockMvc
+            .perform(
+                post(urlPrefix + "register")
+                .with(csrf())
+                .param("accountId", accountId)
+            )
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(content().string(userId.toString()));
+
+        Mockito.verify(userService).createUser(accountId);
+        Mockito.verify(uuidMapper).uuidToStr(userId);
+    }
+
+    @Test
+    void shouldFillPersonalData() {
+
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
+    void shouldPatchLoggedUser() {
+
+        //given
+
+        //when
+
+        //then
     }
 }
