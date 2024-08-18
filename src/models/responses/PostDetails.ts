@@ -1,13 +1,13 @@
-﻿import { BasicUserData } from "./BasicUserData";
+﻿import { UserHeader } from "./UserHeader";
 
 export interface Post {
     id: string,
-    img: string,
+    content: string,
     description: string,
     areDisabledComments: boolean,
     creationDatetime: string,
     areHiddenLikes: boolean,
-    userData: BasicUserData,
+    author: UserHeader,
     numberOfLikes: number,
     numberOfComments: number
 }

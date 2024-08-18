@@ -1,12 +1,12 @@
 ﻿import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import { Profile } from "../../models/Profile";
+import { Profile } from "../../models/responses/UserProfile";
 import {
   userPreferencesSelector,
   setLatestProfiles,
 } from "../../redux/slices/userPreferencesSlice";
-import { BasicUserData } from "../../models/BasicUserData";
+import { BasicUserData } from "../../models/responses/UserHeader";
 
 const LatestProfileHeader = (props: {
   profile: BasicUserData;

@@ -3,7 +3,7 @@ import NavMenuItem from "../../layout/header/NavMenuItem";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import UserAPIService from "../../services/UserAPIService";
-import { BasicUserData } from "../../models/BasicUserData";
+import { BasicUserData } from "../../models/responses/UserHeader";
 import { login, useAuthSelector } from "../../redux/slices/authSlice";
 import { useSearchParams } from "react-router-dom";
 import AuthService from "../../services/AuthService";

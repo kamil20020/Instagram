@@ -1,4 +1,4 @@
-﻿export interface BasicUserData {
+﻿export interface UserHeader {
     id: string,
     nickname: string,
     firstname: string,

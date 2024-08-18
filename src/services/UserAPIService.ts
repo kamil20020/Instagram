@@ -1,34 +1,30 @@
 ﻿import axios from "axios"
 import qs from "qs"
-import { Pagination } from "../models/Pagination"
-
-export interface PatchUser {
-    firstname?: string;
-    surname?: string;
-    nickname?: string;
-    avatar?: string;
-}
+import { Pagination } from "../models/requests/Pagination"
+import { PatchUser } from "../models/requests/PatchUser";
+import { PersonalData } from "../models/requests/PersonalData";
 
 class UserAPIService {
 
     private api: string = `${process.env.REACT_APP_API}/users`;
 
-    getBasicUserById(userId: string){
-        return axios.get(`${this.api}/${userId}/basic`)
+    getUserBasicInfoById(userId: string){
+        return axios.get(`${this.api}/${userId}/header`)
     }
 
     getUserProfileById(userId: string){
         return axios.get(`${this.api}/${userId}/profile`)
     }
 
-    getBasicUserByUserAccountId(userAccountId: string){
-        return axios.get(`${this.api}/user-account/${userAccountId}`)
+    getUserBasicInfoByUserAccountId(userAccountId: string){
+        return axios.get(`${this.api}/user-account/${userAccountId}/header`)
     }
 
-    searchUser(input: string){
+    searchUser(phrase: string, pagination: Pagination){
         return axios.get(`${this.api}`, {
             params: {
-                phrase: input
+                phrase: phrase,
+                ...pagination
             }
         })
     }
@@ -44,22 +40,24 @@ class UserAPIService {
         })
     }
 
-    getUserPostsHeadersPage(userId: string, pagination?: Pagination){
-        return axios.get(`${this.api}/${userId}/posts`, {
-            params: {...pagination},
-        })
-    }
-
     searchUserFetchAPi(input: string){
         return fetch(`${this.api}/?${new URLSearchParams({phrase: input})}`)
     }
 
-    createUser(userAccountId: string){
-        return axios.post(`${this.api}/user-account/${userAccountId}`)
+    registerUser(userAccountId: string){
+        return axios.post(`${this.api}/user-account`, {
+            params: {
+                accountId: userAccountId
+            }
+        })
+    }
+
+    fillPersonalData(personalData: PersonalData){
+        return axios.post(`${this.api}/fill-personal-data`, personalData)
     }
 
     patchLoggedUser(patchUser: PatchUser){
-        return axios.patch(`${this.api}/basic`, patchUser)
+        return axios.patch(`${this.api}`, patchUser)
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import { Profile } from "../../models/Profile";
-import { BasicUserData } from "../../models/BasicUserData";
+import { Profile } from "../../models/responses/UserProfile";
+import { BasicUserData } from "../../models/responses/UserHeader";
 
 const ProfileHeader = (props: {
   profile: BasicUserData;

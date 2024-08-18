@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Profile } from "../models/Profile";
+import { Profile } from "../models/responses/UserProfile";
 import {
   NotificationType,
   setNotification,

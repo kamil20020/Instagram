@@ -2,7 +2,7 @@
 import NavMenuItem from "../../layout/header/NavMenuItem";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BasicUserData } from "../../models/BasicUserData";
+import { BasicUserData } from "../../models/responses/UserHeader";
 import { useAuthSelector, login } from "../../redux/slices/authSlice";
 import UserAPIService from "../../services/UserAPIService";
 import { useSearchParams } from "react-router-dom";
@@ -22,6 +22,7 @@ const Login = () => {
         scope: "openid profile email",
       },
     });
+    console.log(accessToken)
     AuthService.setRequestsAccessToken(accessToken);
   };
 

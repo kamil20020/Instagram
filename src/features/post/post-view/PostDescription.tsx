@@ -1,5 +1,5 @@
 ﻿import Avatar from "../../../components/Avatar";
-import { Post } from "../../../models/Post";
+import { Post } from "../../../models/responses/PostDetails";
 
 const PostDescription = (props: { post: Post }) => {
   const post = props.post;

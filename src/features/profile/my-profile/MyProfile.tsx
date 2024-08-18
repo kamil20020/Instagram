@@ -1,4 +1,4 @@
-﻿import { Profile } from "../../../models/Profile";
+﻿import { Profile } from "../../../models/responses/UserProfile";
 import HorizontalLine from "../HorizontalLine";
 import UserPosts from "../UserPosts";
 import UserStories from "../UserStories";

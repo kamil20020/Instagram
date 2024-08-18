@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import PostImage from "../../../components/PostImage";
 import PostAPIService from "../../../services/PostAPIService";
-import { Post } from "../../../models/Post";
+import { Post } from "../../../models/responses/PostDetails";
 import SimpleProfileHeader from "../../../components/SimpleProfileHeader";
 import PostComments from "./PostComments";
 import IconWithText from "../../../components/IconWithText";

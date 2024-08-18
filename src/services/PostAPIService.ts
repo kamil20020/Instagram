@@ -1,12 +1,6 @@
 ﻿import axios from "axios";
-
-export interface CreatePost {
-  description?: string;
-  img: string;
-  areHiddenLikes: boolean;
-  areDisabledComments: boolean;
-  userId: string;
-}
+import { CreatePost } from "../models/requests/CreatePost";
+import { Pagination } from "../models/requests/Pagination";
 
 class PostAPIService {
   private api: string = `${process.env.REACT_APP_API}/posts`;
@@ -15,8 +9,18 @@ class PostAPIService {
     return axios.get(`${this.api}/${id}`)
   }
 
+  getUserPostsBasicInfoPage(userId: string, pagination: Pagination){
+    return axios.get(`${this.api}/${userId}/posts`, {
+        params: {...pagination},
+    })
+  }
+
   createPost(request: CreatePost) {
     return axios.post(`${this.api}`, request);
+  }
+
+  deletePost(postId: string) {
+    return axios.delete(`${this.api}/${postId}`);
   }
 
   fixBase64(base64: string){

@@ -1,6 +1,6 @@
 ﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../rootReducer";
-import { BasicUserData } from "../../models/BasicUserData";
+import { BasicUserData } from "../../models/responses/UserHeader";
 
 export interface AuthState {
   user?: BasicUserData;

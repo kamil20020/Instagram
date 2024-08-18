@@ -1,6 +1,6 @@
 ﻿import Avatar from "../../../components/Avatar";
 import IconWithText from "../../../components/IconWithText";
-import { Profile } from "../../../models/Profile";
+import { Profile } from "../../../models/responses/UserProfile";
 
 const OtherProfileHeader = (props: {userProfile: Profile}) => {
   const userProfile = props.userProfile;

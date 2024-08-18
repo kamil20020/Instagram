@@ -14,7 +14,7 @@ import { RootState } from "../../redux/rootReducer";
 import Avatar from "../../components/Avatar";
 import CreatePostView from "../../features/post/create-post/CreatePostView";
 import { useAuthSelector } from "../../redux/slices/authSlice";
-import { BasicUserData } from "../../models/BasicUserData";
+import { BasicUserData } from "../../models/responses/UserHeader";
 
 const Header = () => {
   const authData = useSelector(useAuthSelector)

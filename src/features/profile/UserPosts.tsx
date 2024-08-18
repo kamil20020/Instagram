@@ -3,8 +3,8 @@ import Avatar from "../../components/Avatar";
 import UserAPIService from "../../services/UserAPIService";
 import PostHeaderView from "../post/PostHeaderView";
 import React from "react";
-import { PostHeader } from "../../models/PostHeader";
-import { Page } from "../../models/Page";
+import { PostHeader } from "../../models/responses/PostHeader";
+import { Page } from "../../models/responses/Page";
 import PostView from "../post/post-view/PostView";
 import DialogPostView from "../post/post-view/DialogPostView";
 

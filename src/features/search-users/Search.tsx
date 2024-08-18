@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Profile } from "../../models/Profile";
+import { Profile } from "../../models/responses/UserProfile";
 import {
   clearLatestProfiles,
   setLatestProfiles,

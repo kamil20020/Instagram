@@ -1,6 +1,6 @@
 ﻿import { Link, useNavigate } from "react-router-dom";
 import IconWithText from "../../components/IconWithText";
-import { PostHeader } from "../../models/PostHeader";
+import { PostHeader } from "../../models/responses/PostHeader";
 import "./Post.css";
 import React from "react";
 

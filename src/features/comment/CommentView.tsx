@@ -2,7 +2,7 @@
 import Icon from "../../components/Icon";
 import IconWithText from "../../components/IconWithText";
 import SimpleProfileHeader from "../../components/SimpleProfileHeader";
-import { Comment } from "../../models/Comment";
+import { Comment } from "../../models/responses/CommentData";
 
 const CommentView = (props: { comment: Comment }) => {
   const comment = props.comment;
