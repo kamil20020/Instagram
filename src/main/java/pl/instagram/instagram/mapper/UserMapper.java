@@ -19,9 +19,12 @@ public interface UserMapper {
     UserEntity userPersonalDataToUserEntity(PersonalData personalData);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
+    @Mapping(source = "verified", target = "isVerified")
     UserHeader userEntityToUserHeader(UserEntity userEntity);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
+    @Mapping(source = "private", target = "isPrivate")
+    @Mapping(source = "verified", target = "isVerified")
     UserProfile userEntityToUserProfileInfo(UserEntity userEntity);
 
     List<UserHeader> userEntityListToUserHeaderList(List<UserEntity> userEntityList);

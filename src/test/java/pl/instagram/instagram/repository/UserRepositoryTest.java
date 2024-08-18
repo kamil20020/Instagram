@@ -265,19 +265,7 @@ class UserRepositoryTest {
     void shouldNotFindByAccountIdWhenDoesNotExist() {
 
         //given
-        UserEntity u1 = UserEntity.builder()
-            .accountId("A")
-            .nickname("kamil")
-            .firstname("Kamil")
-            .surname("Kowalski")
-            .tel("+48111222333")
-            .description("Opis")
-            .creationDatetime(LocalDateTime.now())
-            .followings(0)
-            .followers(0)
-            .numberOfPosts(0)
-            .build();
-
+        
         //when
         Optional<UserEntity> foundUserOpt = userRepository.findByAccountId("B");
 

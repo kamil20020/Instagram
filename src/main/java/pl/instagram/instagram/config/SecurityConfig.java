@@ -2,6 +2,7 @@ package pl.instagram.instagram.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +23,9 @@ public class SecurityConfig {
         */
 
         http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/users/**").permitAll()
+            .requestMatchers("/users/register", "/users/*/profile", "/users/*/header").permitAll()
+            .requestMatchers("/users/user-account/*/header", "/users/ids").permitAll()
+            .requestMatchers("/users", HttpMethod.GET.name()).permitAll()
             .requestMatchers("/posts/**").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
@@ -30,6 +33,7 @@ public class SecurityConfig {
         );
 
         http
+            .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
             .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2ResourceServer(oauth2 -> oauth2

@@ -157,10 +157,9 @@ public class UserController {
         ),
     })
     @GetMapping("/ids")
-    ResponseEntity<List<UserHeader>> getUsersByIds(@RequestParam(name = "ids") String[] idsArr) {
+    ResponseEntity<List<UserHeader>> getUsersByIds(@RequestParam(name = "ids") List<String> idStrs) {
 
-        List<String> idsList = Arrays.asList(idsArr);
-        List<UUID> ids = uuidMapper.strListToUUIDList(idsList, USER_MAPPER_MESSAGE);
+        List<UUID> ids = uuidMapper.strListToUUIDList(idStrs, USER_MAPPER_MESSAGE);
 
         List<UserEntity> foundUsers = userService.getUsersByIds(ids);
         List<UserHeader> foundUsersHeaders = userMapper.userEntityListToUserHeaderList(foundUsers);

@@ -81,6 +81,9 @@ public class UserService {
         UserEntity newUser = UserEntity.builder()
             .accountId(accountId)
             .creationDatetime(LocalDateTime.now())
+            .followers(0)
+            .followings(0)
+            .numberOfPosts(0)
             .build();
 
         return userRepository.save(newUser).getId();
