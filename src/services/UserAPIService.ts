@@ -21,6 +21,7 @@ class UserAPIService {
     }
 
     searchUser(phrase: string, pagination: Pagination){
+        console.log(this.api)
         return axios.get(`${this.api}`, {
             params: {
                 phrase: phrase,
@@ -45,7 +46,7 @@ class UserAPIService {
     }
 
     registerUser(userAccountId: string){
-        return axios.post(`${this.api}/user-account`, {
+        return axios.post(`${this.api}/register`, {}, {
             params: {
                 accountId: userAccountId
             }

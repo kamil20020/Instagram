@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Profile } from "../models/responses/UserProfile";
+import { UserProfile } from "../models/responses/UserProfile";
 import {
   NotificationType,
   setNotification,
@@ -14,7 +14,7 @@ import OtherProfile from "../features/profile/other-profile/OtherProfile";
 const ProfileView = (props: { isMyProfile?: boolean }) => {
   let profileUserId = useParams().id;
 
-  const [userProfile, setUserProfile] = React.useState<Profile>();
+  const [userProfile, setUserProfile] = React.useState<UserProfile>();
 
   const dispatch = useDispatch();
 

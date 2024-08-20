@@ -5,7 +5,6 @@ import { useAuthSelector } from "../../../redux/slices/authSlice";
 import ProfileHeader from "../../search-users/ProfileHeader";
 import SetPostDescription from "./SetPostDescription";
 import HorizontalLine from "../../profile/HorizontalLine";
-import { CreatePost } from "../../../services/PostAPIService";
 import React from "react";
 import CustomCheckbox from "../../../components/CustomCheckbox";
 import PostImage from "../../../components/PostImage";

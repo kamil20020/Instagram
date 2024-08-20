@@ -5,26 +5,26 @@ import NavNonLinkItem from "../../../layout/header/NavNonLinkItem";
 import SelectPostImage from "./SelectPostImage";
 import HorizontalLine from "../../profile/HorizontalLine";
 import SetPostDetails, { PostDeails } from "./SetPostDetails";
-import PostAPIService, { CreatePost } from "../../../services/PostAPIService";
+import PostAPIService from "../../../services/PostAPIService";
 import { useDispatch } from "react-redux";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
 import { useNavigate } from "react-router-dom";
+import { CreatePost } from "../../../models/requests/CreatePost";
 
 const CreatePostView = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const [form, setForm] = React.useState<CreatePost>({
-    img: "",
+    content: "",
     areHiddenLikes: false,
-    areDisabledComments: false,
-    userId: "96f2e9fa-d4f0-4067-a272-04cc766f688b",
+    areDisabledComments: false
   });
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const setImg = (img: string) => {
-    setForm({ ...form, img: img });
+  const setImg = (content: string) => {
+    setForm({ ...form, content: content });
   };
 
   const setPostDetails = (postDetails: PostDeails) => {
@@ -37,7 +37,7 @@ const CreatePostView = () => {
   };
 
   const handleSavePost = () => {
-    PostAPIService.createPost({...form, img: PostAPIService.fixBase64(form.img)})
+    PostAPIService.createPost({...form, content: PostAPIService.fixBase64(form.content)})
     .then((response) => {
       dispatch(
         setNotification({
@@ -84,11 +84,11 @@ const CreatePostView = () => {
                   Utwórz nowy post
                 </h1>
                 <HorizontalLine />
-                {form.img === "" ? (
+                {form.content === "" ? (
                   <SelectPostImage setImg={setImg} />
                 ) : (
                   <SetPostDetails
-                    img={form.img}
+                    img={form.content}
                     postDetails={form}
                     setPostDetails={setPostDetails}
                     savePost={handleSavePost}

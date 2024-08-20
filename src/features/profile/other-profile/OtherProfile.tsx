@@ -1,10 +1,10 @@
-﻿import { Profile } from "../../../models/responses/UserProfile";
+﻿import { UserProfile } from "../../../models/responses/UserProfile";
 import HorizontalLine from "../HorizontalLine";
 import UserPosts from "../UserPosts";
 import UserStories from "../UserStories";
 import OtherProfileHeader from "./OtherProfileHeader";
 
-const OtherProfile = (props: {userProfile: Profile}) => {
+const OtherProfile = (props: {userProfile: UserProfile}) => {
   return (
     <div
       className="profile"

@@ -7,6 +7,7 @@ import { PostHeader } from "../../models/responses/PostHeader";
 import { Page } from "../../models/responses/Page";
 import PostView from "../post/post-view/PostView";
 import DialogPostView from "../post/post-view/DialogPostView";
+import PostAPIService from "../../services/PostAPIService";
 
 const UserPosts = () => {
 
@@ -20,7 +21,7 @@ const UserPosts = () => {
       return;
     }
 
-    UserAPIService.getUserPostsHeadersPage(userId, {page: 0, size: 12})
+    PostAPIService.getUserPostsBasicInfoPage(userId, {page: 0, size: 12})
     .then((response) => {
       const pagedResponse: Page = response.data
       setPosts(pagedResponse.content)

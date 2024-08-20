@@ -2,7 +2,7 @@
 import NavMenuItem from "../../layout/header/NavMenuItem";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BasicUserData } from "../../models/responses/UserHeader";
+import { UserHeader } from "../../models/responses/UserHeader";
 import { useAuthSelector, login } from "../../redux/slices/authSlice";
 import UserAPIService from "../../services/UserAPIService";
 import { useSearchParams } from "react-router-dom";
@@ -15,11 +15,14 @@ const Login = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const audience = process.env.REACT_APP_AUTH0_AUDIENCE
+  const scope = process.env.REACT_APP_AUTH0_SCOPE
+
   const setAccessToken = async () => {
     const accessToken = await getAccessTokenSilently({
       authorizationParams: {
-        audience: "https://instagram.com/",
-        scope: "openid profile email",
+        audience: audience,
+        scope: scope,
       },
     });
     console.log(accessToken)
@@ -31,9 +34,9 @@ const Login = () => {
       return;
     }
 
-    UserAPIService.getBasicUserByUserAccountId(user?.sub as string).then(
+    UserAPIService.getUserBasicInfoByUserAccountId(user?.sub as string).then(
       (response) => {
-        const userData: BasicUserData = response.data;
+        const userData: UserHeader = response.data;
         dispatch(login(userData));
 
         searchParams.delete("login");

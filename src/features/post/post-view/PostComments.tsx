@@ -2,7 +2,7 @@
 import CommentAPIService from "../../../services/CommentAPIService";
 import { Pagination } from "../../../models/requests/Pagination";
 import { Page } from "../../../models/responses/Page";
-import { Comment } from "../../../models/responses/CommentData";
+import { CommentData } from "../../../models/responses/CommentData";
 import CommentView from "../../comment/CommentView";
 import { Post } from "../../../models/responses/PostDetails";
 import Avatar from "../../../components/Avatar";
@@ -11,7 +11,7 @@ import PostDescription from "./PostDescription";
 const PostComments = (props: { post: Post }) => {
   const post = props.post;
 
-  const [comments, setComments] = React.useState<Comment[]>([]);
+  const [comments, setComments] = React.useState<CommentData[]>([]);
   const [page, setPage] = React.useState<number>(0);
   const pageSize = 12;
   let numberOfPages = 0;
@@ -36,7 +36,7 @@ const PostComments = (props: { post: Post }) => {
   return (
     <div className="post-comments">
       <PostDescription post={post}/>
-      {comments.map((comment: Comment) => (
+      {comments.map((comment: CommentData) => (
         <CommentView key={comment.id} comment={comment} />
       ))}
     </div>

@@ -1,9 +1,9 @@
 ﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../rootReducer";
-import { BasicUserData } from "../../models/responses/UserHeader";
+import { UserHeader } from "../../models/responses/UserHeader";
 
 export interface AuthState {
-  user?: BasicUserData;
+  user?: UserHeader;
   isAuthenticated: boolean;
 }
 
@@ -15,11 +15,11 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login(state, action: PayloadAction<BasicUserData>) {
+    login(state, action: PayloadAction<UserHeader>) {
       state.user = action.payload;
       state.isAuthenticated = true;
     },
-    updateUserData(state, action: PayloadAction<BasicUserData>) {
+    updateUserData(state, action: PayloadAction<UserHeader>) {
       state.user = action.payload
     },
     logout(state) {

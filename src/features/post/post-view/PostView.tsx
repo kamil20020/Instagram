@@ -25,12 +25,12 @@ const PostView = (props: { id: string }) => {
 
   return (
     <div className="post-view">
-      <PostImage img={`data:image/png;base64,${post.img}`} />
+      <PostImage img={`data:image/png;base64,${post.content}`} />
       <div className="post-details">
         <div className="post-author-info">
           <SimpleProfileHeader
-            avatar={post.userData.avatar}
-            nickname={post.userData.nickname}
+            avatar={post.author.avatar}
+            nickname={post.author.nickname}
           />
           <button className="outlined-button">
             <IconWithText iconName="more_horiz" />

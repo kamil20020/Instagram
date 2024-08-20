@@ -1,42 +1,42 @@
 ﻿import { useSelector } from "react-redux";
 import Avatar from "../../../components/Avatar";
-import { Profile } from "../../../models/responses/UserProfile";
+import { UserProfile } from "../../../models/responses/UserProfile";
 import { useAuthSelector } from "../../../redux/slices/authSlice";
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const MyProfileHeader = (props: { userProfile: Profile }) => {
+const MyProfileHeader = (props: { userProfile: UserProfile }) => {
 
   const userProfile = props.userProfile;
 
   const { isAuthenticated, user, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
-  useEffect(() => {
-    aa()
-  }, [])
+  // useEffect(() => {
+  //   aa()
+  // }, [])
 
-  const aa = async () => {
-    const accessToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: "https://instagram.com/",
-        scope: "openid profile email",
-      },
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    const a = await getAccessTokenWithPopup({
-      authorizationParams: {
-        audience: "https://instagram.com/",
-        scope: "openid profile email",
-      },
-    })
-    console.log(accessToken)
-  }
+  // const aa = async () => {
+  //   const accessToken = await getAccessTokenSilently({
+  //     authorizationParams: {
+  //       audience: "https://instagram.com/",
+  //       scope: "openid profile email",
+  //     },
+  //   })
+  //   .catch((error) => {
+  //     console.log(error)
+  //   })
+  //   const a = await getAccessTokenWithPopup({
+  //     authorizationParams: {
+  //       audience: "https://instagram.com/",
+  //       scope: "openid profile email",
+  //     },
+  //   })
+  //   console.log(accessToken)
+  // }
 
   return (
     <div className="user-header">
-      <Avatar image={userProfile.avatar}  width={240} height={240} />
+      <Avatar image={userProfile.avatar} width={240} height={240} />
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>

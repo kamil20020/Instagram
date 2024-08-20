@@ -1,8 +1,8 @@
 ﻿import Avatar from "../../../components/Avatar";
 import IconWithText from "../../../components/IconWithText";
-import { Profile } from "../../../models/responses/UserProfile";
+import { UserProfile } from "../../../models/responses/UserProfile";
 
-const OtherProfileHeader = (props: {userProfile: Profile}) => {
+const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
   const userProfile = props.userProfile;
 
   return (

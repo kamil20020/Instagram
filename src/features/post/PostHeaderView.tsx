@@ -25,7 +25,7 @@ const PostHeaderView = (props: { postHeader: PostHeader }) => {
     <div
       className="post-header"
       style={{
-        backgroundImage: `url(data:image/png;base64,${props.postHeader.img})`,
+        backgroundImage: `url(data:image/png;base64,${props.postHeader.content})`,
       }}
       onClick={() => {
         navigate("", {state: {postId: props.postHeader.id}})

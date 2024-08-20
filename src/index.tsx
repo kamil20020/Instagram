@@ -11,20 +11,25 @@ import Notification from "./components/Notification";
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 
+const audience = process.env.REACT_APP_AUTH0_AUDIENCE
+const scope = process.env.REACT_APP_AUTH0_SCOPE
+
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0 as string}
-        clientId={process.env.REACT_APP_CLIENT_ID as string}
+        domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
+        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID as string}
         authorizationParams={{
+          audience: audience,
+          scope: scope,
           redirect_uri: window.location.origin,
         }}
       >
         <App />
       </Auth0Provider>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

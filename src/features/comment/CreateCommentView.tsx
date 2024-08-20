@@ -1,13 +1,12 @@
 ﻿import React from "react";
 import "./Comment.css";
-import CommentAPIService, {
-  CreateComment,
-} from "../../services/CommentAPIService";
+import CommentAPIService from "../../services/CommentAPIService";
 import { useDispatch } from "react-redux";
 import {
   NotificationType,
   setNotification,
 } from "../../redux/slices/notificationSlice";
+import { CreateComment } from "../../models/requests/CreateComment";
 
 const CreateCommentView = (props: {
   postId: string;
@@ -19,15 +18,10 @@ const CreateCommentView = (props: {
 
   const handleCreate = () => {
     let request: CreateComment = {
-      userId: "96f2e9fa-d4f0-4067-a272-04cc766f688b",
       content: commentContent,
     };
 
-    if (props.parentCommentId) {
-      request.parentCommentId = props.parentCommentId;
-    }
-
-    CommentAPIService.createComment(props.postId, request)
+    CommentAPIService.createComment(props.postId, request, props.parentCommentId)
     .then((response) => {
       setCommentContent("");
       notificationDispatch(

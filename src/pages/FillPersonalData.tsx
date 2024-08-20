@@ -55,7 +55,7 @@ const FillPersonalData = () => {
       return;
     }
 
-    UserAPIService.patchLoggedUser(form)
+    UserAPIService.fillPersonalData(form)
     .then((response) => {
       dispatch(updateUserData(response.data))
     });

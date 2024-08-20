@@ -1,15 +1,15 @@
 ﻿import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import { Profile } from "../../models/responses/UserProfile";
+import { UserProfile } from "../../models/responses/UserProfile";
 import {
   userPreferencesSelector,
   setLatestProfiles,
 } from "../../redux/slices/userPreferencesSlice";
-import { BasicUserData } from "../../models/responses/UserHeader";
+import { UserHeader } from "../../models/responses/UserHeader";
 
 const LatestProfileHeader = (props: {
-  profile: BasicUserData;
+  profile: UserHeader;
   handleClick: (id: string) => void;
 }) => {
   const profile = props.profile;

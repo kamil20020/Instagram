@@ -6,11 +6,11 @@ const PostDescription = (props: { post: Post }) => {
 
   return (
     <div className="comment">
-      <Avatar width={40} height={40} image={post.userData.avatar} />
+      <Avatar width={40} height={40} image={post.author.avatar} />
       <div className="comment-details">
         <div>
           <h4 style={{ display: "inline-block", marginRight: 8 }}>
-            {post.userData.nickname}
+            {post.author.nickname}
           </h4>
           <span>{post.description}</span>
         </div>

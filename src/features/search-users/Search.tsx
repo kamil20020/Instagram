@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Profile } from "../../models/responses/UserProfile";
+import { UserProfile } from "../../models/responses/UserProfile";
 import {
   clearLatestProfiles,
   setLatestProfiles,
@@ -15,13 +15,15 @@ import ProfileHeader from "./ProfileHeader";
 import LatestProfileHeader from "./LatestProfileHeader";
 import "./Search.css";
 import SearchInput from "./SearchInput";
+import { UserHeader } from "../../models/responses/UserHeader";
+import { Page } from "../../models/responses/Page";
 
 const Search = () => {
   const [criteria, setCriteria] = React.useState<string>("");
 
   const [profilesTabSize, setProfilesTabSize] = React.useState<number>(0);
 
-  const [profiles, setProfiles] = React.useState<Profile[]>([]);
+  const [profiles, setProfiles] = React.useState<UserProfile[]>([]);
 
   const latestProfilesIds = useSelector(
     userPreferencesSelector
@@ -37,16 +39,20 @@ const Search = () => {
 
   useEffect(() => {
     if (criteria !== "") {
-      UserAPIService.searchUser(criteria).then((response) => {
-        console.log(response.data);
-        setProfiles(response.data);
+      UserAPIService.searchUser(criteria, {page: 0, size: 12})
+      .then((response) => {
+        const pagedResponse: Page = response.data
+        setProfiles(pagedResponse.content);
       });
-    } else {
+    } 
+    else {
       if (latestProfilesIds.length > 0) {
-        UserAPIService.getUsersByIds(latestProfilesIds).then((response) => {
+        UserAPIService.getUsersByIds(latestProfilesIds)
+        .then((response) => {
           setProfiles(response.data);
         });
-      } else {
+      } 
+      else {
         setProfiles([]);
       }
     }
@@ -95,14 +101,14 @@ const Search = () => {
             }}
           >
             {criteria !== ""
-              ? profiles.map((profile: Profile) => (
+              ? profiles.map((profile: UserHeader) => (
                   <ProfileHeader
                     key={profile.id}
                     profile={profile}
                     handleClick={handleClickProfile}
                   />
                 ))
-              : profiles.map((profile: Profile) => (
+              : profiles.map((profile: UserHeader) => (
                   <LatestProfileHeader
                     key={profile.id}
                     profile={profile}

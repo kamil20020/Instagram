@@ -2,18 +2,18 @@
 import Icon from "../../components/Icon";
 import IconWithText from "../../components/IconWithText";
 import SimpleProfileHeader from "../../components/SimpleProfileHeader";
-import { Comment } from "../../models/responses/CommentData";
+import { CommentData } from "../../models/responses/CommentData";
 
-const CommentView = (props: { comment: Comment }) => {
+const CommentView = (props: { comment: CommentData }) => {
   const comment = props.comment;
 
   return (
     <div className="comment">
-      <Avatar width={40} height={40} image={comment.userData.avatar} />
+      <Avatar width={40} height={40} image={comment.author.avatar} />
       <div className="comment-details">
         <div>
           <h4 style={{ display: "inline-block", marginRight: 8 }}>
-            {comment.userData.nickname}
+            {comment.author.nickname}
           </h4>
           <span>{comment.content}</span>
         </div>

@@ -3,7 +3,7 @@ import NavMenuItem from "../../layout/header/NavMenuItem";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import UserAPIService from "../../services/UserAPIService";
-import { BasicUserData } from "../../models/responses/UserHeader";
+import { UserHeader } from "../../models/responses/UserHeader";
 import { login, useAuthSelector } from "../../redux/slices/authSlice";
 import { useSearchParams } from "react-router-dom";
 import AuthService from "../../services/AuthService";
@@ -16,10 +16,12 @@ const Register = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const audience = process.env.REACT_APP_AUTH0_AUDIENCE
+
   const setAccessToken = async () => {
     const accessToken = await getAccessTokenSilently({
       authorizationParams: {
-        audience: "https://instagram.com/"
+        audience: audience
       },
     });
     AuthService.setRequestsAccessToken(accessToken);
@@ -30,7 +32,8 @@ const Register = () => {
       return;
     }
 
-    UserAPIService.createUser(user?.sub as string).then((response) => {
+    UserAPIService.registerUser(user?.sub as string)
+    .then((response) => {
       const userId = response.data;
       dispatch(login(userId));
 

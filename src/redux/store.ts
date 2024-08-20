@@ -2,8 +2,9 @@
 import { useDispatch } from "react-redux";
 import rootReducer from "./rootReducer";
 
-const persistedState = localStorage.getItem('userPreferences') 
-                       ? JSON.parse(localStorage.getItem('userPreferences') as string)
+const localStorageState = localStorage.getItem('userPreferences')
+const persistedState = localStorageState
+                       ? JSON.parse(localStorageState as string)
                        : {}
 
 export const store = configureStore({
