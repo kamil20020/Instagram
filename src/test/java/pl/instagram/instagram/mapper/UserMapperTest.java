@@ -26,7 +26,7 @@ class UserMapperTest {
     private final UserMapper userMapper = new UserMapperImpl();
 
     @Mock
-    private ByteArrayMapper byteArrayMapper;
+    private Base64Mapper base64Mapper;
 
     @Test
     void shouldConvertUpdateUserToUserEntity() {
@@ -91,7 +91,7 @@ class UserMapperTest {
 
         user.setId(userId);
 
-        Mockito.when(byteArrayMapper.byteArrayToBase64(any())).thenReturn(encodedAvatar);
+        Mockito.when(base64Mapper.byteArrayToBase64(any())).thenReturn(encodedAvatar);
 
         UserHeader userHeader = userMapper.userEntityToUserHeader(user);
 
@@ -103,7 +103,7 @@ class UserMapperTest {
         assertEquals(user.isVerified(), userHeader.isVerified());
         assertEquals(user.getNickname(), userHeader.nickname());
 
-        Mockito.verify(byteArrayMapper).byteArrayToBase64(avatar);
+        Mockito.verify(base64Mapper).byteArrayToBase64(avatar);
     }
 
     @Test
@@ -134,7 +134,7 @@ class UserMapperTest {
 
         user.setId(userId);
 
-        Mockito.when(byteArrayMapper.byteArrayToBase64(any())).thenReturn(encodedAvatar);
+        Mockito.when(base64Mapper.byteArrayToBase64(any())).thenReturn(encodedAvatar);
 
         UserProfile userProfile = userMapper.userEntityToUserProfileInfo(user);
 
@@ -193,8 +193,8 @@ class UserMapperTest {
 
         List<UserEntity> users = List.of(user1, user2);
 
-        Mockito.when(byteArrayMapper.byteArrayToBase64(avatars.get(0))).thenReturn(encodedAvatars.get(0));
-        Mockito.when(byteArrayMapper.byteArrayToBase64(avatars.get(1))).thenReturn(encodedAvatars.get(1));
+        Mockito.when(base64Mapper.byteArrayToBase64(avatars.get(0))).thenReturn(encodedAvatars.get(0));
+        Mockito.when(base64Mapper.byteArrayToBase64(avatars.get(1))).thenReturn(encodedAvatars.get(1));
 
         List<UserHeader> convertedUsers = userMapper.userEntityListToUserHeaderList(users);
 

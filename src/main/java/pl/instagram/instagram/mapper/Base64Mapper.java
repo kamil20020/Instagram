@@ -6,7 +6,7 @@ import org.mapstruct.Named;
 import java.util.Base64;
 
 @Mapper(componentModel = "spring")
-public interface ByteArrayMapper {
+public interface Base64Mapper {
 
     @Named("byteArrayToBase64")
     default String byteArrayToBase64(byte[] byteArr) {

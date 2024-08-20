@@ -7,7 +7,7 @@ import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.PostHeader;
 import pl.instagram.instagram.model.entity.PostEntity;
 
-@Mapper(uses = {ByteArrayMapper.class, DateTimeMapper.class, UserMapper.class}, componentModel = "spring")
+@Mapper(uses = {Base64Mapper.class, DateTimeMapper.class, UserMapper.class}, componentModel = "spring")
 public interface PostMapper {
 
     @Mapping(source = "content", target = "content", qualifiedByName = "base64ToByteArray")

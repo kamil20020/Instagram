@@ -10,7 +10,7 @@ import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.util.List;
 
-@Mapper(uses = {ByteArrayMapper.class}, componentModel = "spring")
+@Mapper(uses = {Base64Mapper.class}, componentModel = "spring")
 public interface UserMapper {
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "base64ToByteArray")

@@ -10,6 +10,6 @@ public record PostDetails (
     boolean areHiddenLikes,
     boolean areDisabledComments,
     UserHeader author,
-    Integer numberOfLikes,
-    Integer numberOfComments
+    Integer likesCount,
+    Integer commentsCount
 ){}
