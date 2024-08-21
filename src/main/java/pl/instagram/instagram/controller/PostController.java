@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.mapper.*;
 import pl.instagram.instagram.model.api.request.CreatePost;
+import pl.instagram.instagram.model.api.request.PatchPost;
 import pl.instagram.instagram.model.api.response.*;
+import pl.instagram.instagram.model.domain.PatchPostData;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.service.PostService;
 
@@ -171,11 +173,12 @@ public class PostController {
         ),
     })
     @PatchMapping("/{id}")
-    ResponseEntity<PostDetails> patchPostById(@PathVariable("id") String postIdStr, @RequestBody PostEntity postEntity) {
+    ResponseEntity<PostDetails> patchPostById(@PathVariable("id") String postIdStr, @RequestBody PatchPost patchPost) {
 
         UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);
+        PatchPostData toUpdate = postMapper.patchPostToPatchPostData(patchPost);
 
-        PostEntity changedPost = postService.patchPostById(postId, postEntity);
+        PostEntity changedPost = postService.patchPostById(postId, toUpdate);
         PostDetails changedPostDetails = postMapper.postEntityToPostDetails(changedPost);
 
         return ResponseEntity.ok(changedPostDetails);

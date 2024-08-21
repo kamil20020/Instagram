@@ -7,9 +7,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.instagram.instagram.model.api.request.CreatePost;
+import pl.instagram.instagram.model.api.request.PatchPost;
 import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.PostHeader;
 import pl.instagram.instagram.model.api.response.UserHeader;
+import pl.instagram.instagram.model.domain.PatchPostData;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 
@@ -184,5 +186,30 @@ class PostMapperTest {
     void shouldConvertPostEntityToPostHeaderWhenInputIsNull() {
 
         assertNull(postMapper.postEntityToPostHeader(null));
+    }
+
+    @Test
+    void shouldConvertPatchPostToPatchPostData(){
+
+        //given
+        PatchPost patchPost = new PatchPost(
+            "Opis postu",
+            true,
+            false
+        );
+
+        //when
+        PatchPostData gotPatchPostData = postMapper.patchPostToPatchPostData(patchPost);
+
+        //then
+        assertEquals(patchPost.description(), gotPatchPostData.description());
+        assertEquals(patchPost.areDisabledComments(), gotPatchPostData.areDisabledComments());
+        assertEquals(patchPost.areHiddenLikes(), gotPatchPostData.areHiddenLikes());
+    }
+
+    @Test
+    void shouldConvertPatchPostToPatchPostDataWhenInputIsNull(){
+
+        assertNull(postMapper.patchPostToPatchPostData(null));
     }
 }

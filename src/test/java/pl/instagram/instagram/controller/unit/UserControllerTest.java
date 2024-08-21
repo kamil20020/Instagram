@@ -1,4 +1,4 @@
-package pl.instagram.instagram.controller;
+package pl.instagram.instagram.controller.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.instagram.instagram.config.SecurityConfig;
+import pl.instagram.instagram.controller.UserController;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.mapper.UserMapper;
@@ -352,7 +353,7 @@ class UserControllerTest {
     @Test
     void shouldFillPersonalData() throws Exception {
 
-        //
+        //given
         UUID userId = UUID.randomUUID();
 
         PersonalData personalData = new PersonalData(
@@ -402,7 +403,7 @@ class UserControllerTest {
                 .content(jsonRequestBody)
             )
             .andDo(print())
-            .andExpect(status().isOk())
+e            .andExpect(status().isOk())
             .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();

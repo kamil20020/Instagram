@@ -1,4 +1,4 @@
-package pl.instagram.instagram.controller;
+package pl.instagram.instagram.controller.integration;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -25,6 +25,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.google.common.net.MediaType;
+import pl.instagram.instagram.controller.UserController;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.model.api.request.PersonalData;
 import pl.instagram.instagram.model.api.response.RestPage;
@@ -62,18 +63,6 @@ class UserControllerTestIT {
 
     @LocalServerPort
     private Integer port;
-
-    @Value("${auth0.client-id}")
-    private String clientId;
-
-    @Value("${auth0.client-secret}")
-    private String clientSecret;
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.audiences[0]}")
-    private String audience;
 
     @BeforeEach
     public void setUp(){
@@ -320,28 +309,7 @@ class UserControllerTestIT {
         assertTrue(userRepository.existsByAccountId(accountId));
     }
 
-    public String getAccessToken() throws UnirestException {
-
-        String tokenEndpoint = issuerUri + "oauth/token";
-
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .body("{\"client_id\":\"BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji\",\"client_secret\":\"Q81VfchXcabTbJX9_nGeJhVKBV8pu0sLmcdUvXhgAiOPRlGXFdN-Mu6tSGWWf_8I\",\"audience\":\"http://instagram.com/\",\"grant_type\":\"client_credentials\"}")
-            .when()
-                .post("https://dev-2o2mnxg0plclhtc7.us.auth0.com/oauth/token")
-            .then()
-                .statusCode(200)
-                .extract()
-                .response();
-
-        return response.jsonPath().getString("access_token");
-//
-//       return Unirest.post("https://dev-2o2mnxg0plclhtc7.us.auth0.com/oauth/token")
-//                .header("content-type", "application/json")
-//                .body("{\"client_id\":\"BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji\",\"client_secret\":\"Q81VfchXcabTbJX9_nGeJhVKBV8pu0sLmcdUvXhgAiOPRlGXFdN-Mu6tSGWWf_8I\",\"audience\":\"http://instagram.com/\",\"grant_type\":\"client_credentials\"}")
-//                .asString().toString();
-    }
-
+    // It is necessary to manually replace accessToken variable with a new token generated from auth0 e.g. using Postman
     @Test
     @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
     void shouldFillPersonalData() throws UnirestException {

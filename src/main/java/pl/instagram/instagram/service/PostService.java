@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
+import pl.instagram.instagram.model.domain.PatchPostData;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
@@ -76,22 +77,22 @@ public class PostService {
     }
 
     @Transactional
-    public PostEntity patchPostById(UUID postId, PostEntity updateData) throws EntityNotFoundException, UserIsNotResourceAuthorException {
+    public PostEntity patchPostById(UUID postId, PatchPostData updateData) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
         PostEntity foundPost = getPostById(postId);
 
-        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthor_AccountId);
+        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthorAccountId);
 
-        if(updateData.getDescription() != null){
-            foundPost.setDescription(updateData.getDescription());
+        if(updateData.description() != null){
+            foundPost.setDescription(updateData.description());
         }
 
-        if(updateData.isAreHiddenLikes()){
-            updateData.setAreHiddenLikes(updateData.isAreHiddenLikes());
+        if(updateData.areHiddenLikes() != null){
+            foundPost.setAreHiddenLikes(updateData.areHiddenLikes());
         }
 
-        if(updateData.isAreDisabledComments()){
-            updateData.setAreDisabledComments(updateData.isAreDisabledComments());
+        if(updateData.areDisabledComments()){
+            foundPost.setAreDisabledComments(updateData.areDisabledComments());
         }
 
         return foundPost;
@@ -103,7 +104,7 @@ public class PostService {
             throw new EntityNotFoundException("Nie istnieje post o takim id");
         }
 
-        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthor_AccountId);
+        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthorAccountId);
 
         postRepository.deleteById(postId);
     }
