@@ -1,16 +1,16 @@
 # Instagram copy 
-Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkcje oraz wygląd strony.       
+This app is mostly a simplified copy of Instagram in terms of its functions and website layout.
 
-## Wymagania funkcjonalne:
-* Posty (w trakcie),
-* Komentarze postów (w trakcie),
-* Ocenianie komentarzy (w trakcie),
-* Ocenianie postów (w trakcie),
-* Obserwowanie (w trakcie),
-* Stories (w trakcie),
-* Prosty messenger (w trakcie).
+## Functional requirements:
+* Posts (in progress),
+* Posts' comments (in progress),
+* Rating posts' comments (in progress),
+* Rating posts (in progress),
+* Following (in progress),
+* Stories (in progress),
+* Simple chat app (in progress).
 
-## Przypadki użycia:
+## Use cases:
 <p align="center">
     <img src="project/inheritance.png">
 <p>
@@ -27,10 +27,10 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
     <img src="project/logged-user.png">
 <p>
 
-## Główny schemat bazy danych:
-![Główny schemat bazy danych](project/instagram.png)
+## Main app's erd diagram:
+![Main app's erd diagram](project/instagram.png)
 
-## Technologie:
+## Technologies:
 * Frontend:
     * ReactJS,
     * TypeScript,
@@ -40,19 +40,19 @@ Aplikacja jest mocno uproszczoną kopią Instagrama biorąc pod uwagę jej funkc
     * Spring Boot,
     * Spring Data JPA,
     * Spring Security,
-	* Spring Cloud (docelowo),
+	* Spring Cloud (in the future),
 	* Liquibase,
-	* REST Assured (docelowo),
+	* REST Assured,
 	* Testcontainers.
- * Baza danych - PostgreSQL,
- * Ogólne:
-    * Kominikacja - REST,
-	* Architektura - mikroserwisy (osobno podstawowe funkcje instagrama i komunikator)
-    * Zewnętrzny serwer uwierzytelniający - Auth0.
- * Wdrożenie:
+ * Database - PostgreSQL,
+ * General:
+    * Communication messages - REST,
+	* Architecture - microservices (basic Instagram functions and chat are isolated components)
+    * External authentication and authorization provider - Auth0.
+ * Deploy:
     * Docker,
-    * Repozytorium obrazów dockerowych - Docker Hub,
-	* Broker wiadomości - Kafka (docelowo),
-	* CI/CD - GitHub Actions (docelowo) i ArgoCD (docelowo)
-    * Orkiestracja - Kubernetes,
-    * Chmura - Azure AKS (docelowo).
+    * Docker images repository - Docker Hub,
+	* Message broker - Kafka (in the future),
+	* CI/CD - GitHub Actions (in the future) i ArgoCD (in the future)
+    * Orchestration - Kubernetes,
+    * Cloud - Azure AKS (in the future).
