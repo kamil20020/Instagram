@@ -113,10 +113,10 @@ public class CommentController {
             content = @Content
         )
     })
-    @PostMapping("/{id}/comments/{parentCommentId}")
+    @PostMapping("/{id}/comments")
     ResponseEntity<CommentData> createPostComment(
         @PathVariable("id") String postIdStr,
-        @PathVariable("parentCommentId") String parentCommentIdStr,
+        @RequestParam(required = false, name = "parentCommentId") String parentCommentIdStr,
         @RequestBody CreateComment createComment
     ){
         UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);

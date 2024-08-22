@@ -68,6 +68,8 @@ public class PostService {
             .areHiddenLikes(postData.isAreHiddenLikes())
             .areDisabledComments(postData.isAreDisabledComments())
             .author(loggedUser)
+			.likesCount(0)
+			.commentsCount(0)
             .build();
 
         loggedUser.getPosts().add(newPost);

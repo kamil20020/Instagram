@@ -66,6 +66,8 @@ public class CommentService {
             .author(loggedUser)
             .post(post)
             .creationDatetime(LocalDateTime.now())
+			.likesCount(0)
+			.subCommentsCount(0)
             .build();
 
         CommentEntity createdComment;
