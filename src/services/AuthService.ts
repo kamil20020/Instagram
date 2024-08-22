@@ -1,11 +1,17 @@
 ﻿import axios from "axios";
 
 class AuthService {
+
+  getAuthorizationHeader(access_token: string){
+    return `Bearer ${access_token}`
+  }
+
   setRequestsAccessToken(accessToken: string) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    localStorage.setItem("access_token", accessToken)
   }
 
   removeRequestsAccessToken(){
+    localStorage.removeItem("access_token")
     delete axios.defaults.headers["Authorization"]
   }
 }

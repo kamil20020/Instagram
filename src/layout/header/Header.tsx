@@ -37,10 +37,10 @@ const Header = () => {
               />
               <CreatePostView/>
               <NavLinkItem
-                link={`/profile/${authData.user?.id}/me`}
+                link={`/profile/${authData.user?.id}`}
                 content={
                   <div style={{display: "flex", alignItems: "center"}}>
-                    <Avatar width={32} height={32}/>
+                    <Avatar width={2} height={2}/>
                     <p style={{marginLeft: 16}}>Profil</p>
                   </div>
                 }

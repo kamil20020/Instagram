@@ -10,7 +10,7 @@ class PostAPIService {
   }
 
   getUserPostsBasicInfoPage(userId: string, pagination: Pagination){
-    return axios.get(`${this.api}/${userId}/posts`, {
+    return axios.get(`${this.api}/author/${userId}`, {
         params: {...pagination},
     })
   }
@@ -21,10 +21,6 @@ class PostAPIService {
 
   deletePost(postId: string) {
     return axios.delete(`${this.api}/${postId}`);
-  }
-
-  fixBase64(base64: string){
-    return base64.split(',')[1]
   }
 }
 

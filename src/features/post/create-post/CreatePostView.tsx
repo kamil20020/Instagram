@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
 import { useNavigate } from "react-router-dom";
 import { CreatePost } from "../../../models/requests/CreatePost";
+import ImgService from "../../../services/ImgService";
 
 const CreatePostView = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -37,7 +38,7 @@ const CreatePostView = () => {
   };
 
   const handleSavePost = () => {
-    PostAPIService.createPost({...form, content: PostAPIService.fixBase64(form.content)})
+    PostAPIService.createPost({...form, content: ImgService.fixBase64(form.content)})
     .then((response) => {
       dispatch(
         setNotification({

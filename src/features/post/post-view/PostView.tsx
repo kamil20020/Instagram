@@ -47,13 +47,13 @@ const PostView = (props: { id: string }) => {
             </button>
           </div>
           <div>
-            <h4>Liczba polubień: 77 197</h4>
+          <h4>Liczba polubień: {!post.areHiddenLikes ? '77 197' : 'Ukryte'}</h4>
             <span style={{ color: "rgb(115, 115, 115)", marginTop: 2 }}>
               {new Date(post.creationDatetime).toLocaleDateString()}
             </span>
           </div>
         </div>
-        <CreateCommentView postId={props.id} />
+        {!post.areDisabledComments && <CreateCommentView postId={props.id} />}
       </div>
     </div>
   );

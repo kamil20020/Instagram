@@ -70,3 +70,23 @@
   font-size: 34px !important;
   font-weight: bold;
 }
+
+.my-profile-picture{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 240px;
+  height: 240px;
+}
+
+.change-profile-photo {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-profile-picture:hover{
+  cursor: pointer;
+}
+

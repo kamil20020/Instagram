@@ -4,7 +4,7 @@
   height: number;
 }) => {
   const anonymousAvatar =
-    "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-unknown-social-media-user-photo-default-avatar-profile-icon-vector-unknown-social-media-user-184816085.jpg";
+    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png";
 
   const getImg = () : string => {
 
@@ -25,8 +25,8 @@
       className="profile-photo"
       alt="Zdjęcie profilowe"
       src={getImg()}
-      width={props.width}
-      height={props.height}
+      width={props.image ? props.width : props.width + 40}
+      height={props.image ? props.height : props.height + 40}
     />
   );
 };

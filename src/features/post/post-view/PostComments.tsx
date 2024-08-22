@@ -36,9 +36,13 @@ const PostComments = (props: { post: Post }) => {
   return (
     <div className="post-comments">
       <PostDescription post={post}/>
-      {comments.map((comment: CommentData) => (
-        <CommentView key={comment.id} comment={comment} />
-      ))}
+      {!post.areDisabledComments ?
+          comments.map((comment: CommentData) => (
+            <CommentView key={comment.id} comment={comment} />
+          ))
+        :
+          <h4>Ukryto komentarze</h4>
+      }
     </div>
   );
 };

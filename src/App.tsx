@@ -16,6 +16,18 @@ import NotFound from "./errors/NotFound";
 import Profile from "./pages/Profile";
 import PostViewPage from "./pages/PostViewPage";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
+import axios from "axios";
+import AuthService from "./services/AuthService";
+
+axios.interceptors.request.use(function (config) {
+  const token = localStorage.getItem("access_token");
+
+  if(token){
+    config.headers.Authorization = AuthService.getAuthorizationHeader(token);
+  }
+   
+  return config;
+});
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,14 +41,6 @@ const router = createBrowserRouter(
     >
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
-      <Route
-        path="/profile/:id/me"
-        element={
-          <ProtectedRoute requiresLogin>
-            <Profile isMyProfile />
-          </ProtectedRoute>
-        }
-      />
       <Route path="/post/:id" element={<PostViewPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>

@@ -41,18 +41,18 @@ const Notification = () => {
             backgroundColor:
               notification.type === NotificationType.success
                 ? "rgb(237, 247, 237)"
-                : "red",
+                : "rgb(255, 128, 128)",
             zIndex: 1000
           }}
         >
           <IconWithText
-            iconName="task_alt"
+            iconName={notification.type === NotificationType.success ? "task_alt" : "close"}
             text={notification.message}
             iconStyle={{
               color:
                 notification.type === NotificationType.success
                   ? "rgb(46, 125, 50)"
-                  : "red",
+                  : "black",
             }}
           />
         </div>

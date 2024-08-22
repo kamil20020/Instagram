@@ -15,7 +15,7 @@ const ProfileHeader = (props: {
       to={`/profile/${profile.id}`}
       onClick={() => props.handleClick(profile.id)}
     >
-      <Avatar image={profile.avatar} width={64} height={64} />
+      <Avatar image={profile.avatar} width={62} height={62} />
       <div className="profile-header-info">
         <span style={{ fontWeight: "bold" }}>{profile.nickname}</span>
         <span>

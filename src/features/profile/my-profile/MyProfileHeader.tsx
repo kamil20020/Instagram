@@ -4,6 +4,7 @@ import { UserProfile } from "../../../models/responses/UserProfile";
 import { useAuthSelector } from "../../../redux/slices/authSlice";
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import MyAvatar from "./MyAvatar";
 
 const MyProfileHeader = (props: { userProfile: UserProfile }) => {
 
@@ -36,7 +37,7 @@ const MyProfileHeader = (props: { userProfile: UserProfile }) => {
 
   return (
     <div className="user-header">
-      <Avatar image={userProfile.avatar} width={240} height={240} />
+      <MyAvatar image={userProfile.avatar} />
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
