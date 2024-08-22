@@ -7,9 +7,12 @@ import PostComments from "./PostComments";
 import IconWithText from "../../../components/IconWithText";
 import Icon from "../../../components/Icon";
 import CreateCommentView from "../../comment/CreateCommentView";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const PostView = (props: { id: string }) => {
   const [post, setPost] = React.useState<Post>();
+
+  const {isAuthenticated} = useAuth0()
 
   React.useEffect(() => {
     PostAPIService.getById(props.id)
@@ -53,7 +56,7 @@ const PostView = (props: { id: string }) => {
             </span>
           </div>
         </div>
-        {!post.areDisabledComments && <CreateCommentView postId={props.id} />}
+        {!post.areDisabledComments && isAuthenticated && <CreateCommentView postId={props.id} />}
       </div>
     </div>
   );

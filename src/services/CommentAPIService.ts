@@ -16,7 +16,11 @@ class CommentAPIService {
     }
 
     createComment(postId: string, request: CreateComment, parentCommentId?: string){
-        return axios.post(`${this.api}/${postId}/comments/${parentCommentId}`, request)
+        return axios.post(`${this.api}/${postId}/comments`, request, {
+            params: {
+                parentCommentId
+            }
+        })
     }
 
     deleteComment(commentId: string){
