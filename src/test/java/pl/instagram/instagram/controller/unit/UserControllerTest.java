@@ -403,7 +403,7 @@ class UserControllerTest {
                 .content(jsonRequestBody)
             )
             .andDo(print())
-e            .andExpect(status().isOk())
+            .andExpect(status().isOk())
             .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();

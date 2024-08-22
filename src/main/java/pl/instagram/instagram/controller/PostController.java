@@ -100,7 +100,7 @@ public class PostController {
             content = @Content
         )
     })
-    @GetMapping("/{id}/posts")
+    @GetMapping("/author/{id}")
     ResponseEntity<Page<PostHeader>> getUserPostsHeadersPage(@PathVariable("id") String userIdStr, Pageable pageable){
 
         UUID userId = uuidMapper.strToUUID(userIdStr, USER_MAPPER_MESSAGE);
