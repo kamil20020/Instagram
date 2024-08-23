@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import jdk.jfr.MemoryAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -117,7 +118,7 @@ public class CommentController {
     ResponseEntity<CommentData> createPostComment(
         @PathVariable("id") String postIdStr,
         @RequestParam(required = false, name = "parentCommentId") String parentCommentIdStr,
-        @RequestBody CreateComment createComment
+        @Valid @RequestBody CreateComment createComment
     ){
         UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);
 

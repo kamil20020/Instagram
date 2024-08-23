@@ -25,8 +25,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/users/register", "/users/*/profile", "/users/*/header").permitAll()
             .requestMatchers("/users/user-account/*/header", "/users/ids").permitAll()
-            .requestMatchers("/users", HttpMethod.GET.name()).permitAll()
-            .requestMatchers("/posts/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/users").permitAll()
+            .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
             .anyRequest().authenticated()

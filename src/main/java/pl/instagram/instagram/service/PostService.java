@@ -16,6 +16,7 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.UUID;
 
 @Slf4j
@@ -70,6 +71,7 @@ public class PostService {
             .author(loggedUser)
 			.likesCount(0)
 			.commentsCount(0)
+            .comments(new HashSet<>())
             .build();
 
         loggedUser.getPosts().add(newPost);

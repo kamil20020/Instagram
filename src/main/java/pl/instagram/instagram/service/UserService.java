@@ -13,6 +13,7 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,6 +85,8 @@ public class UserService {
             .followers(0)
             .followings(0)
             .numberOfPosts(0)
+            .posts(new HashSet<>())
+            .comments(new HashSet<>())
             .build();
 
         return userRepository.save(newUser).getId();
