@@ -15,13 +15,29 @@
   outline: none;
 }
 
+.comment-content {
+  display: flex;
+  column-gap: 20px;
+}
+
 .comment {
   display: flex;
   column-gap: 20px;
+  flex-direction: column;
+  margin-top: 12px;
 }
 
 .comment-details {
   display: flex;
   flex-direction: column;
-  row-gap: 8px;
+  row-gap: 16px;
+}
+
+.sub-comments {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.sub-comments-content {
+  margin-top: 22px;
 }

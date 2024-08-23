@@ -34,7 +34,6 @@ const Content = () => {
       </div>
       <Login />
       <Register />
-      <Notification/>
     </React.Fragment>
   );
 };

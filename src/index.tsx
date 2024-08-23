@@ -27,6 +27,7 @@ root.render(
         }}
       >
         <App />
+        <Notification/>
       </Auth0Provider>
     </Provider>
   // </React.StrictMode>

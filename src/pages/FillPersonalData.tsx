@@ -6,6 +6,8 @@ import FormService from "../services/FormService";
 import UserAPIService from "../services/UserAPIService";
 import { useDispatch } from "react-redux";
 import { updateUserData } from "../redux/slices/authSlice";
+import { ErrorResponse } from "../models/responses/ErrorResponse";
+import { NotificationType, setNotification } from "../redux/slices/notificationSlice";
 
 export interface FormProps {
   firstname: string;
@@ -58,7 +60,15 @@ const FillPersonalData = () => {
     UserAPIService.fillPersonalData(form)
     .then((response) => {
       dispatch(updateUserData(response.data))
-    });
+    })
+    .catch((error) => {
+      const errorResponse: ErrorResponse = error.response.data
+
+      dispatch(setNotification({
+        type: NotificationType.error,
+        message: errorResponse.message,
+      }))
+    })
   };
 
   const handleFieldChange = (name: string, value: string) => {

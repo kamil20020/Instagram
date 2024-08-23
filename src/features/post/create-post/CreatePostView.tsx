@@ -51,10 +51,12 @@ const CreatePostView = () => {
     })
     .catch((error) => {
       console.log(error)
-      setNotification({
-        type: NotificationType.error,
-        message: "Nie udało się utworzyć posta",
-      })
+      dispatch(
+        setNotification({
+          type: NotificationType.error,
+          message: "Nie udało się utworzyć posta",
+        })
+      )
     })
   };
 

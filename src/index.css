@@ -83,6 +83,10 @@ button:hover{
   font-weight: 600;
 }
 
+.grey-button-outlined:hover{
+  opacity: 0.8;
+}
+
 .show-on-hover{
   opacity: 0;
 }
@@ -112,4 +116,23 @@ h4{
 
 .normal-weight{
   font-weight: normal;
+}
+
+.dialog-option{
+  margin: 0;
+  border-bottom: 0.5px solid black;
+}
+
+.dialog-option:nth-child(1){
+  border-radius: 12px 12px 0 0;
+}
+
+.dialog-option:last-child{
+  border-radius: 0 0 12px 12px;
+}
+
+.dialog-option:hover{
+  opacity: 0.8;
+  background-color: rgb(233, 233, 233);
+  cursor: pointer;
 }

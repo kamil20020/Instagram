@@ -78,7 +78,7 @@ input[type=checkbox]{
   flex-grow: 1;
   overflow-y: scroll;
   max-height: 510px;
-  row-gap: 32px;
+  row-gap: 12px;
 }
 
 .post-comments::-webkit-scrollbar {
