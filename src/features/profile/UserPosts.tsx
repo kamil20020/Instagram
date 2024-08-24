@@ -13,31 +13,62 @@ const UserPosts = () => {
 
   const userId = useParams().id
   const location = useLocation()
+  const [page, setPage] = React.useState<number>(0)
+  const [totalPages, setTotalPages] = React.useState<number>(0)
+  const pageSize = 12
 
   const [posts, setPosts] = React.useState<PostHeader[]>([])
 
-  React.useEffect(() => {
+  const onDelete = (id: string) => {
+    setPosts(
+      posts.filter((post) => post.id !== id)
+    )
+  }
+
+  const handleGetPostsPage = (newPage: number) => {
+
     if(!userId){
       return;
     }
 
-    PostAPIService.getUserPostsBasicInfoPage(userId, {page: 0, size: 12})
+    PostAPIService.getUserPostsBasicInfoPage(userId as string, {page: newPage, size: pageSize})
     .then((response) => {
       const pagedResponse: Page = response.data
-      setPosts(pagedResponse.content)
+      const gotPosts: PostHeader[] = pagedResponse.content
+      setPosts([...posts, ...gotPosts])
+      setPage(newPage)
+      setTotalPages(pagedResponse.totalPages)
     })
-}, [])
+  }
+
+  React.useEffect(() => {
+
+    handleGetPostsPage(page)
+  }, [])
 
   if(!userId){
     return <></>
   }
 
   return (
-    <div className="posts">
-      {posts.map((post: PostHeader) => (
-        <PostHeaderView key={post.id} postHeader={post}/>
-      ))}
-      {location.state !== null && <DialogPostView/>}
+    <div style={{display: "flex", flexDirection: "column"}}>
+      <div className="posts">
+        {posts.map((post: PostHeader) => (
+          <PostHeaderView key={post.id} postHeader={post}/>
+        ))}
+      </div>
+      {page < (totalPages - 1) &&
+        <div className="load-more-posts" style={{display: "flex", justifyContent: "center"}}>
+          <button 
+            className="grey-button"
+            style={{marginTop: 22, marginBottom: 20}}
+            onClick={() => handleGetPostsPage(page + 1)} 
+          >
+            Doładuj posty
+          </button>
+        </div>
+      }
+      {location.state !== null && <DialogPostView onDelete={onDelete}/>}
     </div>
   );
 };

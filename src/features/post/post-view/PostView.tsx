@@ -13,12 +13,18 @@ import { useAuthSelector } from "../../../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
+import { commentSelector, focusComment } from "../../../redux/slices/commentSlice";
 
-const PostView = (props: { id: string }) => {
+const PostView = (props: {
+  id: string,
+  onDelete: (id: string) => void;
+}) => {
   const [post, setPost] = React.useState<Post>();
   const [showOptions, setShowOptions] = React.useState<boolean>(false);
 
   const loggedUserId = useSelector(useAuthSelector).user?.id
+
+  const isCreatingComment = useSelector(commentSelector).isCreating
 
   const {isAuthenticated} = useAuth0()
 
@@ -43,7 +49,9 @@ const PostView = (props: { id: string }) => {
         message: "Usunięto post"
       }))
 
-      navigate(`/profile/${loggedUserId}`)
+      props.onDelete(props.id)
+
+      // navigate(`/profile/${loggedUserId}`)
     })
   }
 
@@ -90,12 +98,16 @@ const PostView = (props: { id: string }) => {
         <PostComments post={post}/>
         <div className="post-info">
           <div className="post-info-actions">
-            <button className="outlined-button">
-              <Icon iconName="favorite" />
-            </button>
-            <button className="outlined-button">
-              <Icon iconName="mode_comment" />
-            </button>
+            {isAuthenticated &&
+              <React.Fragment>
+                <button className="outlined-button">
+                  <Icon iconName="favorite" />
+                </button>
+                <button className="outlined-button" onClick={() => dispatch(focusComment(undefined))}>
+                  <Icon iconName="mode_comment" />
+                </button>
+              </React.Fragment>
+            }
           </div>
           <div>
           <h4>Liczba polubień: {!post.areHiddenLikes ? '77 197' : 'Ukryte'}</h4>
@@ -104,7 +116,7 @@ const PostView = (props: { id: string }) => {
             </span>
           </div>
         </div>
-        {!post.areDisabledComments && isAuthenticated && <CreateCommentView postId={props.id} />}
+        {!post.areDisabledComments && <CreateCommentView postId={props.id} />}
       </div>
     </div>
   );

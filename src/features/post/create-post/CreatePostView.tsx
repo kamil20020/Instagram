@@ -6,11 +6,12 @@ import SelectPostImage from "./SelectPostImage";
 import HorizontalLine from "../../profile/HorizontalLine";
 import SetPostDetails, { PostDeails } from "./SetPostDetails";
 import PostAPIService from "../../../services/PostAPIService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
 import { useNavigate } from "react-router-dom";
 import { CreatePost } from "../../../models/requests/CreatePost";
 import ImgService from "../../../services/ImgService";
+import { useAuthSelector } from "../../../redux/slices/authSlice";
 
 const CreatePostView = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -20,6 +21,8 @@ const CreatePostView = () => {
     areHiddenLikes: false,
     areDisabledComments: false
   });
+
+  const loggedUserId = useSelector(useAuthSelector).user?.id;
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -46,8 +49,8 @@ const CreatePostView = () => {
           message: "Utworzono post",
         })
       );
+
       setIsOpen(false)
-      //navigate("/profile/")
     })
     .catch((error) => {
       console.log(error)

@@ -12,7 +12,7 @@ const MyProfile = (props: {userProfile: UserProfile}) => {
     >
       <MyProfileHeader userProfile={props.userProfile} />
       <HorizontalLine />
-      <UserPosts />
+      <UserPosts/>
     </div>
   );
 };

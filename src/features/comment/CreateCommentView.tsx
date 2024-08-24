@@ -1,30 +1,37 @@
 ﻿import React from "react";
 import "./Comment.css";
 import CommentAPIService from "../../services/CommentAPIService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   NotificationType,
   setNotification,
 } from "../../redux/slices/notificationSlice";
 import { CreateComment } from "../../models/requests/CreateComment";
+import useComponentVisible from "../../components/useComponentVisible";
+import { clearComment, commentSelector, finishComment, setCommentContent } from "../../redux/slices/commentSlice";
 
 const CreateCommentView = (props: {
   postId: string;
-  parentCommentId?: string;
 }) => {
-  const [commentContent, setCommentContent] = React.useState<string>("");
 
-  const notificationDispatch = useDispatch();
+  const comment = useSelector(commentSelector)
+
+  const dispatch = useDispatch();
+
+  const ref = useComponentVisible(() => {
+    dispatch(clearComment())
+  }) as any;
 
   const handleCreate = () => {
     let request: CreateComment = {
-      content: commentContent,
+      content: comment.content,
     };
 
-    CommentAPIService.createComment(props.postId, request, props.parentCommentId)
+    CommentAPIService.createComment(props.postId, request, comment.parentCommentId)
     .then((response) => {
-      setCommentContent("");
-      notificationDispatch(
+      dispatch(finishComment())
+
+      dispatch(
         setNotification({
           message: "Utworzono komentarz",
           type: NotificationType.success,
@@ -33,16 +40,28 @@ const CreateCommentView = (props: {
     });
   };
 
+  const handleChangeCommentContent = (event: any) => {
+    const content = event.target.value
+
+    dispatch(
+      setCommentContent(content)
+    )
+  }
+
+  if(!comment.isCreating){
+    return <></>
+  }
+
   return (
-    <div className="create-comment">
+    <div className="create-comment" ref={ref ? ref : null}>
       <input
         className="comment-input"
         type="text"
         placeholder="Dodaj komentarz..."
-        value={commentContent}
-        onChange={(event: any) => setCommentContent(event.target.value)}
+        value={comment.content}
+        onChange={handleChangeCommentContent}
       />
-      <button className="blue-button" onClick={handleCreate}>
+      <button className="blue-button" autoFocus={comment.isCreating} onClick={handleCreate}>
         Opublikuj
       </button>
     </div>

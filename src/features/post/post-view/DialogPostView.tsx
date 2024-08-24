@@ -2,10 +2,17 @@
 import Dialog from "../../../components/Dialog";
 import PostView from "./PostView";
 
-const DialogPostView = () => {
+const DialogPostView = (props: {
+  onDelete: (id: string) => void;
+}) => {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const onDelete = (id: string) => {
+    props.onDelete(id)
+    navigate("", { state: null });
+  }
 
   return (
     <Dialog
@@ -15,7 +22,7 @@ const DialogPostView = () => {
       handleClose={() => {
         navigate("", { state: null });
       }}
-      content={<PostView id={location.state.postId} />}
+      content={<PostView id={location.state.postId} onDelete={onDelete}/>}
     />
   );
 };

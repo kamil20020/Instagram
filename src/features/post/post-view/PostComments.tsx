@@ -7,41 +7,78 @@ import CommentView from "../../comment/CommentView";
 import { Post } from "../../../models/responses/PostDetails";
 import Avatar from "../../../components/Avatar";
 import PostDescription from "./PostDescription";
+import { useDispatch, useSelector } from "react-redux";
+import { clearComment, commentSelector } from "../../../redux/slices/commentSlice";
 
 const PostComments = (props: { post: Post }) => {
   const post = props.post;
 
   const [comments, setComments] = React.useState<CommentData[]>([]);
   const [page, setPage] = React.useState<number>(0);
+  const [totalPages, setTotalPages] = React.useState<number>(0);
   const pageSize = 12;
-  let numberOfPages = 0;
 
-  React.useEffect(() => {
+  const commentState = useSelector(commentSelector)
+
+  const dispatch = useDispatch()
+
+  const onDelete = (commentId: string) => {
+    setComments(
+      comments.filter((comment: CommentData) => comment.id !== commentId)
+    )
+  }
+
+  const handleShowComments = (newPage: number) => {
     const pagination: Pagination = {
-      page: page,
+      page: newPage,
       size: pageSize,
     };
 
     CommentAPIService.getCommentsPage(post.id, pagination)
     .then((response) => {
       const pagedResponse: Page = response.data;
-      setPage(pagedResponse.page);
-      setComments(pagedResponse.content);
-      numberOfPages = pagedResponse.totalPages;
+      setPage(newPage);
+      setComments([...comments, ...pagedResponse.content]);
+      setTotalPages(pagedResponse.totalPages)
 
       console.log(response.data);
     });
+  }
+
+  React.useEffect(() => {
+    handleShowComments(page)
   }, []);
+
+  if(commentState.parentCommentId === undefined && !commentState.isCreating && commentState.content){
+    handleShowComments(0)
+    setPage(0)
+    dispatch(clearComment())
+  }
 
   return (
     <div className="post-comments">
       <PostDescription post={post}/>
       {!post.areDisabledComments ?
           comments.map((comment: CommentData) => (
-            <CommentView key={comment.id} postId={post.id} comment={comment} />
+            <CommentView 
+              key={comment.id} 
+              postId={post.id} 
+              comment={comment}
+              onDelete={onDelete}
+            />
           ))
         :
           <h4>Ukryto komentarze</h4>
+      }
+      {page < (totalPages - 1) &&
+        <div className="load-more-comments" style={{display: "flex", justifyContent: "center"}}>
+          <button 
+            className="grey-button"
+            onClick={() => handleShowComments(page + 1)} 
+          >
+            Doładuj komentarze
+          </button>
+        </div>
       }
     </div>
   );

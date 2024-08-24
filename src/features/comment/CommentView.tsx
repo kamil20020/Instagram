@@ -12,13 +12,18 @@ import { setNotification, NotificationType } from "../../redux/slices/notificati
 import PostAPIService from "../../services/PostAPIService";
 import CommentAPIService from "../../services/CommentAPIService";
 import { Page } from "../../models/responses/Page";
+import { clearComment, commentSelector, focusComment, setParentCommentId } from "../../redux/slices/commentSlice";
+import SubCommentsView from "./SubCommentsView";
 
-const CommentView = (props: { postId: string, comment: CommentData}) => {
+const CommentView = (props: {
+  postId: string, 
+  comment: CommentData,
+  parentCommentId?: string,
+  onDelete: (id: string) => void
+}) => {
   const comment = props.comment;
 
-  const [subComments, setSubComments] = React.useState<CommentData[]>([])
   const [showOptions, setShowOptions] = React.useState<boolean>(false);
-  const [showSubComments, setShowSubComments] = React.useState<boolean>(false);
 
   const loggedUserId = useSelector(useAuthSelector).user?.id
 
@@ -32,19 +37,6 @@ const CommentView = (props: { postId: string, comment: CommentData}) => {
     setShowOptions(false)
   }
 
-  const handleShowComments = () => {
-
-    CommentAPIService.getCommentsPage(props.postId, {page: 0, size: 12}, comment.id)
-    .then((response) => {
-      const pagedRespone: Page = response.data
-      const newSubComments: CommentData[] = pagedRespone.content
-
-      setSubComments(newSubComments)
-    })
-
-    setShowSubComments(!showSubComments)
-  }
-
   const handleDeleteComment = () => {
     handleCloseShowOptions()
 
@@ -54,11 +46,13 @@ const CommentView = (props: { postId: string, comment: CommentData}) => {
         type: NotificationType.success,
         message: "Usunięto komentarz"
       }))
+
+      props.onDelete(comment.id)
     })
   }
 
   return (
-    <div className="comment" style={{marginLeft: 48}}>
+    <div className="comment" style={{marginLeft: props.parentCommentId ? 48 : 0}}>
       <div className="comment-content">
         <Avatar width={40} height={40} image={comment.author.avatar} />
         <div className="comment-details">
@@ -73,7 +67,7 @@ const CommentView = (props: { postId: string, comment: CommentData}) => {
               {new Date(comment.creationDatetime).toLocaleDateString()}
             </span>
             <button className="grey-button-outlined">6 polubień</button>
-            <button className="grey-button-outlined">Odpowiedz</button>
+            <button className="grey-button-outlined" onClick={() => dispatch(focusComment(comment.id))}>Odpowiedz</button>
             <button className="grey-button-outlined show-on-hover" onClick={() => handleShowOptions(true)}>
               <Icon
                 iconName="more_horiz"
@@ -98,23 +92,7 @@ const CommentView = (props: { postId: string, comment: CommentData}) => {
           </div>
         </div>
       </div>
-      <div className="sub-comments">
-        <button 
-          className="grey-button-outlined" 
-          onClick={handleShowComments}
-        >
-          {!showSubComments ? `Wyświetl odpowiedzi (${2})` : "Ukryj odpowiedzi"}
-        </button>
-        <div className="sub-comments-content">
-          {showSubComments && subComments.map((childComment: CommentData) => (
-            <CommentView 
-              key={childComment.id} 
-              postId={props.postId} 
-              comment={childComment}
-            />
-          ))}
-        </div>
-      </div>
+      <SubCommentsView postId={props.postId} comment={comment}/>
     </div>
   );
 };
