@@ -87,6 +87,7 @@ public class CommentService {
 
             createdComment = commentRepository.save(newComment);
             parentComment.getSubComments().add(createdComment);
+            parentComment.setSubCommentsCount(parentComment.getSubCommentsCount() + 1);
         }
         else{
             createdComment = commentRepository.save(newComment);
@@ -94,6 +95,7 @@ public class CommentService {
 
         loggedUser.getComments().add(createdComment);
         post.getComments().add(createdComment);
+        post.setCommentsCount(post.getCommentsCount() + 1);
 
         return createdComment;
     }
