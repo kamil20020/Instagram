@@ -1,6 +1,8 @@
 package pl.instagram.instagram.repository;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -39,10 +41,9 @@ class PostRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void shouldPositivelyCheckIfPostExistsByAuthorAccountId() {
+    void shouldPositivelyCheckIfPostExistsByPostIdAndAuthorAccountId() {
 
         //given
-
         String accountId = "A";
 
         UserEntity author = UserEntity.builder()
@@ -74,15 +75,57 @@ class PostRepositoryTest {
         author.getPosts().add(post);
 
         //then
-        assertTrue(postRepository.existsByAuthorAccountId(accountId));
+        assertTrue(postRepository.existsByIdAndAuthorAccountId(post.getId(), accountId));
     }
 
-    @Test
-    void shouldNegativelyCheckIfPostExistsByAuthorAccountId() {
+    @ParameterizedTest
+    @CsvSource(value = {
+        "A, 02e97563-ec39-4c6a-88b6-73a53d73b05f",
+        "B, null",
+        "B, 02e97563-ec39-4c6a-88b6-73a53d73b05f"
+    })
+    void shouldNegativelyCheckIfPostExistsByPostIdAndAuthorAccountId(String expectedAccountId, String expectedPostIdStr) {
 
-        String accountId = "B";
+        String accountId = "A";
 
-        assertFalse(postRepository.existsByAuthorAccountId(accountId));
+        UserEntity author = UserEntity.builder()
+            .accountId(accountId)
+            .creationDatetime(LocalDateTime.now())
+            .isVerified(true)
+            .isPrivate(false)
+            .followers(1)
+            .followings(2)
+            .numberOfPosts(1)
+            .posts(new HashSet<>())
+            .build();
+
+        author = userRepository.save(author);
+
+        PostEntity post = PostEntity.builder()
+            .creationDatetime(LocalDateTime.now())
+            .description("Opis posta")
+            .content(("Zawartosc posta").getBytes(StandardCharsets.UTF_8))
+            .areHiddenLikes(true)
+            .areDisabledComments(false)
+            .likesCount(1)
+            .commentsCount(2)
+            .author(author)
+            .build();
+
+        post = postRepository.save(post);
+
+        author.getPosts().add(post);
+
+        UUID expectedPostId;
+
+        if(expectedPostIdStr.equals("null")){
+            expectedPostId = UUID.randomUUID();
+        }
+        else{
+            expectedPostId = UUID.fromString(expectedPostIdStr);
+        }
+
+        assertFalse(postRepository.existsByIdAndAuthorAccountId(expectedPostId, expectedAccountId));
     }
 
     @Test

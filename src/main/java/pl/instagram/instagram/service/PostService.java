@@ -85,7 +85,7 @@ public class PostService {
 
         PostEntity foundPost = getPostById(postId);
 
-        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthorAccountId);
+        authService.checkLoggedUserResourceAuthorship(foundPost.getAuthor().getAccountId());
 
         if(updateData.description() != null){
             foundPost.setDescription(updateData.description());
@@ -95,7 +95,7 @@ public class PostService {
             foundPost.setAreHiddenLikes(updateData.areHiddenLikes());
         }
 
-        if(updateData.areDisabledComments()){
+        if(updateData.areDisabledComments() != null){
             foundPost.setAreDisabledComments(updateData.areDisabledComments());
         }
 
@@ -108,7 +108,7 @@ public class PostService {
             throw new EntityNotFoundException("Nie istnieje post o takim id");
         }
 
-        authService.checkLoggedUserResourceAuthorship(postRepository::existsByAuthorAccountId);
+        authService.checkLoggedUserResourceAuthorship(postId, postRepository::existsByIdAndAuthorAccountId);
 
         postRepository.deleteById(postId);
     }

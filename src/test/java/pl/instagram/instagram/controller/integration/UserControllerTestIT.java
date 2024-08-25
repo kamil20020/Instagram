@@ -314,7 +314,7 @@ class UserControllerTestIT {
     @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
     void shouldFillPersonalData() {
 
-        String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0MDA1NjcwLCJleHAiOjE3MjQwOTIwNzAsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.d5W9oyYU0_3r6I5yVOzFatKoYzxNR0kWxUHKXz6NyDLB24iK3SGIGuFew1Xvfo8n5jNrCblqAws--0WpluSiISoqWU-dhzLRZQDMucJS8Nj9TjFNKTJpNk1xcpPeBXeRreKT744QdPP4-ZcfJVVC1bmeRU62UWjxTj417O41fRvw3nj0dcZnoQbtTMIovqilojf1a3Jdqf386wbazD_RRHWuBcbomnf6EF4H0bVRNIogVEtskYqEON2Lj5DMvwEK13vbIG_HDkZZsL5qru9FhC7sc8gv_wxmApjhMd7FTPsBZgQK7jOOjsujvZSGZDsoRvsEtpokJLCtbX3yutPAYQ";
+        String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0NTk0MzQ4LCJleHAiOjE3MjQ2ODA3NDgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.NzSIQ95-2JVM-BS6UOjXby7LAV46JBUhEdaR41CLWoIAcdS050A6BJN7Zv8D_R0aPjAvSXZbLvhJ3lArRxCUa45HlgvonGJJdUg8p25BLd6c-HKXPm-bDyMKS9l9alrNDkttPf4sZlVO0gRV-vIK9D7WrZhPa0DBnC6uUeAL1eZeVTgJYp1v9jbIRyvk05FBGbi6brq_buVOSYwIqQ8XPxC3m8RoU41xtucsOTy-MwAMkcvrKzeeXnKU7PTlRxXBfoAOwoynyuQhiKxXSDAR3Z-rmW9h8gYz4F7eoKIq_bpoYDjtvDzcp8OL3MjbyMlCJFZFjZWzEnYFZcn4S6G0bw";
         String accountId = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients";
 
         UserEntity u1 = UserEntity.builder()
@@ -354,23 +354,5 @@ class UserControllerTestIT {
         assertEquals(personalData.firstname(), u1.getFirstname());
         assertEquals(personalData.surname(), u1.getSurname());
         assertEquals(personalData.nickname(), u1.getNickname());
-    }
-
-    @Test
-    void shouldNotFillPersonalDataWithUnloggedUser() {
-
-        PersonalData personalData = new PersonalData(
-            "Kamil",
-            "Kowalski",
-            "kamil"
-        );
-
-        given()
-            .body(personalData)
-            .contentType(ContentType.JSON)
-        .when()
-            .patch("/fill-personal-data")
-        .then()
-            .statusCode(401);
     }
 }

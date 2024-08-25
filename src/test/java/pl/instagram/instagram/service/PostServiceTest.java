@@ -259,11 +259,17 @@ class PostServiceTest {
     void shouldPatchPostById() {
 
         //given
+        UserEntity author = UserEntity.builder()
+            .accountId("A")
+            .build();
+
         UUID postId = UUID.randomUUID();
+
         PostEntity post = PostEntity.builder()
             .description("Opis postu")
             .areDisabledComments(true)
             .areHiddenLikes(false)
+            .author(author)
             .build();
 
         PatchPostData updatePost = new PatchPostData(
@@ -292,11 +298,17 @@ class PostServiceTest {
     void shouldPatchPostByIdAndSkipWhenFieldsAreNull() {
 
         //given
+        UserEntity author = UserEntity.builder()
+            .accountId("A")
+            .build();
+
         UUID postId = UUID.randomUUID();
+
         PostEntity post = PostEntity.builder()
             .description("Opis postu")
             .areDisabledComments(true)
             .areHiddenLikes(false)
+            .author(author)
             .build();
 
         PatchPostData updatePost = new PatchPostData(
@@ -350,9 +362,14 @@ class PostServiceTest {
     void shouldNotPatchPostByIdAndSkipWhenUserIsNotPostsAuthor() {
 
         //given
+        UserEntity author = UserEntity.builder()
+            .accountId("A")
+            .build();
+
         UUID postId = UUID.randomUUID();
 
         PostEntity post = PostEntity.builder()
+            .author(author)
             .build();
 
         PatchPostData updatePost = new PatchPostData(
@@ -391,7 +408,7 @@ class PostServiceTest {
         //then
         Mockito.verify(postRepository).existsById(postId);
         Mockito.verify(postRepository).deleteById(postId);
-        Mockito.verify(authService).checkLoggedUserResourceAuthorship(any());
+        Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(postId), any());
     }
 
     @Test
@@ -421,7 +438,7 @@ class PostServiceTest {
 
         //when
         Mockito.when(postRepository.existsById(any())).thenReturn(true);
-        Mockito.doThrow(UserIsNotResourceAuthorException.class).when(authService).checkLoggedUserResourceAuthorship(any());
+        Mockito.doThrow(UserIsNotResourceAuthorException.class).when(authService).checkLoggedUserResourceAuthorship(any(), any());
 
         //then
         assertThrows(
@@ -430,6 +447,6 @@ class PostServiceTest {
         );
 
         Mockito.verify(postRepository).existsById(postId);
-        Mockito.verify(authService).checkLoggedUserResourceAuthorship(any());
+        Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(postId), any());
     }
 }

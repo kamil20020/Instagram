@@ -11,7 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.instagram.instagram.config.SecurityConfig;
@@ -62,6 +64,8 @@ class UserControllerTest {
     private static final String urlPrefix = "/users/";
 
     private static final String USER_MAPPER_MESSAGE = "użytkownika";
+
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0NTk0MzQ4LCJleHAiOjE3MjQ2ODA3NDgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.NzSIQ95-2JVM-BS6UOjXby7LAV46JBUhEdaR41CLWoIAcdS050A6BJN7Zv8D_R0aPjAvSXZbLvhJ3lArRxCUa45HlgvonGJJdUg8p25BLd6c-HKXPm-bDyMKS9l9alrNDkttPf4sZlVO0gRV-vIK9D7WrZhPa0DBnC6uUeAL1eZeVTgJYp1v9jbIRyvk05FBGbi6brq_buVOSYwIqQ8XPxC3m8RoU41xtucsOTy-MwAMkcvrKzeeXnKU7PTlRxXBfoAOwoynyuQhiKxXSDAR3Z-rmW9h8gYz4F7eoKIq_bpoYDjtvDzcp8OL3MjbyMlCJFZFjZWzEnYFZcn4S6G0bw";
 
     @Test
     void shouldGetUserHeaderById() throws Exception {
@@ -351,6 +355,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldFillPersonalData() throws Exception {
 
         //given
@@ -369,7 +374,7 @@ class UserControllerTest {
         convertedPersonalData.setSurname(personalData.surname());
 
         UserEntity changedUser = UserEntity.builder()
-            .accountId("A")
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
             .nickname("kamil")
             .firstname("Kamil")
             .surname("Kowalski")
@@ -399,6 +404,7 @@ class UserControllerTest {
             .perform(
                 post(urlPrefix + "fill-personal-data")
                 .with(csrf())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequestBody)
             )
@@ -415,6 +421,30 @@ class UserControllerTest {
     }
 
     @Test
+    void shouldNotFillPersonalDataWhenUnlogged() throws Exception {
+
+        PersonalData personalData = new PersonalData(
+            "kamil",
+            "Kamil",
+            "Kowalski"
+        );
+
+        String serializedPersonalData = objectMapper.writeValueAsString(personalData);
+
+        MvcResult mvcResult = mockMvc
+            .perform(
+                post(urlPrefix + "fill-personal-data")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(serializedPersonalData)
+            )
+            .andDo(print())
+            .andExpect(status().isUnauthorized())
+            .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldPatchLoggedUser() throws Exception {
 
         //given
@@ -435,7 +465,7 @@ class UserControllerTest {
         convertedUpdateUser.setAvatar(("avatar").getBytes(StandardCharsets.UTF_8));
 
         UserEntity changedUser = UserEntity.builder()
-            .accountId("A")
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
             .nickname("kamil")
             .firstname("Kamil")
             .surname("Kowalski")
@@ -466,6 +496,7 @@ class UserControllerTest {
             .perform(
                 patch("/users")
                 .with(csrf())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(requestBodyStr)
             )
@@ -479,5 +510,29 @@ class UserControllerTest {
         Mockito.verify(userMapper).updateUserToUserEntity(updateUser);
         Mockito.verify(userService).patchUser(convertedUpdateUser);
         Mockito.verify(userMapper).userEntityToUserHeader(changedUser);
+    }
+
+    @Test
+    void shouldNotPatchLoggedUserWhenUnlogged() throws Exception {
+
+        UpdateUser updateUser = new UpdateUser(
+            "kamil",
+            "Kamil",
+            "Kowalski",
+            "avatar"
+        );
+
+        String serializedUpdateUser = objectMapper.writeValueAsString(updateUser);
+
+        MvcResult mvcResult = mockMvc
+            .perform(
+                patch("/users")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(serializedUpdateUser)
+            )
+            .andDo(print())
+            .andExpect(status().isUnauthorized())
+            .andReturn();
     }
 }

@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface CommentRepository extends JpaRepository<CommentEntity, UUID> {
 
     boolean existsByAuthor_AccountId(String accountId);
+    boolean existsByIdAndAuthor_AccountId(UUID id, String accountId);
     Page<CommentEntity> getAllByPostIdAndParentCommentId(UUID postId, UUID parentCommentId, Pageable pageable);
 }

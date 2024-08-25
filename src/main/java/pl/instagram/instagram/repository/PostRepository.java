@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, UUID> {
 
-    boolean existsByAuthorAccountId(String authorAccountId);
+    boolean existsByIdAndAuthorAccountId(UUID id, String authorAccountId);
     Page<PostEntity> findAllByAuthorId(UUID authorId, Pageable pageable);
 }

@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.instagram.instagram.config.SecurityConfig;
@@ -70,6 +72,8 @@ class PostControllerTest {
 
     private static final String POST_MAPPER_MESSAGE = "posta";
     private static final String USER_MAPPER_MESSAGE = "użytkownika";
+
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0NTk0MzQ4LCJleHAiOjE3MjQ2ODA3NDgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.NzSIQ95-2JVM-BS6UOjXby7LAV46JBUhEdaR41CLWoIAcdS050A6BJN7Zv8D_R0aPjAvSXZbLvhJ3lArRxCUa45HlgvonGJJdUg8p25BLd6c-HKXPm-bDyMKS9l9alrNDkttPf4sZlVO0gRV-vIK9D7WrZhPa0DBnC6uUeAL1eZeVTgJYp1v9jbIRyvk05FBGbi6brq_buVOSYwIqQ8XPxC3m8RoU41xtucsOTy-MwAMkcvrKzeeXnKU7PTlRxXBfoAOwoynyuQhiKxXSDAR3Z-rmW9h8gYz4F7eoKIq_bpoYDjtvDzcp8OL3MjbyMlCJFZFjZWzEnYFZcn4S6G0bw";
 
     @BeforeAll
     private static void setUp(){
@@ -237,6 +241,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldCreatePost() throws Exception {
 
         //given
@@ -272,6 +277,7 @@ class PostControllerTest {
         MvcResult mvcResult = mockMvc
             .perform(
                 post("/posts")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(serializedCreatePost)
             )
@@ -289,6 +295,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldNotCreatePostWithInvalidInput() throws Exception {
 
         //given
@@ -305,6 +312,7 @@ class PostControllerTest {
         MvcResult mvcResult = mockMvc
             .perform(
                 post("/posts")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(serializedCreatePost)
             )
@@ -320,6 +328,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldNotCreatePostWhenUserWasNotFound() throws Exception {
 
         //given
@@ -341,6 +350,7 @@ class PostControllerTest {
         mockMvc
             .perform(
                 post("/posts")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(serializedCreatePost)
             )
@@ -352,6 +362,29 @@ class PostControllerTest {
     }
 
     @Test
+    void shouldNotCreatePostWhenUserIsUnlogged() throws Exception {
+
+        CreatePost createPost = new CreatePost(
+            "Opis postu",
+            "Zawartość postu",
+            true,
+            false
+        );
+
+        String serializedCreatePost = objectMapper.writeValueAsString(createPost);
+
+        mockMvc
+            .perform(
+                post("/posts")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(serializedCreatePost)
+            )
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldPatchPostById() throws Exception {
 
         //given
@@ -394,6 +427,7 @@ class PostControllerTest {
         MvcResult mvcResult = mockMvc
             .perform(
                 patch(URL_PREFIX + postId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(serializedPatchPost)
             )
@@ -412,6 +446,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldNotPatchPostByIdWhenUserIsNotAnAuthor() throws Exception {
 
         //given
@@ -439,6 +474,7 @@ class PostControllerTest {
         mockMvc
             .perform(
                 patch(URL_PREFIX + postId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(serializedPatchPost)
             )
@@ -452,6 +488,30 @@ class PostControllerTest {
     }
 
     @Test
+    void shouldNotPatchPostByIdWhenUserUnlogged() throws Exception {
+
+        UUID postId = UUID.randomUUID();
+
+        PatchPost patchPost = new PatchPost(
+            "Opis postu",
+            true,
+            false
+        );
+
+        String serializedPatchPost = objectMapper.writeValueAsString(patchPost);
+
+        mockMvc
+            .perform(
+                patch(URL_PREFIX + postId)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(serializedPatchPost)
+            )
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldDeletePostById() throws Exception {
 
         //given
@@ -463,6 +523,7 @@ class PostControllerTest {
         mockMvc
             .perform(
                 delete(URL_PREFIX + postId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
             )
             .andDo(print())
             .andExpect(status().isNoContent());
@@ -473,6 +534,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji")
     void shouldNotDeletePostByIdWhenUserIsNotAnAuthor() throws Exception {
 
         //given
@@ -485,6 +547,7 @@ class PostControllerTest {
         mockMvc
             .perform(
                 delete(URL_PREFIX + postId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
             )
             .andDo(print())
             .andExpect(status().isForbidden());
@@ -492,5 +555,18 @@ class PostControllerTest {
         //then
         Mockito.verify(uuidMapper).strToUUID(postId.toString(), POST_MAPPER_MESSAGE);
         Mockito.verify(postService).deletePostById(postId);
+    }
+
+    @Test
+    void shouldNotDeletePostByIdWhenUserIsUnlogged() throws Exception {
+
+        UUID postId = UUID.randomUUID();
+
+        mockMvc
+            .perform(
+                delete(URL_PREFIX + postId)
+            )
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
     }
 }

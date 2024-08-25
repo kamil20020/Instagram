@@ -12,6 +12,8 @@ import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -26,11 +28,20 @@ public class AuthService {
         return authenticationOpt.isPresent() && authenticationOpt.get().isAuthenticated();
     }
 
-    public void checkLoggedUserResourceAuthorship(Predicate<String> isAuthorPredicate) throws NonLoggedException, UserIsNotResourceAuthorException{
+    public void checkLoggedUserResourceAuthorship(UUID id, BiPredicate<UUID, String> isAuthorPredicate) throws NonLoggedException, UserIsNotResourceAuthorException{
 
         String loggedUserAccountId = getLoggedUserAccountId();
 
-        if(!isAuthorPredicate.test(loggedUserAccountId)){
+        if(!isAuthorPredicate.test(id, loggedUserAccountId)){
+            throw new UserIsNotResourceAuthorException("Użytkownik nie jest autorem podanego zasobu");
+        }
+    }
+
+    public void checkLoggedUserResourceAuthorship(String shouldBeAccountId) throws NonLoggedException, UserIsNotResourceAuthorException{
+
+        String loggedUserAccountId = getLoggedUserAccountId();
+
+        if(!loggedUserAccountId.equals(shouldBeAccountId)){
             throw new UserIsNotResourceAuthorException("Użytkownik nie jest autorem podanego zasobu");
         }
     }

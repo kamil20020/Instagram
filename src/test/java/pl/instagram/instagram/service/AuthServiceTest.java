@@ -8,6 +8,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.instagram.instagram.exception.NonLoggedException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,13 +41,23 @@ class AuthServiceTest {
     @WithMockUser(username = "kamil")
     void shouldPositivelyCheckLoggedUserResourceAuthorshipWhenUserIsAllowed() {
 
-        authService.checkLoggedUserResourceAuthorship((accountId) -> accountId.equals("kamil"));
+        UUID existingId = UUID.randomUUID();
+
+        authService.checkLoggedUserResourceAuthorship(
+            existingId,
+            (id, accountId) -> accountId.equals("kamil") && id.equals(existingId)
+        );
     }
 
     @Test
     void shouldNegativelyCheckLoggedUserResourceAuthorshipWhenUserIsNoLogged() {
 
-        assertThatThrownBy(() -> authService.checkLoggedUserResourceAuthorship((accountId) -> accountId.equals("kamil")))
+        UUID existingId = UUID.randomUUID();
+
+        assertThatThrownBy(() -> authService.checkLoggedUserResourceAuthorship(
+            existingId,
+            (id, accountId) -> accountId.equals("kamil") && id.equals(existingId))
+        )
             .isInstanceOf(NonLoggedException.class);
     }
 
@@ -53,7 +65,12 @@ class AuthServiceTest {
     @WithMockUser
     void shouldNegativelyCheckLoggedUserResourceAuthorshipWhenUserIsNotAllowed() {
 
-        assertThatThrownBy(() -> authService.checkLoggedUserResourceAuthorship((accountId) -> accountId.equals("kamil")))
+        UUID existingId = UUID.randomUUID();
+
+        assertThatThrownBy(() -> authService.checkLoggedUserResourceAuthorship(
+            existingId,
+            (id, accountId) -> accountId.equals("kamil") && id.equals(existingId))
+        )
             .isInstanceOf(UserIsNotResourceAuthorException.class)
             .hasMessage("Użytkownik nie jest autorem podanego zasobu");
     }

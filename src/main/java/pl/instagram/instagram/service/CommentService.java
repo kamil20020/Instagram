@@ -16,6 +16,7 @@ import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.CommentRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,6 +69,7 @@ public class CommentService {
             .creationDatetime(LocalDateTime.now())
 			.likesCount(0)
 			.subCommentsCount(0)
+            .subComments(new HashSet<>())
             .build();
 
         CommentEntity createdComment;
@@ -101,7 +103,7 @@ public class CommentService {
 
         CommentEntity foundComment = getById(commentId);
 
-        authService.checkLoggedUserResourceAuthorship(commentRepository::existsByAuthor_AccountId);
+        authService.checkLoggedUserResourceAuthorship(foundComment.getAuthor().getAccountId());
 
         foundComment.setContent(newContent);
 
@@ -114,7 +116,7 @@ public class CommentService {
             throw new EntityNotFoundException("Nie istnieje komentarz o takim id");
         }
 
-        authService.checkLoggedUserResourceAuthorship(commentRepository::existsByAuthor_AccountId);
+        authService.checkLoggedUserResourceAuthorship(commentId, commentRepository::existsByIdAndAuthor_AccountId);
 
         commentRepository.deleteById(commentId);
     }

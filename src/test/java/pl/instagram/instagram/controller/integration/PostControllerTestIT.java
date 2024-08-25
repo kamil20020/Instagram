@@ -54,7 +54,7 @@ class PostControllerTestIT {
     @Autowired
     private UUIDMapper uuidMapper;
 
-    private static final String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0NDI1Mzg0LCJleHAiOjE3MjQ1MTE3ODQsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.wGsRxh52w__PE3p1PN0VVT9x_xAfuIk9gHb3NYkYTz6k6FCu-vbvcSuh1jGj5Tq_W91Tu1NLF6J9E0OX6zxDKLOLWEXuFw_jZI8nhp43ddpp8PEWUsDDypTkg1Li_nJqkUtFwrGqx8o9LV29CAfII6_l5HbAwsTCBlZod1SN61WX7U8NWNQ1Hq6Wc0_E-u-eDVj_c2uwMlRtkOPXkNCbtGvx0_k5z-acLwz6FrYGCP04rId9xZX6y3CGBlm-ELxu2UMMjQDD5rsMv0EuA2uk1mWDARyoLN9U-mU6DxAEyT-jen39byHD8Ph6o2Z2k1mp7BCihM4ldAiivAENNyw0GA";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0NTk0MzQ4LCJleHAiOjE3MjQ2ODA3NDgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.NzSIQ95-2JVM-BS6UOjXby7LAV46JBUhEdaR41CLWoIAcdS050A6BJN7Zv8D_R0aPjAvSXZbLvhJ3lArRxCUa45HlgvonGJJdUg8p25BLd6c-HKXPm-bDyMKS9l9alrNDkttPf4sZlVO0gRV-vIK9D7WrZhPa0DBnC6uUeAL1eZeVTgJYp1v9jbIRyvk05FBGbi6brq_buVOSYwIqQ8XPxC3m8RoU41xtucsOTy-MwAMkcvrKzeeXnKU7PTlRxXBfoAOwoynyuQhiKxXSDAR3Z-rmW9h8gYz4F7eoKIq_bpoYDjtvDzcp8OL3MjbyMlCJFZFjZWzEnYFZcn4S6G0bw";
 
     @LocalServerPort
     private Integer port;
@@ -251,7 +251,7 @@ class PostControllerTestIT {
         );
 
         PostDetails gotPost = given()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
             .body(createPost)
             .contentType(ContentType.JSON)
         .when()
@@ -271,28 +271,6 @@ class PostControllerTestIT {
         assertEquals(createPost.areDisabledComments(), gotPost.areDisabledComments());
         assertNotNull(gotPost.author());
         assertEquals(author.getId().toString(), gotPost.author().id());
-    }
-
-    @Test
-    void shouldNotCreatePostWithUnloggedUser() {
-
-        byte[] content = ("Zawartość postu").getBytes(StandardCharsets.UTF_8);
-        String encodedContent = "WmF3YXJ0b8WbxIcgcG9zdHU=";
-
-        CreatePost createPost = new CreatePost(
-            "Opis postu",
-            encodedContent,
-            true,
-            false
-        );
-
-        given()
-            .body(createPost)
-            .contentType(ContentType.JSON)
-        .when()
-            .post()
-        .then()
-            .statusCode(401);
     }
 
     @Test
@@ -340,7 +318,7 @@ class PostControllerTestIT {
         );
 
         PostDetails gotPost = given()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
             .body(patchPost)
             .contentType(ContentType.JSON)
         .when()
@@ -361,26 +339,6 @@ class PostControllerTestIT {
         assertEquals(patchPost.description(), gotPost.description());
         assertEquals(patchPost.areDisabledComments(), gotPost.areDisabledComments());
         assertEquals(patchPost.areHiddenLikes(), gotPost.areHiddenLikes());
-    }
-
-    @Test
-    void shouldNotPatchPostByIdWithUnloggedUser() {
-
-        UUID postId = UUID.randomUUID();
-
-        PatchPost patchPost = new PatchPost(
-            "Opis postu1",
-            true,
-            false
-        );
-
-        given()
-            .body(patchPost)
-            .contentType(ContentType.JSON)
-        .when()
-            .patch("/{id}", postId)
-        .then()
-            .statusCode(401);
     }
 
     @Test
@@ -422,7 +380,7 @@ class PostControllerTestIT {
         author.getPosts().add(post);
 
         given()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
         .when()
             .delete("/{postId}", post.getId())
         .then()
@@ -430,17 +388,5 @@ class PostControllerTestIT {
 
         assertFalse(postRepository.existsById(post.getId()));
         assertEquals(1, userRepository.findById(author.getId()).get().getNumberOfPosts());
-    }
-
-    @Test
-    void shouldNotDeletePostByIdWhenUserIsNotLogged() {
-
-        UUID postId = UUID.randomUUID();
-
-        given()
-        .when()
-            .delete("/{postId}", postId)
-        .then()
-            .statusCode(401);
     }
 }
