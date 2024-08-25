@@ -6,5 +6,7 @@ public record CommentData(
     String id,
     UserHeader author,
     String content,
-    OffsetDateTime creationDatetime
+    OffsetDateTime creationDatetime,
+    Integer subCommentsCount,
+    Integer likesCount
 ){}
