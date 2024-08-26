@@ -2,13 +2,21 @@
 This app is mostly a simplified copy of Instagram in terms of its functions and website layout.
 
 ## Functional requirements:
-* Posts (in progress),
-* Posts' comments (in progress),
+* Posts (done),
+* Posts' comments (done),
 * Rating posts' comments (in progress),
 * Rating posts (in progress),
 * Following (in progress),
 * Stories (in progress),
 * Simple chat app (in progress).
+
+## Tests:
+* Planned to make separate unit tests for repositories, services, controllers and mappers and integration tests for controllers,
+* Currently are tested:
+	* User repository, service, mapper, controller, integration with about 100% coverage,
+	* Auth service with about 100% coverage,
+ 	* Post repository, repository, service, mapper, controller, integration with about 100% coverage,
+  	* Comment repository, repository, service, mapper, controller, integration with about 100% coverage.
 
 ## Use cases:
 <p align="center">
