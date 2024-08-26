@@ -52,6 +52,7 @@ public class PostEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "author_id", nullable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
     private UserEntity author;
 
     @JsonIgnore

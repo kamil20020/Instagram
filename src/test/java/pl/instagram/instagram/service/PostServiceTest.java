@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
 import pl.instagram.instagram.model.domain.PatchPostData;
+import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
@@ -400,15 +401,29 @@ class PostServiceTest {
         //given
         UUID postId = UUID.randomUUID();
 
+        UserEntity author = UserEntity.builder()
+            .posts(new HashSet<>())
+            .numberOfPosts(1)
+            .build();
+
+        PostEntity post = PostEntity.builder()
+            .author(author)
+            .build();
+
+        author.getPosts().add(post);
+
         //when
-        Mockito.when(postRepository.existsById(any())).thenReturn(true);
+        Mockito.when(postRepository.findById(any())).thenReturn(Optional.of(post));
 
         postService.deletePostById(postId);
 
         //then
-        Mockito.verify(postRepository).existsById(postId);
-        Mockito.verify(postRepository).deleteById(postId);
+        assertEquals(0, author.getNumberOfPosts());
+        assertEquals(0, author.getPosts().size());
+
+        Mockito.verify(postRepository).findById(postId);
         Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(postId), any());
+        Mockito.verify(postRepository).deleteById(postId);
     }
 
     @Test
@@ -418,7 +433,7 @@ class PostServiceTest {
         UUID postId = UUID.randomUUID();
 
         //when
-        Mockito.when(postRepository.existsById(any())).thenReturn(false);
+        Mockito.when(postRepository.findById(any())).thenReturn(Optional.empty());
 
         //then
         assertThrows(
@@ -427,7 +442,7 @@ class PostServiceTest {
             "Nie istnieje post o takim id"
         );
 
-        Mockito.verify(postRepository).existsById(postId);
+        Mockito.verify(postRepository).findById(postId);
     }
 
     @Test
@@ -436,8 +451,14 @@ class PostServiceTest {
         //given
         UUID postId = UUID.randomUUID();
 
+        UserEntity author = new UserEntity();
+
+        PostEntity post = PostEntity.builder()
+            .author(author)
+            .build();
+
         //when
-        Mockito.when(postRepository.existsById(any())).thenReturn(true);
+        Mockito.when(postRepository.findById(any())).thenReturn(Optional.of(post));
         Mockito.doThrow(UserIsNotResourceAuthorException.class).when(authService).checkLoggedUserResourceAuthorship(any(), any());
 
         //then
@@ -446,7 +467,7 @@ class PostServiceTest {
             () -> postService.deletePostById(postId)
         );
 
-        Mockito.verify(postRepository).existsById(postId);
+        Mockito.verify(postRepository).findById(postId);
         Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(postId), any());
     }
 }

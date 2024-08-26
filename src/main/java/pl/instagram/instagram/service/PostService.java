@@ -104,11 +104,13 @@ public class PostService {
 
     public void deletePostById(UUID postId) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
-        if(!postRepository.existsById(postId)){
-            throw new EntityNotFoundException("Nie istnieje post o takim id");
-        }
+        PostEntity foundPost = getPostById(postId);
+        UserEntity author = foundPost.getAuthor();
 
         authService.checkLoggedUserResourceAuthorship(postId, postRepository::existsByIdAndAuthorAccountId);
+
+        author.setNumberOfPosts(author.getNumberOfPosts() - 1);
+        author.getPosts().remove(foundPost);
 
         postRepository.deleteById(postId);
     }

@@ -50,15 +50,18 @@ public class CommentEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id", updatable = false)
+    @EqualsAndHashCode.Exclude
     private CommentEntity parentComment;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
     private PostEntity post;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "author_id", nullable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
     private UserEntity author;
 }

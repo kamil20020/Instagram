@@ -114,11 +114,22 @@ public class CommentService {
 
     public void deleteComment(UUID commentId) throws EntityNotFoundException, UserIsNotResourceAuthorException{
 
-        if(!commentRepository.existsById(commentId)){
-            throw new EntityNotFoundException("Nie istnieje komentarz o takim id");
-        }
+        CommentEntity foundComment = getById(commentId);
+        PostEntity foundPost = foundComment.getPost();
+        UserEntity foundAuthor = foundComment.getAuthor();
 
         authService.checkLoggedUserResourceAuthorship(commentId, commentRepository::existsByIdAndAuthor_AccountId);
+
+        if(foundComment.getParentComment() != null) {
+
+            CommentEntity parentComment = foundComment.getParentComment();
+            parentComment.setSubCommentsCount(parentComment.getSubCommentsCount() - 1);
+            parentComment.getSubComments().remove(foundComment);
+        }
+
+        foundPost.setCommentsCount(foundPost.getCommentsCount() - 1);
+        foundPost.getComments().remove(foundComment);
+        foundAuthor.getComments().remove(foundComment);
 
         commentRepository.deleteById(commentId);
     }

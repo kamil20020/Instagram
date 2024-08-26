@@ -167,7 +167,7 @@ public class CommentController {
         )
     })
     @PutMapping("/comments/{id}")
-    ResponseEntity<CommentData> updateComment(@PathVariable("id") String commentIdStr, @RequestBody UpdateComment updateComment){
+    ResponseEntity<CommentData> updateComment(@PathVariable("id") String commentIdStr, @Valid @RequestBody UpdateComment updateComment){
 
         UUID commentId = uuidMapper.strToUUID(commentIdStr, COMMENT_MAPPER_MESSAGE);
 

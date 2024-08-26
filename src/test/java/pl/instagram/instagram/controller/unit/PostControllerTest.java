@@ -213,6 +213,8 @@ class PostControllerTest {
         Page<PostHeader> gotPostsHeadersPage = objectMapper.readValue(jsonResponse, RestPage.class);
 
         //then
+        assertEquals(postsPage.getTotalElements(), gotPostsHeadersPage.getTotalElements());
+
         Mockito.verify(uuidMapper).strToUUID(authorId.toString(), USER_MAPPER_MESSAGE);
         Mockito.verify(postService).getUserPostsPage(authorId, pageable);
         Mockito.verify(postMapper).postEntityToPostHeader(post);

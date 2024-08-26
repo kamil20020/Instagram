@@ -466,19 +466,91 @@ class CommentServiceTest {
     }
 
     @Test
-    void shouldDeleteComment() {
+    void shouldDeleteCommentWhenParentCommentIdIsNull() {
 
         //given
         UUID commentId = UUID.randomUUID();
 
+        UserEntity author = UserEntity.builder()
+            .comments(new HashSet<>())
+            .build();
+
+        PostEntity post = PostEntity.builder()
+            .commentsCount(1)
+            .comments(new HashSet<>())
+            .build();
+
+        CommentEntity comment = CommentEntity.builder()
+            .author(author)
+            .post(post)
+            .build();
+
+        author.getComments().add(comment);
+        post.getComments().add(comment);
+
         //when
-        Mockito.when(commentRepository.existsById(any())).thenReturn(true);
+        Mockito.when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
         Mockito.doNothing().when(authService).checkLoggedUserResourceAuthorship(any(), any());
 
         commentService.deleteComment(commentId);
 
         //then
-        Mockito.verify(commentRepository).existsById(commentId);
+        assertEquals(0, author.getComments().size());
+        assertEquals(0, post.getCommentsCount());
+        assertEquals(0, post.getComments().size());
+
+        Mockito.verify(commentRepository).findById(commentId);
+        Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(commentId), any());
+        Mockito.verify(commentRepository).deleteById(commentId);
+    }
+
+    @Test
+    void shouldDeleteCommentWhenParentCommentIdIsNotNull() {
+
+        //given
+        UUID commentId = UUID.randomUUID();
+
+        UserEntity author = UserEntity.builder()
+            .comments(new HashSet<>())
+            .build();
+
+        PostEntity post = PostEntity.builder()
+            .commentsCount(2)
+            .comments(new HashSet<>())
+            .build();
+
+        CommentEntity parentComment = CommentEntity.builder()
+            .subCommentsCount(1)
+            .subComments(new HashSet<>())
+            .build();
+
+        CommentEntity comment = CommentEntity.builder()
+            .author(author)
+            .post(post)
+            .parentComment(parentComment)
+            .build();
+
+        author.getComments().add(parentComment);
+        author.getComments().add(comment);
+        post.getComments().add(parentComment);
+        post.getComments().add(comment);
+        parentComment.getSubComments().add(comment);
+
+        //when
+        Mockito.when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
+        Mockito.doNothing().when(authService).checkLoggedUserResourceAuthorship(any(), any());
+
+        commentService.deleteComment(commentId);
+
+        //then
+        assertEquals(1, author.getComments().size());
+        assertEquals(1, post.getCommentsCount());
+        assertEquals(1, post.getComments().size());
+
+        assertEquals(0, parentComment.getSubCommentsCount());
+        assertEquals(0, parentComment.getSubComments().size());
+
+        Mockito.verify(commentRepository).findById(commentId);
         Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(commentId), any());
         Mockito.verify(commentRepository).deleteById(commentId);
     }
@@ -490,7 +562,7 @@ class CommentServiceTest {
         UUID commentId = UUID.randomUUID();
 
         //when
-        Mockito.when(commentRepository.existsById(any())).thenReturn(false);
+        Mockito.when(commentRepository.findById(any())).thenReturn(Optional.empty());
 
         //then
         assertThrows(
@@ -499,7 +571,7 @@ class CommentServiceTest {
             "Nie istnieje komentarz o takim id"
         );
 
-        Mockito.verify(commentRepository).existsById(commentId);
+        Mockito.verify(commentRepository).findById(commentId);
     }
 
     @Test
@@ -508,8 +580,22 @@ class CommentServiceTest {
         //given
         UUID commentId = UUID.randomUUID();
 
+        UserEntity author = UserEntity.builder()
+            .comments(new HashSet<>())
+            .build();
+
+        PostEntity post = PostEntity.builder()
+            .commentsCount(2)
+            .comments(new HashSet<>())
+            .build();
+
+        CommentEntity comment = CommentEntity.builder()
+            .author(author)
+            .post(post)
+            .build();
+
         //when
-        Mockito.when(commentRepository.existsById(any())).thenReturn(true);
+        Mockito.when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
         Mockito.doThrow(UserIsNotResourceAuthorException.class).when(authService).checkLoggedUserResourceAuthorship(any(), any());
 
         //then
@@ -518,7 +604,7 @@ class CommentServiceTest {
             () -> commentService.deleteComment(commentId)
         );
 
-        Mockito.verify(commentRepository).existsById(commentId);
+        Mockito.verify(commentRepository).findById(commentId);
         Mockito.verify(authService).checkLoggedUserResourceAuthorship(eq(commentId), any());
     }
 }
