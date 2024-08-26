@@ -79,7 +79,7 @@ const SubCommentsView = (props: {
                 className="grey-button-outlined" 
                 onClick={handleSwitchShowComments}
             >
-                {!showSubComments ? `Wyświetl odpowiedzi (${2})` : "Ukryj odpowiedzi"}
+                {!showSubComments ? `Wyświetl odpowiedzi (${comment.subCommentsCount})` : "Ukryj odpowiedzi"}
             </button>
             <div className="sub-comments-content">
                 {showSubComments && subComments.map((childComment: CommentData) => (

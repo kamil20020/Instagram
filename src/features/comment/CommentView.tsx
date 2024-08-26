@@ -92,7 +92,7 @@ const CommentView = (props: {
           </div>
         </div>
       </div>
-      <SubCommentsView postId={props.postId} comment={comment}/>
+      {comment.subCommentsCount > 0 && <SubCommentsView postId={props.postId} comment={comment}/>}
     </div>
   );
 };

@@ -28,7 +28,7 @@ const PostComments = (props: { post: Post }) => {
     )
   }
 
-  const handleShowComments = (newPage: number) => {
+  const handleShowComments = (newPage: number, doAppend: boolean = true) => {
     const pagination: Pagination = {
       page: newPage,
       size: pageSize,
@@ -38,7 +38,14 @@ const PostComments = (props: { post: Post }) => {
     .then((response) => {
       const pagedResponse: Page = response.data;
       setPage(newPage);
-      setComments([...comments, ...pagedResponse.content]);
+      
+      if(doAppend){
+        setComments([...comments, ...pagedResponse.content]);
+      }
+      else{
+        setComments(pagedResponse.content)
+      }
+      
       setTotalPages(pagedResponse.totalPages)
 
       console.log(response.data);
@@ -50,7 +57,7 @@ const PostComments = (props: { post: Post }) => {
   }, []);
 
   if(commentState.parentCommentId === undefined && !commentState.isCreating && commentState.content){
-    handleShowComments(0)
+    handleShowComments(0, false)
     setPage(0)
     dispatch(clearComment())
   }
