@@ -263,7 +263,7 @@ class PostControllerTestIT {
 
         UUID gotPostId = uuidMapper.strToUUID(gotPost.id(), "");
 
-        assertNotNull(gotPost);;
+        assertNotNull(gotPost);
         assertTrue(postRepository.existsById(gotPostId));
         assertEquals(createPost.description(), gotPost.description());
         assertEquals(createPost.content(), gotPost.content());
