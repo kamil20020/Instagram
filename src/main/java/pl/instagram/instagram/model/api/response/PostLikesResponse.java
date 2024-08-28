@@ -4,6 +4,6 @@ import org.springframework.data.domain.Page;
 
 public record PostLikesResponse(
     String postId,
-    Page<UserHeader> postLikes,
+    RestPage<UserHeader> postLikes,
     boolean didLoggedUserLikePost
 ){}

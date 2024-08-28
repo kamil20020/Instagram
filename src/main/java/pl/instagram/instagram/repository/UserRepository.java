@@ -21,8 +21,10 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID>, JpaSpec
     boolean existsByNicknameContainingIgnoreCase(String nickname);
     boolean existsByIdAndLikedPostsId(UUID userId, UUID postId);
     boolean existsByAccountIdAndLikedPostsId(String accountId, UUID postId);
+    boolean existsByAccountIdAndFollowersUsersFollowedId(String accountId, UUID followedId);
     Optional<UserEntity> findByAccountId(String accountId);
     Page<UserEntity> findByLikedPostsId(UUID postId, Pageable pageable);
+    Page<UserEntity> findByFollowersUsersFollowedId(UUID followedId, Pageable pageable);
 
     default Page<UserEntity> searchByFirstnameAndSurname(String phrase, Pageable pageable){
 

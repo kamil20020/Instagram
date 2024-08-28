@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.response.PostLikesResponse;
+import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.domain.PostLikes;
 import pl.instagram.instagram.model.entity.UserEntity;
@@ -70,7 +71,7 @@ public class PostLikeController {
         Page<UserHeader> foundPostLikesHeadersPage = foundPostLikesDetails.postLikes()
             .map(userMapper::userEntityToUserHeader);
         PostLikesResponse foundPostsLikesResponse = new PostLikesResponse(
-            postId.toString(), foundPostLikesHeadersPage, foundPostLikesDetails.didLoggedUserLikePost()
+            postId.toString(), new RestPage<>(foundPostLikesHeadersPage), foundPostLikesDetails.didLoggedUserLikePost()
         );
         return ResponseEntity.ok(foundPostsLikesResponse);
     }
@@ -135,7 +136,7 @@ public class PostLikeController {
             content = @Content
         )
     })
-    @DeleteMapping("/likes/{id}")
+    @DeleteMapping("/{id}/likes")
     ResponseEntity<Void> deletePostLike(@PathVariable("id") String postIdStr){
 
         UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);

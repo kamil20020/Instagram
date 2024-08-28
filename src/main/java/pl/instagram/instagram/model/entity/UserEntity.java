@@ -76,7 +76,7 @@ public class UserEntity {
     private Set<PostEntity> posts = new HashSet<>();
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
         name = "POSTS_LIKES",
         joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false),
@@ -85,6 +85,27 @@ public class UserEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<PostEntity> likedPosts = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<FollowerEntity> followedUsers = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<FollowerEntity> followersUsers = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "COMMENTS_LIKES",
+        joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
+    )
+    private Set<CommentEntity> likedComments = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)

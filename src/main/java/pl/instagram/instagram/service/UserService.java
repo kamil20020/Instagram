@@ -87,6 +87,8 @@ public class UserService {
             .numberOfPosts(0)
             .posts(new HashSet<>())
             .comments(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .likedComments(new HashSet<>())
             .build();
 
         return userRepository.save(newUser).getId();
