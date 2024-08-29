@@ -26,6 +26,8 @@ public class SecurityConfig {
             .requestMatchers("/users/register", "/users/*/profile", "/users/*/header").permitAll()
             .requestMatchers("/users/user-account/*/header", "/users/ids").permitAll()
             .requestMatchers(HttpMethod.GET, "/users").permitAll()
+            .requestMatchers(HttpMethod.GET, "/users/*/followers").permitAll()
+            .requestMatchers(HttpMethod.GET, "/users/*/followed").permitAll()
             .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +36,10 @@ public class FollowerController {
     private final UserMapper userMapper;
 
     private static final String FOLLOWER_MESSAGE = "obserwującego";
+    private static final String FOLLOWED_MESSAGE = "obserwowanego";
 
     @Operation(
-        summary = "Get user's followers page by his id",
-        parameters = {
-            @Parameter(name = "page", description = "Number of page of followers"),
-            @Parameter(name = "size", description = "Size of the page")
-        }
+        summary = "Get user's followers page by his id"
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -66,7 +64,7 @@ public class FollowerController {
     @GetMapping(value = "/{followedId}/followers")
     public ResponseEntity<FollowersResponse> getFollowersPage(@PathVariable("followedId") String followedIdStr, Pageable pageable){
 
-        UUID followedId = uuidMapper.strToUUID(followedIdStr, FOLLOWER_MESSAGE);
+        UUID followedId = uuidMapper.strToUUID(followedIdStr, FOLLOWED_MESSAGE);
 
         Followers followers = followerService.getFollowersPage(followedId, pageable);
         Page<UserEntity> followersUsersPage = followers.followers();
@@ -75,5 +73,99 @@ public class FollowerController {
         FollowersResponse responseBody = new FollowersResponse(new RestPage<>(followersUsersHeadersPage), followers.didLoggedUserFollowed());
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Operation(
+            summary = "Get user's followed other users"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Found followed users page",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Page.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid follower id was given",
+                    content = @Content
+            )
+    })
+    @GetMapping("/{followerId}/followed")
+    public ResponseEntity<Page<UserHeader>> getFollowedPage(@PathVariable("followerId") String followerIdStr, Pageable pageable){
+
+        UUID followerId = uuidMapper.strToUUID(followerIdStr, FOLLOWER_MESSAGE);
+
+        Page<UserEntity> gotFollowedPage = followerService.getFollowedPage(followerId, pageable);
+        Page<UserHeader> gotFollowedHeadersPage = gotFollowedPage.map(userMapper::userEntityToUserHeader);
+
+        return ResponseEntity.ok(gotFollowedHeadersPage);
+    }
+
+    @Operation(summary = "Create follow by logged user")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Create follow and get follower basic info",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UserHeader.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid followed user id was given",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Followed or follower users were not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Logged user already followed given other user",
+            content = @Content
+        )
+    })
+    @PostMapping(value = "/{followedId}/followers")
+    public ResponseEntity<UserHeader> createFollow(@PathVariable("followedId") String followedIdStr){
+
+        UUID followedId = uuidMapper.strToUUID(followedIdStr, FOLLOWED_MESSAGE);
+
+        UserEntity follower = followerService.createFollow(followedId);
+        UserHeader followerHeader = userMapper.userEntityToUserHeader(follower);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(followerHeader);
+    }
+
+    @Operation(summary = "Delete logged user follow")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "204",
+            description = "Follow was removed",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid followed id was given",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Followed user or follow were not found",
+            content = @Content
+        )
+    })
+    @DeleteMapping(value = "/{followedId}/followers")
+    public ResponseEntity<Void> deleteFollow(@PathVariable("followedId") String followedIdStr){
+
+        UUID followedId = uuidMapper.strToUUID(followedIdStr, FOLLOWED_MESSAGE);
+
+        followerService.deleteFollow(followedId);
+
+        return ResponseEntity.noContent().build();
     }
 }

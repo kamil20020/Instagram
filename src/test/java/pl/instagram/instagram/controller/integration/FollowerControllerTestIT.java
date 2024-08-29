@@ -47,7 +47,7 @@ class FollowerControllerTestIT {
     @Autowired
     private FollowerRepository followerRepository;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0ODY3MDUwLCJleHAiOjE3MjQ5NTM0NTAsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.qtlDBXDkeI2g63UMk6QO1N5MLWBrbeVoj_R-AL-sSHVgnYrXC2TENvQNIzinR-Vxmtq05GvUk7EbSDfqg-Dir1bKEzLGgM9imT2GuEMZWkf0V2pW9CAD-aaQ9zyuE38fhVk-m720SbcVHqvdc7yyBdFJQcKT9guoEb7LD4WrL6UzVrGEjLtP5SvH-xXqtHhClJJWERaPFuIA8_JMpNNdHKwlGqsFPqBlnuSU_-_J6fgD1zyXNPVJZjnD2sEq_MsGN__rKdZZt50DR74NxtCtHhBWmezDGOJ7M7_oWcHU9bsxtLCdrShFNCQmXhAXxJiYa5VEcC9wBAwcRXUBa0Xfbw";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0OTMyNjE4LCJleHAiOjE3MjUwMTkwMTgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.pMav5ujY-RBUS9kxBOAGQkctyzhKM_sUiscfbzxEXld13saqzCASjJKhpitPLoPuQWPRCAe9bY20V5qT3QS7sYea_Zdvew1zfzuL7Lsbo1UL4js5wAnZ5JVrv1dmiFSUuqU9B0ocWqelVGqzo4J4Tx9_rgXNmlDLGbJ2k2KyfoHth0i8qfxm7hj2je3uKfGqw4iHeAvTEkxRSCQ-1NerYEvCQTaAnYKCV7XFNmdMZVDXAhQwuSMvXy2LnS5r2AvWdH85CfpeN4I_a9IgPdRNNhwSsXigqL-eQLe4JligvF2PTn84A0pX2kimZT32Q_fP_lLJqifGrYKOotGgR28hkw";
 
     @BeforeEach
     private void setUp(){
@@ -56,6 +56,7 @@ class FollowerControllerTestIT {
         RestAssured.port = port;
 
         userRepository.deleteAll();
+        followerRepository.deleteAll();
     }
 
     @Test
@@ -128,5 +129,195 @@ class FollowerControllerTestIT {
         assertEquals(follower.getSurname(), gotFollowerHeader.surname());
         assertEquals(follower.isVerified(), gotFollowerHeader.isVerified());
         assertTrue(gotFollowerResponse.didLoggedUserFollowed());
+    }
+
+    @Test
+    void shouldGetFollowedPage() {
+
+        //given
+        UserEntity followed = UserEntity.builder()
+            .accountId("A")
+            .creationDatetime(LocalDateTime.now())
+            .isVerified(true)
+            .isPrivate(false)
+            .followers(1)
+            .followings(0)
+            .numberOfPosts(0)
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .build();
+
+        followed = userRepository.save(followed);
+
+        UserEntity follower = UserEntity.builder()
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+            .creationDatetime(LocalDateTime.now())
+            .isPrivate(true)
+            .isVerified(false)
+            .followers(0)
+            .followings(1)
+            .numberOfPosts(0)
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .build();
+
+        follower = userRepository.save(follower);
+
+        FollowerEntity followerEntity = new FollowerEntity(followed, follower);
+
+        followerEntity = followerRepository.save(followerEntity);
+
+        follower.getFollowedUsers().add(followerEntity);
+        followed.getFollowersUsers().add(followerEntity);
+
+        follower = userRepository.save(follower);
+        followed = userRepository.save(followed);
+
+        //when
+        Page<UserHeader> gotFollowedHeadersPage = given()
+            .param("page", 0)
+            .param("size", 5)
+        .when()
+            .get("{followerId}/followed", follower.getId())
+        .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<RestPage<UserHeader>>(){});
+
+        UserHeader gotFollowedHeader = gotFollowedHeadersPage.getContent().get(0);
+
+        //then
+        assertEquals(1, gotFollowedHeadersPage.getTotalElements());
+        assertEquals(followed.getId().toString(), gotFollowedHeader.id());
+        assertEquals(followed.getNickname(), gotFollowedHeader.nickname());
+        assertEquals(followed.getFirstname(), gotFollowedHeader.firstname());
+        assertEquals(followed.getSurname(), gotFollowedHeader.surname());
+        assertEquals(followed.isVerified(), gotFollowedHeader.isVerified());
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+    public void shouldCreateFollow(){
+
+        //given
+        UserEntity followed = UserEntity.builder()
+            .accountId("A")
+            .creationDatetime(LocalDateTime.now())
+            .isVerified(true)
+            .isPrivate(false)
+            .followers(0)
+            .followings(0)
+            .numberOfPosts(0)
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .build();
+
+        followed = userRepository.save(followed);
+
+        UserEntity follower = UserEntity.builder()
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+            .creationDatetime(LocalDateTime.now())
+            .isPrivate(true)
+            .isVerified(false)
+            .followers(0)
+            .followings(0)
+            .numberOfPosts(0)
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .build();
+
+        follower = userRepository.save(follower);
+
+        //when
+        UserHeader gotFollower = given()
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
+        .when()
+            .post("{followedId}/followers", followed.getId())
+        .then()
+            .statusCode(201)
+            .extract()
+            .as(UserHeader.class);
+
+        followed = userRepository.findById(followed.getId()).orElseThrow();
+        follower = userRepository.findById(follower.getId()).orElseThrow();
+
+        FollowerEntity.FollowerEntityId followerEntityId = new FollowerEntity.FollowerEntityId(followed.getId(), follower.getId());
+
+        //then
+        assertTrue(followerRepository.existsById(followerEntityId));
+        assertEquals(1, followed.getFollowers());
+        assertEquals(1, follower.getFollowings());
+
+        assertEquals(follower.getId().toString(), gotFollower.id());
+    }
+
+    @Test
+    public void shouldDeleteFollow(){
+
+        //given
+        UserEntity followed = UserEntity.builder()
+            .accountId("A")
+            .creationDatetime(LocalDateTime.now())
+            .isVerified(true)
+            .isPrivate(false)
+            .followers(1)
+            .followings(0)
+            .numberOfPosts(0)
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .build();
+
+        followed = userRepository.save(followed);
+
+        UserEntity follower = UserEntity.builder()
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+            .creationDatetime(LocalDateTime.now())
+            .isPrivate(true)
+            .isVerified(false)
+            .followers(0)
+            .followings(1)
+            .numberOfPosts(0)
+            .comments(new HashSet<>())
+            .posts(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .build();
+
+        follower = userRepository.save(follower);
+
+        FollowerEntity followerEntity = new FollowerEntity(followed, follower);
+        followerEntity = followerRepository.save(followerEntity);
+
+        followed.getFollowersUsers().add(followerEntity);
+        follower.getFollowedUsers().add(followerEntity);
+
+        followed = userRepository.save(followed);
+        follower = userRepository.save(follower);
+
+        //when
+        given()
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
+        .when()
+            .delete("{followedId}/followers", followed.getId())
+        .then()
+            .statusCode(204);
+
+        followed = userRepository.findById(followed.getId()).orElseThrow();
+        follower = userRepository.findById(follower.getId()).orElseThrow();
+
+        //then
+        assertFalse(followerRepository.existsById(followerEntity.getId()));
+        assertEquals(0, followed.getFollowers());
+        assertEquals(0, follower.getFollowings());
     }
 }
