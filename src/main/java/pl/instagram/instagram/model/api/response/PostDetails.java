@@ -2,7 +2,7 @@ package pl.instagram.instagram.model.api.response;
 
 import java.time.OffsetDateTime;
 
-public record PostDetails (
+public record PostDetails(
     String id,
     OffsetDateTime creationDatetime,
     String description,
@@ -11,5 +11,10 @@ public record PostDetails (
     boolean areDisabledComments,
     UserHeader author,
     Integer likesCount,
-    Integer commentsCount
-){}
+    Integer commentsCount,
+    boolean didLoggedUserLikedPost
+){
+    public PostDetails(String id, OffsetDateTime creationDatetime, String description, String content, boolean areHiddenLikes, boolean areDisabledComments, UserHeader author, Integer likesCount, Integer commentsCount) {
+        this(id, creationDatetime, description, content, areHiddenLikes, areDisabledComments, author, likesCount, commentsCount, false);
+    }
+}

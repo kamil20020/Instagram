@@ -21,6 +21,7 @@ import pl.instagram.instagram.model.api.request.PersonalData;
 import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.UserProfile;
+import pl.instagram.instagram.model.domain.UserEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.UserService;
 
@@ -103,8 +104,8 @@ public class UserController {
 
         UUID userId = uuidMapper.strToUUID(userIdStr, USER_MAPPER_MESSAGE);
 
-        UserEntity foundUser = userService.getUserById(userId);
-        UserProfile foundUserProfile = userMapper.userEntityToUserProfileInfo(foundUser);
+        UserEntityForLoggedUser userEntityForLoggedUser = userService.getUserByIdForLoggedUser(userId);
+        UserProfile foundUserProfile = userMapper.userEntityForLoggedToUserProfile(userEntityForLoggedUser);
 
         return ResponseEntity.ok(foundUserProfile);
     }

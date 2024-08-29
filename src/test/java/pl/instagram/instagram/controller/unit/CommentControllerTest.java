@@ -31,6 +31,7 @@ import pl.instagram.instagram.model.api.request.UpdateComment;
 import pl.instagram.instagram.model.api.response.CommentData;
 import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
+import pl.instagram.instagram.model.domain.CommentEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.CommentService;
@@ -73,7 +74,7 @@ class CommentControllerTest {
     private static final String COMMENT_MAPPER_MESSAGE = "komentarza";
 
     private static final String URL_PREFIX = "/posts/";
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0Njk5MzMwLCJleHAiOjE3MjQ3ODU3MzAsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.JETJJf1RyG6Jo-TEuwxoMARoPhUure9_DAoZSKMV7CbKHBAyfWRtYwJkFbrGpE8I9EDmWZaU2myqCs5A1zP74LEFC2b-WMrJFlOAWK100tguRO1o4sbb30xkdO40SNjp8nJetWAQG8dyDGJSvblSi6OBAC0tc069Vsfzt4eittUPxgK8w_DMM9cVxJdNv39iITvWmUfS1eUYVQWmyNc0dPVTeXaJVrgJMTBIFmz0pAeLKtKGFns0QssOQvqtYCa25D7PYzsTewvD8kAy9Bei7QhqE2LNIYAb3x_Il7BkDMA57BrnJfbSU44FmytZ05ools16epRSQ0zl6qJaq0YlMw";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0OTYwNjAzLCJleHAiOjE3MjUwNDcwMDMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.L_rMexrHIItC7qHmg1HBPgLH9rdO3MfFCdVPBB4DwePNJWOTubyac1ItXJFZAt3kYSXY7gOG9PPSiknxNA7O4Aagv1aCY7o9olvZeexN8Mlst8qgxnax-NB0yOL4MHJN2K3L3STp3TzgnY35-Vw029Vz9ZRrHlEd4uSmIYVhhflZ77GFvhxSGhVmg7dsVooJ5PFGnzaJOtL0NrhdmUgg6OWouIt0XzdLoTM8_JtiFgZQTM5y37laZt4V0ButnB2BLMsqLlyHMeleHdvxAnCgm7KToeEWfdgxprq10M9vKxgiAZsqvoIFW6CuwFWiTvSDhJF0IoWohC9OJrqvpBcGTA";
 
     @BeforeAll
     private static void setUp(){
@@ -90,14 +91,14 @@ class CommentControllerTest {
         OffsetDateTime c1OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
         OffsetDateTime c2OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
 
-        CommentEntity c1 = CommentEntity.builder()
+        CommentEntityForLoggedUser c1 = CommentEntityForLoggedUser.builder()
             .content("Dobre zdjecie")
             .creationDatetime(c1OffsetDateTime.toLocalDateTime())
             .build();
 
         c1.setId(UUID.randomUUID());
 
-        CommentEntity c2 = CommentEntity.builder()
+        CommentEntityForLoggedUser c2 = CommentEntityForLoggedUser.builder()
             .content("Zgadzam się")
             .creationDatetime(c2OffsetDateTime.toLocalDateTime())
             .build();
@@ -122,7 +123,7 @@ class CommentControllerTest {
             2
         );
 
-        Page<CommentEntity> commentsPage = new PageImpl<>(
+        Page<CommentEntityForLoggedUser> commentsPage = new PageImpl<>(
             List.of(c1, c2)
         );
 
@@ -154,7 +155,7 @@ class CommentControllerTest {
 
         Mockito.verify(uuidMapper).strToUUID(postId.toString(), POST_MAPPER_MESSAGE);
         Mockito.verify(commentService).getPostCommentsPage(postId, null, pageable);
-        Mockito.verify(commentMapper).commentEntityToCommentData(c1);
+        Mockito.verify(commentMapper).commentEntityForLoggedUserToCommentData(c1);
     }
 
     @Test
@@ -167,14 +168,14 @@ class CommentControllerTest {
         OffsetDateTime c1OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
         OffsetDateTime c2OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
 
-        CommentEntity c1 = CommentEntity.builder()
+        CommentEntityForLoggedUser c1 = CommentEntityForLoggedUser.builder()
             .content("Dobre zdjecie")
             .creationDatetime(c1OffsetDateTime.toLocalDateTime())
             .build();
 
         c1.setId(UUID.randomUUID());
 
-        CommentEntity c2 = CommentEntity.builder()
+        CommentEntityForLoggedUser c2 = CommentEntityForLoggedUser.builder()
             .content("Zgadzam się")
             .creationDatetime(c2OffsetDateTime.toLocalDateTime())
             .build();
@@ -199,7 +200,7 @@ class CommentControllerTest {
             2
         );
 
-        Page<CommentEntity> commentsPage = new PageImpl<>(
+        Page<CommentEntityForLoggedUser> commentsPage = new PageImpl<>(
             List.of(c1, c2)
         );
 
@@ -234,7 +235,7 @@ class CommentControllerTest {
         Mockito.verify(uuidMapper).strToUUID(postId.toString(), POST_MAPPER_MESSAGE);
         Mockito.verify(uuidMapper).strToUUID(parentCommentId.toString(), COMMENT_MAPPER_MESSAGE);
         Mockito.verify(commentService).getPostCommentsPage(postId, parentCommentId, pageable);
-        Mockito.verify(commentMapper).commentEntityToCommentData(c1);
+        Mockito.verify(commentMapper).commentEntityForLoggedUserToCommentData(c1);
     }
 
     @Test

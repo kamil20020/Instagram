@@ -4,13 +4,16 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.mapper.PostMapper;
 import pl.instagram.instagram.model.api.response.PostLikesResponse;
+import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.domain.PostLikes;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
@@ -18,13 +21,15 @@ import pl.instagram.instagram.repository.UserRepository;
 
 import java.util.UUID;
 
+@Lazy
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
 
-    private final PostService postService;
     private final UserRepository userRepository;
+
+    private final PostService postService;
     private final UserService userService;
     private final AuthService authService;
 

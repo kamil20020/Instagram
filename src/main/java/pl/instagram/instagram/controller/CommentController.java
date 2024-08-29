@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import jdk.jfr.MemoryAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,7 @@ import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.model.api.request.CreateComment;
 import pl.instagram.instagram.model.api.request.UpdateComment;
 import pl.instagram.instagram.model.api.response.CommentData;
+import pl.instagram.instagram.model.domain.CommentEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.service.CommentService;
 
@@ -80,10 +80,10 @@ public class CommentController {
             parentCommentId = uuidMapper.strToUUID(parentCommentIdStr, COMMENT_MAPPER_MESSAGE);
         }
 
-        Page<CommentEntity> foundCommentsPage = commentService.getPostCommentsPage(postId, parentCommentId, pageable);
-        Page<CommentData> convertedCommentsPage = foundCommentsPage.map(commentMapper::commentEntityToCommentData);
+        Page<CommentEntityForLoggedUser> foundCommentsPage = commentService.getPostCommentsPage(postId, parentCommentId, pageable);
+        Page<CommentData> foundCommentDataPage = foundCommentsPage.map(commentMapper::commentEntityForLoggedUserToCommentData);
 
-        return ResponseEntity.ok(convertedCommentsPage);
+        return ResponseEntity.ok(foundCommentDataPage);
     }
 
     @Operation(

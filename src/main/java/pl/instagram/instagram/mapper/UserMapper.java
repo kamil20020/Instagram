@@ -6,6 +6,7 @@ import pl.instagram.instagram.model.api.request.PersonalData;
 import pl.instagram.instagram.model.api.request.UpdateUser;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.api.response.UserProfile;
+import pl.instagram.instagram.model.domain.UserEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.util.List;
@@ -18,14 +19,21 @@ public interface UserMapper {
 
     UserEntity userPersonalDataToUserEntity(PersonalData personalData);
 
+    UserEntityForLoggedUser userEntityToUserEntityForLoggedUser(UserEntity userEntity);
+
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
     @Mapping(source = "verified", target = "isVerified")
     UserHeader userEntityToUserHeader(UserEntity userEntity);
+
+    List<UserHeader> userEntityListToUserHeaderList(List<UserEntity> userEntityList);
+
+    @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
+    @Mapping(source = "private", target = "isPrivate")
+    @Mapping(source = "verified", target = "isVerified")
+    UserProfile userEntityForLoggedToUserProfile(UserEntityForLoggedUser userEntityForLoggedUser);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
     @Mapping(source = "private", target = "isPrivate")
     @Mapping(source = "verified", target = "isVerified")
     UserProfile userEntityToUserProfileInfo(UserEntity userEntity);
-
-    List<UserHeader> userEntityListToUserHeaderList(List<UserEntity> userEntityList);
 }

@@ -10,10 +10,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
+import pl.instagram.instagram.mapper.PostMapper;
 import pl.instagram.instagram.model.domain.PatchPostData;
+import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.PostRepository;
+import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -25,8 +28,12 @@ import java.util.UUID;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+
     private final UserService userService;
     private final AuthService authService;
+
+    private final PostMapper postMapper;
 
     public boolean existsById(UUID id){
         return postRepository.existsById(id);
@@ -34,10 +41,29 @@ public class PostService {
 
     public PostEntity getPostById(UUID postId) throws EntityNotFoundException {
 
-        return postRepository.findById(postId)
+       return postRepository.findById(postId)
             .orElseThrow(() ->
                 new EntityNotFoundException("Nie istnieje post o takim id")
             );
+    }
+
+    public PostEntityForLoggedUser getPostByIdForLoggedUser(UUID postId) throws EntityNotFoundException {
+
+        PostEntity foundPost = getPostById(postId);
+
+        boolean didLoggedUserLikePost = false;
+
+        if(authService.isUserLogged()){
+
+            String loggedUserAccountId = authService.getLoggedUserAccountId();
+
+            didLoggedUserLikePost = userRepository.existsByAccountIdAndLikedPostsId(loggedUserAccountId, postId);
+        }
+
+        PostEntityForLoggedUser convertedPost = postMapper.postEntityToPostEntityForLoggedUser(foundPost);
+        convertedPost.setDidLoggedUserLikePost(didLoggedUserLikePost);
+
+        return convertedPost;
     }
 
     public Page<PostEntity> getUserPostsPage(UUID authorId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {

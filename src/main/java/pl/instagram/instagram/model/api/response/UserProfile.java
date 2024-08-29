@@ -11,5 +11,10 @@ public record UserProfile(
     String description,
     Integer followers,
     Integer followings,
-    Integer numberOfPosts
-){}
+    Integer numberOfPosts,
+    boolean didLoggedUserFollows
+){
+    public UserProfile(String id, String nickname, String firstname, String surname, String avatar, boolean isVerified, boolean isPrivate, String description, Integer followers, Integer followings, Integer numberOfPosts) {
+        this(id, nickname, firstname, surname, avatar, isVerified, isPrivate, description, followers, followings, numberOfPosts, false);
+    }
+}

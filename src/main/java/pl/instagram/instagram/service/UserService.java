@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import pl.instagram.instagram.exception.ConflictException;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.NonLoggedException;
+import pl.instagram.instagram.mapper.UserMapper;
+import pl.instagram.instagram.model.domain.UserEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.FollowerRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -23,7 +26,11 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowerRepository followerRepository;
+
     private final AuthService authService;
+
+    private final UserMapper userMapper;
 
     public boolean existsById(UUID id){
         return userRepository.existsById(id);
@@ -41,6 +48,24 @@ public class UserService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Nie istnieje użytkownik o takim id")
             );
+    }
+
+    public UserEntityForLoggedUser getUserByIdForLoggedUser(UUID id) throws EntityNotFoundException {
+
+        UserEntity foundUser = getUserById(id);
+
+        boolean didLoggedUserFollow = false;
+
+        if(authService.isUserLogged()){
+
+            String loggedUserAccountId = authService.getLoggedUserAccountId();
+            didLoggedUserFollow = followerRepository.existsByFollowerAccountIdAndFollowedId(loggedUserAccountId, id);
+        }
+
+        UserEntityForLoggedUser convertedUser = userMapper.userEntityToUserEntityForLoggedUser(foundUser);
+        convertedUser.setDidLoggedUserFollow(didLoggedUserFollow);
+
+        return convertedUser;
     }
 
     public UserEntity getUserByUserAccountId(String accountId) throws EntityNotFoundException {

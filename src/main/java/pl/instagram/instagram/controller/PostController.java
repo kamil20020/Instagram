@@ -20,6 +20,7 @@ import pl.instagram.instagram.model.api.request.CreatePost;
 import pl.instagram.instagram.model.api.request.PatchPost;
 import pl.instagram.instagram.model.api.response.*;
 import pl.instagram.instagram.model.domain.PatchPostData;
+import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.service.PostService;
 
@@ -68,10 +69,10 @@ public class PostController {
 
         UUID postId = uuidMapper.strToUUID(postIdStr, POST_MAPPER_MESSAGE);
 
-        PostEntity foundPost = postService.getPostById(postId);
-        PostDetails postDetails = postMapper.postEntityToPostDetails(foundPost);
+        PostEntityForLoggedUser foundPostEntityForLoggedUser = postService.getPostByIdForLoggedUser(postId);
+        PostDetails foundPostDetails = postMapper.postEntityForLoggedUserToPostDetails(foundPostEntityForLoggedUser);
 
-        return ResponseEntity.ok(postDetails);
+        return ResponseEntity.ok(foundPostDetails);
     }
 
     @Operation(

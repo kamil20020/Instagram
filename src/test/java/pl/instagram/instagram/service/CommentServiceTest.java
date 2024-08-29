@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.instagram.instagram.exception.EntityNotFoundException;
 import pl.instagram.instagram.exception.UserIsNotResourceAuthorException;
+import pl.instagram.instagram.mapper.CommentMapper;
+import pl.instagram.instagram.model.domain.CommentEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
@@ -44,6 +46,9 @@ class CommentServiceTest {
 
     @Mock
     private AuthService authService;
+
+    @Mock
+    private CommentMapper commentMapper;
 
     @Test
     void shouldGetById() {
@@ -108,16 +113,18 @@ class CommentServiceTest {
         //when
         Mockito.when(postService.existsById(any())).thenReturn(true);
         Mockito.when(commentRepository.getAllByPostIdAndParentCommentId(any(), any(), any())).thenReturn(commentsPage);
+        Mockito.when(authService.isUserLogged()).thenReturn(false);
 
-        Page<CommentEntity> gotCommentsPage = commentService.getPostCommentsPage(postId, null, pageable);
+        Page<CommentEntityForLoggedUser> gotCommentsPage = commentService.getPostCommentsPage(postId, null, pageable);
 
         //then
         assertEquals(commentsPage.getTotalElements(), gotCommentsPage.getTotalElements());
-        assertEquals(commentsPage.getContent().get(0), gotCommentsPage.getContent().get(0));
-        assertEquals(commentsPage.getContent().get(1), gotCommentsPage.getContent().get(1));
+        assertEquals(commentsPage.getContent().get(0).getContent(), gotCommentsPage.getContent().get(0).getContent());
+        assertEquals(commentsPage.getContent().get(1).getContent(), gotCommentsPage.getContent().get(1).getContent());
 
         Mockito.verify(postService).existsById(postId);
         Mockito.verify(commentRepository).getAllByPostIdAndParentCommentId(eq(postId), eq(null), any());
+        Mockito.verify(authService).isUserLogged();
     }
 
     @Test
@@ -143,17 +150,19 @@ class CommentServiceTest {
         Mockito.when(postService.existsById(any())).thenReturn(true);
         Mockito.when(commentRepository.existsById(any())).thenReturn(true);
         Mockito.when(commentRepository.getAllByPostIdAndParentCommentId(any(), any(), any())).thenReturn(commentsPage);
+        Mockito.when(authService.isUserLogged()).thenReturn(false);
 
-        Page<CommentEntity> gotCommentsPage = commentService.getPostCommentsPage(postId, parentCommentId, pageable);
+        Page<CommentEntityForLoggedUser> gotCommentsPage = commentService.getPostCommentsPage(postId, parentCommentId, pageable);
 
         //then
         assertEquals(commentsPage.getTotalElements(), gotCommentsPage.getTotalElements());
-        assertEquals(commentsPage.getContent().get(0), gotCommentsPage.getContent().get(0));
-        assertEquals(commentsPage.getContent().get(1), gotCommentsPage.getContent().get(1));
+        assertEquals(commentsPage.getContent().get(0).getContent(), gotCommentsPage.getContent().get(0).getContent());
+        assertEquals(commentsPage.getContent().get(1).getContent(), gotCommentsPage.getContent().get(1).getContent());
 
         Mockito.verify(postService).existsById(postId);
         Mockito.verify(commentRepository).existsById(parentCommentId);
         Mockito.verify(commentRepository).getAllByPostIdAndParentCommentId(eq(postId), eq(parentCommentId), any());
+        Mockito.verify(authService).isUserLogged();
     }
 
     @Test
