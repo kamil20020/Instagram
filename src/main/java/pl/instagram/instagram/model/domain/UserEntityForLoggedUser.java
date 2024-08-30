@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserEntityForLoggedUser {
 
-    private UUID Id;
+    private UUID id;
     private String accountId;
     private String nickname;
     private String firstname;
@@ -33,7 +33,7 @@ public class UserEntityForLoggedUser {
     private boolean isPrivate;
     private Integer followers;
     private Integer followings;
-    private Integer numberOfPost;
+    private Integer numberOfPosts;
     private Set<PostEntity> posts;
     private Set<PostEntity> likedPosts;
     private Set<FollowerEntity> followedUsers;

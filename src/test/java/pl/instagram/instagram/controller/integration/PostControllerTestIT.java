@@ -59,7 +59,7 @@ class PostControllerTestIT {
     @Autowired
     private UUIDMapper uuidMapper;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MDMyOTgzLCJleHAiOjE3MjUxMTkzODMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.QbkeY3dICt01nuUDQBMjtGbprYnKyG87hYp2lpGrh4dQVIFj1rhXxHDMKsMu3eqq0O0Z4RDcy1ypULXtTnwqaFnv0NEbyk1JJUcVh17SzrbCJrJbPfphKdD5AmRYpOdwA00IUR5Sq6tYNUc3KJsbNLaMCWO9P0qm255XZGL6dHpMs_eIsJE3TuCRfxeATpAJmwbk193AC8hW7GqVYL6TFmhduI2EFLDVU5QzMuBUReVFUOrnInOAD8Dp2D9511FOKyUR2Pq-awA5wwMG6dF9g4U8YC5vDAmNt5FcQS-vx_Cv6FVL3LbtYrCUFwWGc9d5xwWax1TWZrs-Lwrzi6_yfw";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MDQ3MTA1LCJleHAiOjE3MjUxMzM1MDUsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.BItftyrKWzpSVm15EN3L5QQisXnQV2_5enhJ8dNnAg3HLvotfnMQX3kXnJE7XHxSFML3YEAqf1tWcT4qPikmgC61NcHdSIRkOOk10jixl9XkSQi7-4C5Vv6alOxaMuzKjx0_MChnd6PGdfm8jv9RC1niQXqjfuZxahfhFg6x-hjC1oeLAhmK6T--g4IZkOzuGTlYl940jnwbGXDzwZSeRQfwOeL-fEixVwlbFPuv5iuUSvOAFcdTNh8o_ziKTPE1pTvQa8fHkh3Oew_nnlsK0aQmI1GGARAiGOi_k30cH1jHJlZQwiM69BHNvSRhRJbp4JU5Mq858z_lMbIi1TuZ7w";
 
     @LocalServerPort
     private Integer port;
@@ -392,6 +392,6 @@ class PostControllerTestIT {
             .statusCode(204);
 
         assertFalse(postRepository.existsById(post.getId()));
-        assertEquals(1, userRepository.findById(author.getId()).get().getNumberOfPosts());
+        assertEquals(0, userRepository.findById(author.getId()).get().getNumberOfPosts());
     }
 }

@@ -77,7 +77,7 @@ public class CommentService {
             commentsForLoggedUserPage = commentsPage
                 .map(comment -> {
                     boolean didLoggedUserLikeComment = userRepository.existsByAccountIdAndLikedCommentsId(
-                            loggedUserAccountId, comment.getId()
+                        loggedUserAccountId, comment.getId()
                     );
 
                     CommentEntityForLoggedUser convertedComment = commentMapper.commentEntityToCommentEntityForLoggedUser(comment);

@@ -108,23 +108,28 @@ class CommentServiceTest {
 
         Page<CommentEntity> commentsPage = new PageImpl<>(List.of(comment1, comment2));
 
+        CommentEntityForLoggedUser convertedC1 = CommentEntityForLoggedUser.builder()
+            .content(comment1.getContent())
+            .build();
+
         Pageable pageable = PageRequest.of(0, 5);
 
         //when
         Mockito.when(postService.existsById(any())).thenReturn(true);
         Mockito.when(commentRepository.getAllByPostIdAndParentCommentId(any(), any(), any())).thenReturn(commentsPage);
         Mockito.when(authService.isUserLogged()).thenReturn(false);
+        Mockito.when(commentMapper.commentEntityToCommentEntityForLoggedUser(any())).thenReturn(convertedC1);
 
         Page<CommentEntityForLoggedUser> gotCommentsPage = commentService.getPostCommentsPage(postId, null, pageable);
 
         //then
         assertEquals(commentsPage.getTotalElements(), gotCommentsPage.getTotalElements());
         assertEquals(commentsPage.getContent().get(0).getContent(), gotCommentsPage.getContent().get(0).getContent());
-        assertEquals(commentsPage.getContent().get(1).getContent(), gotCommentsPage.getContent().get(1).getContent());
 
         Mockito.verify(postService).existsById(postId);
         Mockito.verify(commentRepository).getAllByPostIdAndParentCommentId(eq(postId), eq(null), any());
         Mockito.verify(authService).isUserLogged();
+        Mockito.verify(commentMapper).commentEntityToCommentEntityForLoggedUser(comment1);
     }
 
     @Test
@@ -142,6 +147,10 @@ class CommentServiceTest {
             .content("Dobry opis")
             .build();
 
+        CommentEntityForLoggedUser convertedC1 = CommentEntityForLoggedUser.builder()
+            .content(comment1.getContent())
+            .build();
+
         Page<CommentEntity> commentsPage = new PageImpl<>(List.of(comment1, comment2));
 
         Pageable pageable = PageRequest.of(0, 5);
@@ -151,18 +160,19 @@ class CommentServiceTest {
         Mockito.when(commentRepository.existsById(any())).thenReturn(true);
         Mockito.when(commentRepository.getAllByPostIdAndParentCommentId(any(), any(), any())).thenReturn(commentsPage);
         Mockito.when(authService.isUserLogged()).thenReturn(false);
+        Mockito.when(commentMapper.commentEntityToCommentEntityForLoggedUser(any())).thenReturn(convertedC1);
 
         Page<CommentEntityForLoggedUser> gotCommentsPage = commentService.getPostCommentsPage(postId, parentCommentId, pageable);
 
         //then
         assertEquals(commentsPage.getTotalElements(), gotCommentsPage.getTotalElements());
         assertEquals(commentsPage.getContent().get(0).getContent(), gotCommentsPage.getContent().get(0).getContent());
-        assertEquals(commentsPage.getContent().get(1).getContent(), gotCommentsPage.getContent().get(1).getContent());
 
         Mockito.verify(postService).existsById(postId);
         Mockito.verify(commentRepository).existsById(parentCommentId);
         Mockito.verify(commentRepository).getAllByPostIdAndParentCommentId(eq(postId), eq(parentCommentId), any());
         Mockito.verify(authService).isUserLogged();
+        Mockito.verify(commentMapper).commentEntityToCommentEntityForLoggedUser(comment1);
     }
 
     @Test

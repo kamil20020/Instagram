@@ -19,6 +19,8 @@ public interface UserMapper {
 
     UserEntity userPersonalDataToUserEntity(PersonalData personalData);
 
+    @Mapping(source = "private", target = "isPrivate")
+    @Mapping(source = "verified", target = "isVerified")
     UserEntityForLoggedUser userEntityToUserEntityForLoggedUser(UserEntity userEntity);
 
     @Mapping(source = "avatar", target = "avatar", qualifiedByName = "byteArrayToBase64")
