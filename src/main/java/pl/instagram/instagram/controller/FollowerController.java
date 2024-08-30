@@ -13,14 +13,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.instagram.instagram.mapper.PostMapper;
 import pl.instagram.instagram.mapper.UUIDMapper;
 import pl.instagram.instagram.mapper.UserMapper;
 import pl.instagram.instagram.model.api.response.FollowersResponse;
+import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.domain.Followers;
+import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.service.FollowerService;
+import pl.instagram.instagram.service.PostService;
 
 import java.util.UUID;
 
@@ -31,9 +35,11 @@ import java.util.UUID;
 public class FollowerController {
 
     private final FollowerService followerService;
+    private final PostService postService;
 
     private final UUIDMapper uuidMapper;
     private final UserMapper userMapper;
+    private final PostMapper postMapper;
 
     private static final String FOLLOWER_MESSAGE = "obserwującego";
     private static final String FOLLOWED_MESSAGE = "obserwowanego";
@@ -76,22 +82,22 @@ public class FollowerController {
     }
 
     @Operation(
-            summary = "Get user's followed other users"
+        summary = "Get user's followed other users"
     )
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Found followed users page",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Page.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid follower id was given",
-                    content = @Content
+        @ApiResponse(
+            responseCode = "200",
+            description = "Found followed users page",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = Page.class)
             )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid follower id was given",
+            content = @Content
+        )
     })
     @GetMapping("/{followerId}/followed")
     public ResponseEntity<Page<UserHeader>> getFollowedPage(@PathVariable("followerId") String followerIdStr, Pageable pageable){
@@ -102,6 +108,31 @@ public class FollowerController {
         Page<UserHeader> gotFollowedHeadersPage = gotFollowedPage.map(userMapper::userEntityToUserHeader);
 
         return ResponseEntity.ok(gotFollowedHeadersPage);
+    }
+
+    @Operation(summary = "Get posts page of users followed by logged user")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Found posts",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = Page.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "No pagination was given",
+            content = @Content
+        )
+    })
+    @GetMapping("/followed/posts")
+    public ResponseEntity<Page<PostDetails>> getPostsByFollowedUsers(Pageable pageable){
+
+        Page<PostEntityForLoggedUser> gotPosts = postService.getPostsFromFollowedUsers(pageable);
+        Page<PostDetails> convertedPosts = gotPosts.map(postMapper::postEntityForLoggedUserToPostDetails);
+
+        return ResponseEntity.ok(convertedPosts);
     }
 
     @Operation(summary = "Create follow by logged user")

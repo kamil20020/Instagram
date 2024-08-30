@@ -83,6 +83,33 @@ public class PostService {
         return postRepository.findAllByAuthorId(authorId, pageable);
     }
 
+    public Page<PostEntityForLoggedUser> getPostsFromFollowedUsers(Pageable pageable) throws IllegalArgumentException{
+
+        if(pageable == null){
+            throw new IllegalArgumentException("Paginacja jest wymagana");
+        }
+
+        pageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            Sort.by(Sort.Direction.DESC, "creationDatetime")
+        );
+
+        UUID loggedUserId = userService.getLoggedUser().getId();
+
+        Page<PostEntity> gotPosts = postRepository.findByAuthorFollowedUsersFollowerId(loggedUserId, pageable);
+
+        return gotPosts.map(post -> {
+
+            boolean didLoggedUserLikePost = userRepository.existsByIdAndLikedPostsId(loggedUserId, post.getId());
+
+            PostEntityForLoggedUser convertedPost = postMapper.postEntityToPostEntityForLoggedUser(post);
+            convertedPost.setDidLoggedUserLikePost(didLoggedUserLikePost);
+
+            return convertedPost;
+        });
+    }
+
     @Transactional
     public PostEntity createPost(PostEntity postData) throws EntityNotFoundException{
 

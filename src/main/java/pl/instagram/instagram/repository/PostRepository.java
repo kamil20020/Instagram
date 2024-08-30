@@ -13,4 +13,5 @@ public interface PostRepository extends JpaRepository<PostEntity, UUID> {
 
     boolean existsByIdAndAuthorAccountId(UUID id, String authorAccountId);
     Page<PostEntity> findAllByAuthorId(UUID authorId, Pageable pageable);
+    Page<PostEntity> findByAuthorFollowedUsersFollowerId(UUID followerId, Pageable pageable);
 }

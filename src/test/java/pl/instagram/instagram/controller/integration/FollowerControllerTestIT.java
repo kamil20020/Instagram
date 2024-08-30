@@ -16,13 +16,17 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.instagram.instagram.model.api.response.FollowersResponse;
+import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.entity.FollowerEntity;
+import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.FollowerRepository;
+import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
@@ -47,7 +51,10 @@ class FollowerControllerTestIT {
     @Autowired
     private FollowerRepository followerRepository;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0OTYwNjAzLCJleHAiOjE3MjUwNDcwMDMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.L_rMexrHIItC7qHmg1HBPgLH9rdO3MfFCdVPBB4DwePNJWOTubyac1ItXJFZAt3kYSXY7gOG9PPSiknxNA7O4Aagv1aCY7o9olvZeexN8Mlst8qgxnax-NB0yOL4MHJN2K3L3STp3TzgnY35-Vw029Vz9ZRrHlEd4uSmIYVhhflZ77GFvhxSGhVmg7dsVooJ5PFGnzaJOtL0NrhdmUgg6OWouIt0XzdLoTM8_JtiFgZQTM5y37laZt4V0ButnB2BLMsqLlyHMeleHdvxAnCgm7KToeEWfdgxprq10M9vKxgiAZsqvoIFW6CuwFWiTvSDhJF0IoWohC9OJrqvpBcGTA";
+    @Autowired
+    private PostRepository postRepository;
+
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MDMyOTgzLCJleHAiOjE3MjUxMTkzODMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.QbkeY3dICt01nuUDQBMjtGbprYnKyG87hYp2lpGrh4dQVIFj1rhXxHDMKsMu3eqq0O0Z4RDcy1ypULXtTnwqaFnv0NEbyk1JJUcVh17SzrbCJrJbPfphKdD5AmRYpOdwA00IUR5Sq6tYNUc3KJsbNLaMCWO9P0qm255XZGL6dHpMs_eIsJE3TuCRfxeATpAJmwbk193AC8hW7GqVYL6TFmhduI2EFLDVU5QzMuBUReVFUOrnInOAD8Dp2D9511FOKyUR2Pq-awA5wwMG6dF9g4U8YC5vDAmNt5FcQS-vx_Cv6FVL3LbtYrCUFwWGc9d5xwWax1TWZrs-Lwrzi6_yfw";
 
     @BeforeEach
     private void setUp(){
@@ -197,6 +204,108 @@ class FollowerControllerTestIT {
         assertEquals(followed.getFirstname(), gotFollowedHeader.firstname());
         assertEquals(followed.getSurname(), gotFollowedHeader.surname());
         assertEquals(followed.isVerified(), gotFollowedHeader.isVerified());
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+    public void shouldGetPostsByFollowedUsers(){
+
+        //given
+        UserEntity author = UserEntity.builder()
+            .accountId("A")
+            .nickname("kamil")
+            .firstname("Kamil")
+            .surname("Kowalski")
+            .creationDatetime(LocalDateTime.now())
+            .numberOfPosts(1)
+            .followings(0)
+            .followers(1)
+            .isVerified(true)
+            .isPrivate(false)
+            .posts(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .comments(new HashSet<>())
+            .likedComments(new HashSet<>())
+            .likedPosts(new HashSet<>())
+            .build();
+
+        author = userRepository.save(author);
+
+        UserEntity loggedUser = UserEntity.builder()
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+            .nickname("kamil1")
+            .firstname("Kamil1")
+            .surname("Kowalski1")
+            .creationDatetime(LocalDateTime.now())
+            .numberOfPosts(0)
+            .followings(1)
+            .followers(0)
+            .isVerified(true)
+            .isPrivate(false)
+            .posts(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .comments(new HashSet<>())
+            .likedComments(new HashSet<>())
+            .likedPosts(new HashSet<>())
+            .build();
+
+        loggedUser = userRepository.save(loggedUser);
+
+        byte[] content = ("Zawartość postu").getBytes(StandardCharsets.UTF_8);
+        String encodedContent = "WmF3YXJ0b8WbxIcgcG9zdHU=";
+
+        PostEntity post = PostEntity.builder()
+            .description("Opis postu")
+            .content(content)
+            .creationDatetime(LocalDateTime.now())
+            .commentsCount(0)
+            .likesCount(0)
+            .areHiddenLikes(true)
+            .areDisabledComments(false)
+            .author(author)
+            .comments(new HashSet<>())
+            .build();
+
+        post = postRepository.save(post);
+
+        author.getPosts().add(post);
+
+        FollowerEntity follower = new FollowerEntity(author, loggedUser);
+        follower = followerRepository.save(follower);
+
+        author.getFollowersUsers().add(follower);
+        loggedUser.getFollowedUsers().add(follower);
+
+        author = userRepository.save(author);
+        loggedUser = userRepository.save(loggedUser);
+
+        //when
+        Page<PostDetails> gotPosts = given()
+            .param("page", 0)
+            .param("size", 5)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
+        .when()
+            .get("/followed/posts")
+        .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<RestPage<PostDetails>>(){});
+
+        PostDetails gotPostDetails = gotPosts.getContent().get(0);
+
+        //then
+        assertEquals(1, gotPosts.getTotalElements());
+        assertEquals(post.getId().toString(), gotPostDetails.id());
+        assertEquals(post.getDescription(), gotPostDetails.description());
+        assertEquals(encodedContent, gotPostDetails.content());
+        assertEquals(post.isAreHiddenLikes(), gotPostDetails.areHiddenLikes());
+        assertEquals(post.isAreDisabledComments(), gotPostDetails.areDisabledComments());
+        assertEquals(post.getCreationDatetime(), gotPostDetails.creationDatetime().toLocalDateTime());
+        assertEquals(post.getLikesCount(), gotPostDetails.likesCount());
+        assertEquals(post.getCommentsCount(), gotPostDetails.commentsCount());
+        assertEquals(author.getId().toString(), gotPostDetails.author().id());
     }
 
     @Test

@@ -113,6 +113,8 @@ public class UserService {
             .posts(new HashSet<>())
             .comments(new HashSet<>())
             .followersUsers(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .likedPosts(new HashSet<>())
             .likedComments(new HashSet<>())
             .build();
 

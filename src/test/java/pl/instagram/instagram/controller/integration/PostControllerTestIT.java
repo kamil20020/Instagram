@@ -23,8 +23,10 @@ import pl.instagram.instagram.model.api.response.PostDetails;
 import pl.instagram.instagram.model.api.response.PostHeader;
 import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
+import pl.instagram.instagram.model.entity.FollowerEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.FollowerRepository;
 import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
@@ -43,7 +45,7 @@ class PostControllerTestIT {
 
     @Container
     @ServiceConnection
-    private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:13.0");
+    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13.0");
 
     @Autowired
     private PostRepository postRepository;
@@ -52,9 +54,12 @@ class PostControllerTestIT {
     private UserRepository userRepository;
 
     @Autowired
+    private FollowerRepository followerRepository;
+
+    @Autowired
     private UUIDMapper uuidMapper;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI0OTYwNjAzLCJleHAiOjE3MjUwNDcwMDMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.L_rMexrHIItC7qHmg1HBPgLH9rdO3MfFCdVPBB4DwePNJWOTubyac1ItXJFZAt3kYSXY7gOG9PPSiknxNA7O4Aagv1aCY7o9olvZeexN8Mlst8qgxnax-NB0yOL4MHJN2K3L3STp3TzgnY35-Vw029Vz9ZRrHlEd4uSmIYVhhflZ77GFvhxSGhVmg7dsVooJ5PFGnzaJOtL0NrhdmUgg6OWouIt0XzdLoTM8_JtiFgZQTM5y37laZt4V0ButnB2BLMsqLlyHMeleHdvxAnCgm7KToeEWfdgxprq10M9vKxgiAZsqvoIFW6CuwFWiTvSDhJF0IoWohC9OJrqvpBcGTA";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MDMyOTgzLCJleHAiOjE3MjUxMTkzODMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.QbkeY3dICt01nuUDQBMjtGbprYnKyG87hYp2lpGrh4dQVIFj1rhXxHDMKsMu3eqq0O0Z4RDcy1ypULXtTnwqaFnv0NEbyk1JJUcVh17SzrbCJrJbPfphKdD5AmRYpOdwA00IUR5Sq6tYNUc3KJsbNLaMCWO9P0qm255XZGL6dHpMs_eIsJE3TuCRfxeATpAJmwbk193AC8hW7GqVYL6TFmhduI2EFLDVU5QzMuBUReVFUOrnInOAD8Dp2D9511FOKyUR2Pq-awA5wwMG6dF9g4U8YC5vDAmNt5FcQS-vx_Cv6FVL3LbtYrCUFwWGc9d5xwWax1TWZrs-Lwrzi6_yfw";
 
     @LocalServerPort
     private Integer port;

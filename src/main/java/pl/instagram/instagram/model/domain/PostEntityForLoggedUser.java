@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PostEntityForLoggedUser {
 
-    private UUID Id;
+    private UUID id;
     private LocalDateTime creationDatetime;
     private String description;
     private byte[] content;
