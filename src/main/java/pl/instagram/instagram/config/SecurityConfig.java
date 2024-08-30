@@ -29,6 +29,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/users/*/followers").permitAll()
             .requestMatchers(HttpMethod.GET, "/users/*/followed").permitAll()
             .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/comments/*/likes").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
             .anyRequest().authenticated()
