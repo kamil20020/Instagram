@@ -14,6 +14,9 @@ import CommentAPIService from "../../services/CommentAPIService";
 import { Page } from "../../models/responses/Page";
 import { clearComment, commentSelector, focusComment, setParentCommentId } from "../../redux/slices/commentSlice";
 import SubCommentsView from "./SubCommentsView";
+import CommentLike from "./CommentLike";
+import CommentActions from "./CommentActions";
+import CommentLikes from "./CommentLikes";
 
 const CommentView = (props: {
   postId: string, 
@@ -23,74 +26,33 @@ const CommentView = (props: {
 }) => {
   const comment = props.comment;
 
-  const [showOptions, setShowOptions] = React.useState<boolean>(false);
-
-  const loggedUserId = useSelector(useAuthSelector).user?.id
+  const isLikedComment = React.useRef<boolean>(comment.didLoggedUserLikedComment)
 
   const dispatch = useDispatch()
 
-  const handleShowOptions = (isOpen?: boolean) => {
-    setShowOptions(isOpen as boolean)
-  }
-
-  const handleCloseShowOptions = () => {
-    setShowOptions(false)
-  }
-
-  const handleDeleteComment = () => {
-    handleCloseShowOptions()
-
-    CommentAPIService.deleteComment(comment?.id as string)
-    .then(() => {
-      dispatch(setNotification({
-        type: NotificationType.success,
-        message: "Usunięto komentarz"
-      }))
-
-      props.onDelete(comment.id)
-    })
-  }
-
   return (
     <div className="comment" style={{marginLeft: props.parentCommentId ? 48 : 0}}>
-      <div className="comment-content">
-        <Avatar width={40} height={40} image={comment.author.avatar} />
-        <div className="comment-details">
-          <div>
-            <h4 style={{ display: "inline-block", marginRight: 8 }}>
-              {comment.author.nickname}
-            </h4>
-            <span>{comment.content}</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "start" }}>
-            <span style={{ color: "#706f6e", marginRight: 8 }}>
-              {new Date(comment.creationDatetime).toLocaleDateString()}
-            </span>
-            <button className="grey-button-outlined">6 polubień</button>
-            <button className="grey-button-outlined" onClick={() => dispatch(focusComment(comment.id))}>Odpowiedz</button>
-            <button className="grey-button-outlined show-on-hover" onClick={() => handleShowOptions(true)}>
-              <Icon
-                iconName="more_horiz"
-                iconStyle={{ margin: 0, fontSize: 32, fontWeight: "bold", marginTop: -6 }}
-              />
-            </button>
-            <OptionsDialog 
-              isOpen={showOptions}
-              setIsOpen={handleShowOptions}
-              handleClose={handleCloseShowOptions}
-              options={
-                loggedUserId === comment.author.id ? 
-                  [
-                    {name: "Zgłoś", handle: () => console.log("Zgłoś")},
-                    {name: "Edytuj", handle: () => console.log("Edytuj")},
-                    {name: "Usuń", handle: handleDeleteComment}
-                  ]
-                :
-                  [{name: "Zgłoś", handle: () => console.log("Zgłoś")}]
-              }
-            />
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div className="comment-content">
+          <Avatar width={40} height={40} image={comment.author.avatar} userId={comment.author.id}/>
+          <div className="comment-details">
+            <div>
+              <h4 style={{ display: "inline-block", marginRight: 8 }}>
+                {comment.author.nickname}
+              </h4>
+              <span>{comment.content}</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "start" }}>
+              <span style={{ color: "#706f6e", marginRight: 8 }}>
+                {new Date(comment.creationDatetime).toLocaleDateString()}
+              </span>
+              <CommentLikes commentId={comment.id} commentLikes={comment.likesCount}/>
+              <button className="grey-button-outlined" onClick={() => dispatch(focusComment(comment.id))}>Odpowiedz</button>
+              <CommentActions comment={comment} onDelete={props.onDelete}/>
+            </div>
           </div>
         </div>
+        <CommentLike commentId={comment.id} isLikedComment={isLikedComment.current}/>
       </div>
       {comment.subCommentsCount > 0 && <SubCommentsView postId={props.postId} comment={comment}/>}
     </div>

@@ -41,9 +41,9 @@ const MyProfileHeader = (props: { userProfile: UserProfile }) => {
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
-          <div className="user-actions-buttons">
+          {/* <div className="user-actions-buttons">
             <button className="grey-button">Edytuj profil</button>
-          </div>
+          </div> */}
         </div>
         <div className="user-stats">
           <div className="user-stat">

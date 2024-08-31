@@ -14,15 +14,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NotificationType, setNotification } from "../../../redux/slices/notificationSlice";
 import { commentSelector, focusComment } from "../../../redux/slices/commentSlice";
+import { unstable_batchedUpdates } from 'react-dom';
+import PostLikeAPIService from "../../../services/PostLikeAPIService";
+import PostLikes from "./PostLikes";
+import PostActions from "./PostActions";
 
 const PostView = (props: {
   id: string,
   onDelete: (id: string) => void;
 }) => {
   const [post, setPost] = React.useState<Post>();
-  const [showOptions, setShowOptions] = React.useState<boolean>(false);
-
-  const loggedUserId = useSelector(useAuthSelector).user?.id
+  const isLikedPost = React.useRef<boolean>(false)
+  const postLikes = React.useRef<number>(0)
 
   const isCreatingComment = useSelector(commentSelector).isCreating
 
@@ -31,34 +34,15 @@ const PostView = (props: {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const handleShowOptions = (isOpen?: boolean) => {
-    setShowOptions(isOpen as boolean)
-  }
-
-  const handleCloseShowOptions = () => {
-    setShowOptions(false)
-  }
-
-  const handleDeletePost = () => {
-    handleCloseShowOptions()
-
-    PostAPIService.deletePost(post?.id as string)
-    .then(() => {
-      dispatch(setNotification({
-        type: NotificationType.success,
-        message: "Usunięto post"
-      }))
-
-      props.onDelete(props.id)
-
-      // navigate(`/profile/${loggedUserId}`)
-    })
-  }
-
   React.useEffect(() => {
     PostAPIService.getById(props.id)
     .then((response) => {
-      setPost(response.data);
+      const newPostData: Post = response.data
+
+      setPost(newPostData);
+      isLikedPost.current = newPostData.didLoggedUserLikedPost
+      postLikes.current = newPostData.likesCount
+      
       console.log(response.data);
     });
   }, []);
@@ -75,47 +59,19 @@ const PostView = (props: {
           <SimpleProfileHeader
             avatar={post.author.avatar}
             nickname={post.author.nickname}
+            userId={post.author.id}
           />
-          <button className="outlined-button" onClick={() => handleShowOptions(true)}>
-            <IconWithText iconName="more_horiz" />
-          </button>
-          <OptionsDialog 
-            isOpen={showOptions}
-            setIsOpen={handleShowOptions}
-            handleClose={handleCloseShowOptions}
-            options={
-              loggedUserId === post.author.id ? 
-                [
-                  {name: "Zgłoś", handle: () => console.log("Zgłoś")},
-                  {name: "Edytuj", handle: () => console.log("Edytuj")},
-                  {name: "Usuń", handle: handleDeletePost}
-                ]
-              :
-                [{name: "Zgłoś", handle: () => console.log("Zgłoś")}]
-            }
+          <PostActions 
+            post={post}
+            onDelete={props.onDelete}
           />
         </div>
         <PostComments post={post}/>
-        <div className="post-info">
-          <div className="post-info-actions">
-            {isAuthenticated &&
-              <React.Fragment>
-                <button className="outlined-button">
-                  <Icon iconName="favorite" />
-                </button>
-                <button className="outlined-button" onClick={() => dispatch(focusComment(undefined))}>
-                  <Icon iconName="mode_comment" />
-                </button>
-              </React.Fragment>
-            }
-          </div>
-          <div>
-          <h4>Liczba polubień: {!post.areHiddenLikes ? '77 197' : 'Ukryte'}</h4>
-            <span style={{ color: "rgb(115, 115, 115)", marginTop: 2 }}>
-              {new Date(post.creationDatetime).toLocaleDateString()}
-            </span>
-          </div>
-        </div>
+        <PostLikes 
+          post={post} 
+          postLikes={postLikes.current} 
+          isLikedPost={isLikedPost.current}
+        />
         {!post.areDisabledComments && <CreateCommentView postId={props.id} />}
       </div>
     </div>

@@ -136,3 +136,8 @@ h4{
   background-color: rgb(233, 233, 233);
   cursor: pointer;
 }
+
+.opacity-hover:hover{
+  cursor: pointer;
+  opacity: 0.6;
+}

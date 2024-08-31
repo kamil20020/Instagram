@@ -15,9 +15,9 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
             <button className="blue-button-filled">Obserwuj</button>
             <button className="grey-button">Wyślij wiadomość</button>
           </div>
-          <button className="outlined-button" style={{ marginLeft: 4 }}>
+          {/* <button className="outlined-button" style={{ marginLeft: 4 }}>
             <IconWithText iconName="more_horiz" />
-          </button>
+          </button> */}
         </div>
         <div className="user-stats">
           <div className="user-stat">

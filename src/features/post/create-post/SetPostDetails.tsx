@@ -34,7 +34,10 @@ const SetPostDetails = (props: {
     >
       <PostImage img={props.img}/>
       <div>
-        <SimpleProfileHeader nickname="kamil" />
+        <SimpleProfileHeader 
+          nickname={loggedUserData?.nickname as string} 
+          userId={loggedUserData?.id as string}
+        />
         <SetPostDescription
           setValue={(newValue: string) =>
             props.setPostDetails({

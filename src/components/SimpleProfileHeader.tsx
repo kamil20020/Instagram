@@ -1,8 +1,10 @@
-﻿import Avatar from "./Avatar";
+﻿import { Link } from "react-router-dom";
+import Avatar from "./Avatar";
 
-const SimpleProfileHeader = (props: { avatar?: string; nickname: string }) => {
+const SimpleProfileHeader = (props: { avatar?: string; nickname: string, userId: string; }) => {
   return (
-    <div
+    <Link
+      to={`/profile/${props.userId}`}
       style={{
         display: "flex",
         alignItems: "center",
@@ -14,7 +16,7 @@ const SimpleProfileHeader = (props: { avatar?: string; nickname: string }) => {
       <span style={{ fontWeight: "bold", marginLeft: 6 }}>
         {props.nickname}
       </span>
-    </div>
+    </Link>
   );
 };
 

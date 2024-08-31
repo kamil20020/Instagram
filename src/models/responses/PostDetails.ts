@@ -8,6 +8,7 @@ export interface Post {
     creationDatetime: string,
     areHiddenLikes: boolean,
     author: UserHeader,
-    numberOfLikes: number,
-    numberOfComments: number
+    likesCount: number,
+    commentsCount: number,
+    didLoggedUserLikedPost: boolean
 }

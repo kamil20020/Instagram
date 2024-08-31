@@ -18,6 +18,7 @@
 .comment-content {
   display: flex;
   column-gap: 20px;
+  align-items: start;
 }
 
 .comment {
