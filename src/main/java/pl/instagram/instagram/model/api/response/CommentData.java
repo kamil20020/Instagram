@@ -9,7 +9,7 @@ public record CommentData(
     OffsetDateTime creationDatetime,
     Integer subCommentsCount,
     Integer likesCount,
-    boolean didLoggedUserLikedComment
+    boolean didLoggedUserLikeComment
 ){
     public CommentData(String id, UserHeader author, String content, OffsetDateTime creationDatetime, Integer subCommentsCount, Integer likesCount) {
         this(id, author, content, creationDatetime, subCommentsCount, likesCount, false);

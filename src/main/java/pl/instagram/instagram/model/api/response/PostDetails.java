@@ -12,7 +12,7 @@ public record PostDetails(
     UserHeader author,
     Integer likesCount,
     Integer commentsCount,
-    boolean didLoggedUserLikedPost
+    boolean didLoggedUserLikePost
 ){
     public PostDetails(String id, OffsetDateTime creationDatetime, String description, String content, boolean areHiddenLikes, boolean areDisabledComments, UserHeader author, Integer likesCount, Integer commentsCount) {
         this(id, creationDatetime, description, content, areHiddenLikes, areDisabledComments, author, likesCount, commentsCount, false);
