@@ -10,5 +10,5 @@ export interface Post {
     author: UserHeader,
     likesCount: number,
     commentsCount: number,
-    didLoggedUserLikedPost: boolean
+    didLoggedUserLikePost: boolean
 }

@@ -17,26 +17,6 @@ const CommentLikes = (props: {
 
     const [users, setUsers] = React.useState<UserHeader[]>([])
     const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false)
-  
-    const {isAuthenticated} = useAuth0()
-    
-    const dispatch = useDispatch()
-  
-    useEffect(() => {
-  
-      const pagination: Pagination = {
-        page: 0,
-        size: 12
-      };
-  
-      CommentLikeAPIService.getPage(props.commentId, pagination)
-      .then((response) => {
-        const convertedResponse: Page = response.data;
-        const newLikes: UserHeader[] = convertedResponse.content
-  
-        setUsers(newLikes)
-      })
-    }, [])
 
     const handleShowLikes = () => {
 

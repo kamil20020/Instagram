@@ -1,6 +1,10 @@
-﻿import Avatar from "../../../components/Avatar";
+﻿import { useAuth0 } from "@auth0/auth0-react";
+import Avatar from "../../../components/Avatar";
 import IconWithText from "../../../components/IconWithText";
 import { UserProfile } from "../../../models/responses/UserProfile";
+import UserFollowed from "../UserFollowed";
+import UserFollowers from "../UserFollowers";
+import FollowUser from "./FollowUser";
 
 const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
   const userProfile = props.userProfile;
@@ -12,7 +16,7 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
-            <button className="blue-button-filled">Obserwuj</button>
+            <FollowUser userId={userProfile.id} doesFollow={userProfile.didLoggedUserFollow}/>
             <button className="grey-button">Wyślij wiadomość</button>
           </div>
           {/* <button className="outlined-button" style={{ marginLeft: 4 }}>
@@ -24,14 +28,8 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
             <h3 className="normal-weight">Posty:&nbsp;</h3>
             <h3>{userProfile?.numberOfPosts}</h3>
           </div>
-          <div className="user-stat">
-            <h3>{userProfile?.followers}&nbsp;</h3>
-            <h3 className="normal-weight">obserwujących</h3>
-          </div>
-          <div className="user-stat">
-            <h3 className="normal-weight">Obserwowani:&nbsp;</h3>
-            <h3>{userProfile?.followings}</h3>
-          </div>
+          <UserFollowers userId={userProfile.id} followersCount={userProfile.followers}/>
+          <UserFollowed userId={userProfile.id} followedCount={userProfile.followings}/>
         </div>
         <div className="user-info">
           <h4>

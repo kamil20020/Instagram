@@ -5,6 +5,8 @@ import { useAuthSelector } from "../../../redux/slices/authSlice";
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import MyAvatar from "./MyAvatar";
+import UserFollowers from "../UserFollowers";
+import UserFollowed from "../UserFollowed";
 
 const MyProfileHeader = (props: { userProfile: UserProfile }) => {
 
@@ -37,7 +39,7 @@ const MyProfileHeader = (props: { userProfile: UserProfile }) => {
 
   return (
     <div className="user-header">
-      <MyAvatar image={userProfile.avatar} />
+      <MyAvatar image={userProfile.avatar}/>
       <div className="user-details">
         <div className="user-actions">
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
@@ -50,14 +52,8 @@ const MyProfileHeader = (props: { userProfile: UserProfile }) => {
             <h3 className="normal-weight">Posty:&nbsp;</h3>
             <h3>{userProfile?.numberOfPosts}</h3>
           </div>
-          <div className="user-stat">
-            <h3>{userProfile?.followers}&nbsp;</h3>
-            <h3 className="normal-weight">obserwujących</h3>
-          </div>
-          <div className="user-stat">
-            <h3 className="normal-weight">Obserwowani:&nbsp;</h3>
-            <h3>{userProfile?.followings}</h3>
-          </div>
+          <UserFollowers userId={userProfile.id} followersCount={userProfile.followers}/>
+          <UserFollowed userId={userProfile.id} followedCount={userProfile.followings}/>
         </div>
         <div className="user-info">
           <h4>

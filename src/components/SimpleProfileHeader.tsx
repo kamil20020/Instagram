@@ -4,6 +4,7 @@ import Avatar from "./Avatar";
 const SimpleProfileHeader = (props: { avatar?: string; nickname: string, userId: string; }) => {
   return (
     <Link
+      className="opacity-hover"
       to={`/profile/${props.userId}`}
       style={{
         display: "flex",

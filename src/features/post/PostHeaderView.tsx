@@ -36,13 +36,13 @@ const PostHeaderView = (props: { postHeader: PostHeader }) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <IconWithText
             iconName={"favorite"}
-            text={"200"}
+            text={props.postHeader.likesCount}
             iconStyle={{ color: "white", opacity: 1 }}
             textStyle={{ color: "white", marginRight: 32 }}
           />
           <IconWithText
             iconName={"chat_bubble"}
-            text={"200"}
+            text={props.postHeader.commentsCount}
             iconStyle={{ color: "white", opacity: 1 }}
             textStyle={{ color: "white" }}
           />

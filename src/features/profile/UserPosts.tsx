@@ -25,7 +25,7 @@ const UserPosts = () => {
     )
   }
 
-  const handleGetPostsPage = (newPage: number) => {
+  const handleGetPostsPage = (newPage: number, doReplace: boolean = false) => {
 
     if(!userId){
       return;
@@ -35,7 +35,14 @@ const UserPosts = () => {
     .then((response) => {
       const pagedResponse: Page = response.data
       const gotPosts: PostHeader[] = pagedResponse.content
-      setPosts([...posts, ...gotPosts])
+
+      if(doReplace){
+        setPosts([...gotPosts])
+      }
+      else{
+        setPosts([...posts, ...gotPosts])
+      }
+
       setPage(newPage)
       setTotalPages(pagedResponse.totalPages)
     })
@@ -43,8 +50,8 @@ const UserPosts = () => {
 
   React.useEffect(() => {
 
-    handleGetPostsPage(page)
-  }, [])
+    handleGetPostsPage(page, true)
+  }, [userId])
 
   if(!userId){
     return <></>

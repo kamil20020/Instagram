@@ -14,13 +14,12 @@ const UsersDialog = (props: {
     return (
         <Dialog
             isOpen={props.isOpen}
-            height={props.height ? props.height : 9 * props.users.length}
+            height={props.height ? props.height : 9.5 * props.users.length}
             width={props.width ? props.width : 18}
             setIsOpen={props.setIsOpen}
             handleClose={props.handleClose}
             content={
-                <div 
-                    className="opacity-hover"
+                <div
                     style={{
                         display: "flex", 
                         justifyContent: "center",

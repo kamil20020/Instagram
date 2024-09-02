@@ -7,5 +7,5 @@ export interface CommentData {
     creationDatetime: string,
     subCommentsCount: number,
     likesCount: number,
-    didLoggedUserLikedComment: boolean
+    didLoggedUserLikeComment: boolean
 }

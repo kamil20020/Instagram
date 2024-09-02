@@ -26,7 +26,7 @@ const CommentView = (props: {
 }) => {
   const comment = props.comment;
 
-  const isLikedComment = React.useRef<boolean>(comment.didLoggedUserLikedComment)
+  const isLikedComment = React.useRef<boolean>(comment.didLoggedUserLikeComment)
 
   const dispatch = useDispatch()
 

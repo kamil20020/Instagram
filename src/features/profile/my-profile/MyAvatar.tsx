@@ -14,6 +14,11 @@ const MyAvatar = (props: {
 
     const dispatch = useDispatch()
 
+    useEffect(() => {
+
+        setSelectedImg(props.image)
+    }, [props.image])
+
     const changeProfileImg = (img: string) => {
 
         UserAPIService.patchLoggedUser({
@@ -59,7 +64,7 @@ const MyAvatar = (props: {
             <div className={`change-profile-photo ${selectedImg && 'show-on-hover'}`} onClick={chooseImg}>
                 <Icon iconName={"photo_camera"} iconStyle={{fontSize: 100, marginRight: 0}}/>
             </div>
-            <Avatar image={selectedImg} width={220} height={220}/>
+            <Avatar image={selectedImg} width={200} height={200}/>
         </div>
     )
 }

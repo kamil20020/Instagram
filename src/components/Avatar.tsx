@@ -1,4 +1,5 @@
-﻿import { Link } from "react-router-dom";
+﻿import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Avatar = (props: {
   image?: string;
@@ -7,9 +8,9 @@ const Avatar = (props: {
   userId?: string;
 }) => {
   const anonymousAvatar =
-    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png";
+    "https://static-00.iconduck.com/assets.00/profile-major-icon-512x512-xosjbbdq.png";
 
-  const getImg = () : string => {
+  const getImg = () => {
 
     if(props.image){
 
@@ -29,8 +30,8 @@ const Avatar = (props: {
         className="profile-photo"
         alt="Zdjęcie profilowe"
         src={getImg()}
-        width={props.image ? props.width : props.width + 40}
-        height={props.image ? props.height : props.height + 40}
+        width={props.width}
+        height={props.height}
       />
     </Link>
   );

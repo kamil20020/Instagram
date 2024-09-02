@@ -40,7 +40,7 @@ const Header = () => {
                 link={`/profile/${authData.user?.id}`}
                 content={
                   <div style={{display: "flex", alignItems: "center"}}>
-                    <Avatar width={2} height={2}/>
+                    <Avatar image={authData.user?.avatar} width={36} height={36}/>
                     <p style={{marginLeft: 16}}>Profil</p>
                   </div>
                 }
