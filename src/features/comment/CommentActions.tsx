@@ -6,6 +6,7 @@ import { CommentData } from "../../models/responses/CommentData";
 import { useAuthSelector } from "../../redux/slices/authSlice";
 import { setNotification, NotificationType } from "../../redux/slices/notificationSlice";
 import CommentAPIService from "../../services/CommentAPIService";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const CommentActions = (props: {
     comment: CommentData,
@@ -14,6 +15,7 @@ const CommentActions = (props: {
     const comment = props.comment;
 
     const [showOptions, setShowOptions] = React.useState<boolean>(false);
+    const {isAuthenticated} = useAuth0()
   
     const loggedUserId = useSelector(useAuthSelector).user?.id
 
@@ -39,6 +41,10 @@ const CommentActions = (props: {
 
             props.onDelete(comment.id)
         })
+    }
+
+    if(!isAuthenticated){
+        return <></>
     }
 
     return (

@@ -17,6 +17,7 @@ import SubCommentsView from "./SubCommentsView";
 import CommentLike from "./CommentLike";
 import CommentActions from "./CommentActions";
 import CommentLikes from "./CommentLikes";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const CommentView = (props: {
   postId: string, 
@@ -27,6 +28,8 @@ const CommentView = (props: {
   const comment = props.comment;
 
   const isLikedComment = React.useRef<boolean>(comment.didLoggedUserLikeComment)
+
+  const {isAuthenticated} = useAuth0()
 
   const dispatch = useDispatch()
 
@@ -47,7 +50,14 @@ const CommentView = (props: {
                 {new Date(comment.creationDatetime).toLocaleDateString()}
               </span>
               <CommentLikes commentId={comment.id} commentLikes={comment.likesCount}/>
-              <button className="grey-button-outlined" onClick={() => dispatch(focusComment(comment.id))}>Odpowiedz</button>
+              {isAuthenticated && 
+                <button 
+                  className="grey-button-outlined"
+                  onClick={() => dispatch(focusComment(comment.id))}
+                >
+                  Odpowiedz
+                </button>
+              }
               <CommentActions comment={comment} onDelete={props.onDelete}/>
             </div>
           </div>

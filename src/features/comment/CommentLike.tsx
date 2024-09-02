@@ -5,12 +5,14 @@ import { useDispatch } from "react-redux";
 import { setNotification, NotificationType } from "../../redux/slices/notificationSlice";
 import PostLikeAPIService from "../../services/PostLikeAPIService";
 import CommentLikeAPIService from "../../services/CommentLikeAPIService";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const CommentLike = (props: {
     commentId: string,
     isLikedComment: boolean;
 }) => {
     const [isLikedComment, setIsLikedComment] = React.useState<boolean>(props.isLikedComment)
+    const {isAuthenticated} = useAuth0()
 
     const dispatch = useDispatch()
 
@@ -38,6 +40,10 @@ const CommentLike = (props: {
                 setIsLikedComment(true)
             });
         }
+    }
+
+    if(!isAuthenticated){
+        return <></>
     }
 
     return (

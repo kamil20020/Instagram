@@ -36,6 +36,10 @@ const FollowUser = (props: {
         })
     }
 
+    if(!isAuthenticated){
+        return <></>
+    }
+
     return (
         <>
             {doFollowed ? 

@@ -9,6 +9,8 @@ import FollowUser from "./FollowUser";
 const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
   const userProfile = props.userProfile;
 
+  const {isAuthenticated} = useAuth0()
+
   return (
     <div className="user-header">
       <Avatar image={userProfile?.avatar} width={200} height={200} />
@@ -17,7 +19,7 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
             <FollowUser userId={userProfile.id} doesFollow={userProfile.didLoggedUserFollow}/>
-            <button className="grey-button">Wyślij wiadomość</button>
+            {isAuthenticated && <button className="grey-button">Wyślij wiadomość</button>}
           </div>
           {/* <button className="outlined-button" style={{ marginLeft: 4 }}>
             <IconWithText iconName="more_horiz" />

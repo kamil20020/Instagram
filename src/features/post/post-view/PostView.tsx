@@ -26,7 +26,7 @@ const PostView = (props: {
 
       isLikedPost.current = newPostData.didLoggedUserLikePost
       postLikes.current = newPostData.likesCount
-    });
+    })
   }, []);
 
   if (!post) {
