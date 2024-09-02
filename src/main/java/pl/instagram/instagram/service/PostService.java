@@ -15,6 +15,7 @@ import pl.instagram.instagram.model.domain.PatchPostData;
 import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.PostLikeRepository;
 import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
@@ -29,6 +30,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     private final UserService userService;
     private final AuthService authService;
@@ -57,7 +59,7 @@ public class PostService {
 
             String loggedUserAccountId = authService.getLoggedUserAccountId();
 
-            didLoggedUserLikePost = userRepository.existsByAccountIdAndLikedPostsId(loggedUserAccountId, postId);
+            didLoggedUserLikePost = postLikeRepository.existsByAuthorAccountIdAndPostId(loggedUserAccountId, postId);
         }
 
         PostEntityForLoggedUser convertedPost = postMapper.postEntityToPostEntityForLoggedUser(foundPost);
@@ -95,13 +97,13 @@ public class PostService {
             Sort.by(Sort.Direction.DESC, "creationDatetime")
         );
 
-        UUID loggedUserId = userService.getLoggedUser().getId();
+        UserEntity loggedUser = userService.getLoggedUser();
 
-        Page<PostEntity> gotPosts = postRepository.findByAuthorFollowedUsersFollowerId(loggedUserId, pageable);
+        Page<PostEntity> gotPosts = postRepository.findByAuthorFollowedUsersFollowerId(loggedUser.getId(), pageable);
 
         return gotPosts.map(post -> {
 
-            boolean didLoggedUserLikePost = userRepository.existsByIdAndLikedPostsId(loggedUserId, post.getId());
+            boolean didLoggedUserLikePost = postLikeRepository.existsByAuthorAccountIdAndPostId(loggedUser.getAccountId(), post.getId());
 
             PostEntityForLoggedUser convertedPost = postMapper.postEntityToPostEntityForLoggedUser(post);
             convertedPost.setDidLoggedUserLikePost(didLoggedUserLikePost);
@@ -125,6 +127,7 @@ public class PostService {
 			.likesCount(0)
 			.commentsCount(0)
             .comments(new HashSet<>())
+            .postLikes(new HashSet<>())
             .build();
 
         loggedUser.getPosts().add(newPost);
@@ -155,6 +158,7 @@ public class PostService {
         return foundPost;
     }
 
+    @Transactional
     public void deletePostById(UUID postId) throws EntityNotFoundException, UserIsNotResourceAuthorException {
 
         PostEntity foundPost = getPostById(postId);

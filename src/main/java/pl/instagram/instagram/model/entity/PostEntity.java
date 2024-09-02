@@ -61,4 +61,10 @@ public class PostEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CommentEntity> comments;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<PostLikeEntity> postLikes;
 }

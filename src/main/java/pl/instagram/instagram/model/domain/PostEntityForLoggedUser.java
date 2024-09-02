@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
+import pl.instagram.instagram.model.entity.PostLikeEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class PostEntityForLoggedUser {
     private Integer commentsCount;
     private UserEntity author;
     private Set<CommentEntity> comments;
+    private Set<PostLikeEntity> postLikes;
     private PostEntity post;
     private boolean didLoggedUserLikePost;
 }

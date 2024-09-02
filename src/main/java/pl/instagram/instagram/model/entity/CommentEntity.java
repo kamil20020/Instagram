@@ -64,4 +64,10 @@ public class CommentEntity {
     @JoinColumn(name = "author_id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private UserEntity author;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<CommentLikeEntity> commentLikes;
 }

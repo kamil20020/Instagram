@@ -26,7 +26,9 @@ import pl.instagram.instagram.model.api.response.PostLikesResponse;
 import pl.instagram.instagram.model.api.response.RestPage;
 import pl.instagram.instagram.model.api.response.UserHeader;
 import pl.instagram.instagram.model.entity.PostEntity;
+import pl.instagram.instagram.model.entity.PostLikeEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.PostLikeRepository;
 import pl.instagram.instagram.repository.PostRepository;
 import pl.instagram.instagram.repository.UserRepository;
 import pl.instagram.instagram.service.PostLikeService;
@@ -57,9 +59,12 @@ class PostLikeControllerTestIT {
     private PostRepository postRepository;
 
     @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
     private UUIDMapper uuidMapper;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MjA1NDA3LCJleHAiOjE3MjUyOTE4MDcsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.NzEvA8Mq14rLO2UdyVCxE7iiZPMObpuWgtPNiXtL06H_s4LGU2E7LlzL8IKZxE3C7uSZzPbj7JWJNnhpMFqmjCs_MqfuaqMa_n2xS9txgcOpkiNXUn_LZIuUre0FP3hwINrVtYkP-taLyNo7_eUvcJF7cdQesE4VwRxDuy71za4roa027ZMYvyyTc7HsaYnFGvYgzILxTunIi0hwe1YYSSiVz8F0d3QCcjhcn87y0N_NKrS48GXe4dYV2c07YrWD_2mfLfUcTNbn3Jik7915ZP5v69_TpVaA4JMsM4YI7Ev_Cj1kK-xjbuxfJQmObn6je37uZNTiMdv_CMxl3oX9cQ";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJCZkFLTm5ha0U5TXVBd3dVUlQwRXUyT1paNkY2ZDNqaUBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzI1MjgyNDQzLCJleHAiOjE3MjUzNjg4NDMsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IkJmQUtObmFrRTlNdUF3d1VSVDBFdTJPWlo2RjZkM2ppIn0.e28BKPBXPlyJOHTIwhYcesiCThvqv8SZe-ItJcX5fHXbd98ctY6afVh-naDn-sCFhiP6WXSGMwNjHGKBNTVrLs0hft18iZGTswq8zy-N381UB_BOjX79YCjTr9Ji6gbV0Hn1rsdDhKzofpDX0irEkrN2gcqoMt98zRGmo0Io91eggdnf9ED3ljFBfVDqiifymBWujg44JuJusEPExRu8nDfmGt2eN2kQFL_LKtEgDeqWyvWLXfYg-suvL9RBTWa2d2tRY15Fh9ofg7yX68GU53Ojyi40TuNDal36iVHH9EmQ5wCND7esbnjOxKYyW1Ewl4qeRW3kd4ahzeeIr494wQ";
 
     @BeforeEach
     private void setUp(){
@@ -103,11 +108,18 @@ class PostLikeControllerTestIT {
             .likesCount(1)
             .commentsCount(0)
             .author(author)
+            .postLikes(new HashSet<>())
             .build();
 
         post = postRepository.save(post);
 
-        author.getLikedPosts().add(post);
+        PostLikeEntity createdPostLike = postLikeRepository.save(
+            new PostLikeEntity(author, post)
+        );
+
+        author.getLikedPosts().add(createdPostLike);
+
+        post.getPostLikes().add(createdPostLike);
 
         author = userRepository.save(author);
 
@@ -164,6 +176,7 @@ class PostLikeControllerTestIT {
             .likesCount(0)
             .commentsCount(0)
             .author(author)
+            .postLikes(new HashSet<>())
             .build();
 
         post = postRepository.save(post);
@@ -181,7 +194,7 @@ class PostLikeControllerTestIT {
         post = postRepository.findById(post.getId()).orElseThrow();
 
         //then
-        assertTrue(userRepository.existsByIdAndLikedPostsId(author.getId(), post.getId()));
+        assertTrue(postLikeRepository.existsByAuthorAccountIdAndPostId(author.getAccountId(), post.getId()));
         assertEquals(1, post.getLikesCount());
         assertEquals(author.getId().toString(), gotPostLike.id());
         assertEquals(author.getNickname(), gotPostLike.nickname());
@@ -220,13 +233,18 @@ class PostLikeControllerTestIT {
             .likesCount(1)
             .commentsCount(0)
             .author(author)
+            .postLikes(new HashSet<>())
             .build();
 
         post = postRepository.save(post);
 
-        author.getLikedPosts().add(post);
+        PostLikeEntity createdPostLike = postLikeRepository.save(
+            new PostLikeEntity(author, post)
+        );
 
-        author = userRepository.save(author);
+        author.getLikedPosts().add(createdPostLike);
+
+        post.getPostLikes().add(createdPostLike);
 
         //when
         given()
@@ -239,7 +257,7 @@ class PostLikeControllerTestIT {
         post = postRepository.findById(post.getId()).orElseThrow();
 
         //then
-        assertFalse(userRepository.existsByIdAndLikedPostsId(author.getId(), post.getId()));
+        assertFalse(postLikeRepository.existsByAuthorAccountIdAndPostId(author.getAccountId(), post.getId()));
         assertEquals(0, post.getLikesCount());
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.context.annotation.Lazy;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -76,15 +77,22 @@ public class UserEntity {
     private Set<PostEntity> posts = new HashSet<>();
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(
-        name = "POSTS_LIKES",
-        joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
-    )
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<PostEntity> likedPosts = new HashSet<>();
+    private Set<CommentEntity> comments = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<PostLikeEntity> likedPosts = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<CommentLikeEntity> likedComments = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "followed", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -97,19 +105,4 @@ public class UserEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<FollowerEntity> followersUsers = new HashSet<>();
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "COMMENTS_LIKES",
-        joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
-    )
-    private Set<CommentEntity> likedComments = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<CommentEntity> comments = new HashSet<>();
 }

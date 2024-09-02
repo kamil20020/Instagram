@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.instagram.instagram.model.entity.CommentEntity;
+import pl.instagram.instagram.model.entity.CommentLikeEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
 
@@ -28,5 +29,6 @@ public class CommentEntityForLoggedUser {
     private PostEntity post;
     private UserEntity author;
     private CommentEntity comment;
+    private Set<CommentLikeEntity> commentLikes;
     private boolean didLoggedUserLikeComment;
 }

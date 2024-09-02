@@ -16,7 +16,9 @@ import pl.instagram.instagram.model.api.response.PostLikesResponse;
 import pl.instagram.instagram.model.domain.PostEntityForLoggedUser;
 import pl.instagram.instagram.model.domain.PostLikes;
 import pl.instagram.instagram.model.entity.PostEntity;
+import pl.instagram.instagram.model.entity.PostLikeEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.PostLikeRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
 import java.util.UUID;
@@ -28,10 +30,17 @@ import java.util.UUID;
 public class PostLikeService {
 
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     private final PostService postService;
     private final UserService userService;
     private final AuthService authService;
+
+    private PostLikeEntity getById(PostLikeEntity.PostLikeEntityId id) throws EntityNotFoundException {
+
+        return postLikeRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Nie istnieje polubienie posta o takim id"));
+    }
 
     public PostLikes getPostLikes(UUID postId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
 
@@ -44,10 +53,11 @@ public class PostLikeService {
         }
 
         pageable = PageRequest.of(
-            pageable.getPageNumber(), pageable.getPageSize(), Sort.by("creationDatetime").ascending()
+            pageable.getPageNumber(), pageable.getPageSize()
         );
 
-        Page<UserEntity> postLikesPage = userRepository.findByLikedPostsId(postId, pageable);
+        Page<PostLikeEntity> postLikesPage = postLikeRepository.findByPostId(postId, pageable);
+        Page<UserEntity> postLikesAuthorsPage = postLikesPage.map(PostLikeEntity::getAuthor);
 
         boolean didLoggedUserLikePost = false;
 
@@ -55,10 +65,10 @@ public class PostLikeService {
 
             String loggedUserAccountId = authService.getLoggedUserAccountId();
 
-            didLoggedUserLikePost = userRepository.existsByAccountIdAndLikedPostsId(loggedUserAccountId, postId);
+            didLoggedUserLikePost = postLikeRepository.existsByAuthorAccountIdAndPostId(loggedUserAccountId, postId);
         }
 
-        return new PostLikes(postId, postLikesPage, didLoggedUserLikePost);
+        return new PostLikes(postId, postLikesAuthorsPage, didLoggedUserLikePost);
     }
 
     @Transactional
@@ -67,12 +77,17 @@ public class PostLikeService {
         PostEntity post = postService.getPostById(postId);
         UserEntity loggedUser = userService.getLoggedUser();
 
-        if(userRepository.existsByIdAndLikedPostsId(loggedUser.getId(), postId)){
-            throw new EntityExistsException("Istnieje już polubienie posta o takich id posta i użytkownika");
+        if(postLikeRepository.existsByAuthorAccountIdAndPostId(loggedUser.getAccountId(), postId)){
+            throw new EntityExistsException("Istnieje już polubienie posta o takich id posta i konta użytkownika");
         }
 
+        PostLikeEntity toCreatePostLike = new PostLikeEntity(loggedUser, post);
+        PostLikeEntity createdPostLike = postLikeRepository.save(toCreatePostLike);
+
+        post.getPostLikes().add(createdPostLike);
         post.setLikesCount(post.getLikesCount() + 1);
-        loggedUser.getLikedPosts().add(post);
+
+        loggedUser.getLikedPosts().add(createdPostLike);
 
         return loggedUser;
     }
@@ -83,11 +98,15 @@ public class PostLikeService {
         PostEntity post = postService.getPostById(postId);
         UserEntity loggedUser = userService.getLoggedUser();
 
-        if(!userRepository.existsByIdAndLikedPostsId(loggedUser.getId(), postId)){
-            throw new EntityNotFoundException("Nie istnieje polubienie posta o takich id użytkownika i posta");
-        }
+        PostLikeEntity.PostLikeEntityId postLikeId = new PostLikeEntity.PostLikeEntityId(loggedUser.getId(), postId);
 
+        PostLikeEntity foundPostLike = getById(postLikeId);
+
+        post.getPostLikes().remove(foundPostLike);
         post.setLikesCount(post.getLikesCount() - 1);
-        loggedUser.getLikedPosts().remove(post);
+
+        loggedUser.getLikedPosts().remove(foundPostLike);
+
+        postLikeRepository.deleteById(postLikeId);
     }
 }

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import pl.instagram.instagram.model.entity.CommentEntity;
-import pl.instagram.instagram.model.entity.FollowerEntity;
-import pl.instagram.instagram.model.entity.PostEntity;
-import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.model.entity.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -35,10 +32,10 @@ public class UserEntityForLoggedUser {
     private Integer followings;
     private Integer numberOfPosts;
     private Set<PostEntity> posts;
-    private Set<PostEntity> likedPosts;
+    private Set<PostLikeEntity> likedPosts;
     private Set<FollowerEntity> followedUsers;
     private Set<FollowerEntity> followersUsers;
-    private Set<CommentEntity> likedComments;
+    private Set<CommentLikeEntity> likedComments;
     private Set<CommentEntity> comments;
     private boolean didLoggedUserFollow;
 }

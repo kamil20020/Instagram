@@ -16,6 +16,7 @@ import pl.instagram.instagram.model.domain.CommentEntityForLoggedUser;
 import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.PostEntity;
 import pl.instagram.instagram.model.entity.UserEntity;
+import pl.instagram.instagram.repository.CommentLikeRepository;
 import pl.instagram.instagram.repository.CommentRepository;
 import pl.instagram.instagram.repository.UserRepository;
 
@@ -31,6 +32,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     private final PostService postService;
     private final UserService userService;
@@ -76,7 +78,7 @@ public class CommentService {
 
             commentsForLoggedUserPage = commentsPage
                 .map(comment -> {
-                    boolean didLoggedUserLikeComment = userRepository.existsByAccountIdAndLikedCommentsId(
+                    boolean didLoggedUserLikeComment = commentLikeRepository.existsByAuthorAccountIdAndCommentId(
                         loggedUserAccountId, comment.getId()
                     );
 
@@ -107,6 +109,7 @@ public class CommentService {
 			.likesCount(0)
 			.subCommentsCount(0)
             .subComments(new HashSet<>())
+            .commentLikes(new HashSet<>())
             .build();
 
         CommentEntity createdComment;
@@ -149,6 +152,7 @@ public class CommentService {
         return foundComment;
     }
 
+    @Transactional
     public void deleteComment(UUID commentId) throws EntityNotFoundException, UserIsNotResourceAuthorException{
 
         CommentEntity foundComment = getById(commentId);
