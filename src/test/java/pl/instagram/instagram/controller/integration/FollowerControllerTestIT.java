@@ -118,7 +118,7 @@ class FollowerControllerTestIT {
         followed = userRepository.save(followed);
 
         //when
-        FollowersResponse gotFollowerResponse = given()
+        Page<UserHeader> gotFollowersPage = given()
             .param("page", 0)
             .param("size", 5)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
@@ -127,19 +127,17 @@ class FollowerControllerTestIT {
         .then()
             .statusCode(200)
             .extract()
-            .as(FollowersResponse.class);
+            .as(new TypeRef<RestPage<UserHeader>>(){});
 
-        Page<UserHeader> gotFollowersHeadersPage = gotFollowerResponse.followers();
-        UserHeader gotFollowerHeader = gotFollowersHeadersPage.getContent().get(0);
+        UserHeader gotFollowerHeader = gotFollowersPage.getContent().get(0);
 
         //then
-        assertEquals(1, gotFollowersHeadersPage.getTotalElements());
+        assertEquals(1, gotFollowersPage.getTotalElements());
         assertEquals(follower.getId().toString(), gotFollowerHeader.id());
         assertEquals(follower.getNickname(), gotFollowerHeader.nickname());
         assertEquals(follower.getFirstname(), gotFollowerHeader.firstname());
         assertEquals(follower.getSurname(), gotFollowerHeader.surname());
         assertEquals(follower.isVerified(), gotFollowerHeader.isVerified());
-        assertTrue(gotFollowerResponse.didLoggedUserFollowed());
     }
 
     @Test

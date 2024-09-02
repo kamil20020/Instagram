@@ -53,7 +53,7 @@ public class FollowerController {
             description = "Found user's followers",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FollowersResponse.class)
+                schema = @Schema(implementation = Page.class)
             )
         ),
         @ApiResponse(
@@ -68,17 +68,14 @@ public class FollowerController {
         )
     })
     @GetMapping(value = "/{followedId}/followers")
-    public ResponseEntity<FollowersResponse> getFollowersPage(@PathVariable("followedId") String followedIdStr, Pageable pageable){
+    public ResponseEntity<Page<UserHeader>> getFollowersPage(@PathVariable("followedId") String followedIdStr, Pageable pageable){
 
         UUID followedId = uuidMapper.strToUUID(followedIdStr, FOLLOWED_MESSAGE);
 
-        Followers followers = followerService.getFollowersPage(followedId, pageable);
-        Page<UserEntity> followersUsersPage = followers.followers();
-        Page<UserHeader> followersUsersHeadersPage = followersUsersPage.map(userMapper::userEntityToUserHeader);
+        Page<UserEntity> followersPage = followerService.getFollowersPage(followedId, pageable);
+        Page<UserHeader> followersHeadersPage = followersPage.map(userMapper::userEntityToUserHeader);
 
-        FollowersResponse responseBody = new FollowersResponse(new RestPage<>(followersUsersHeadersPage), followers.didLoggedUserFollowed());
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(followersHeadersPage);
     }
 
     @Operation(

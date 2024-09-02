@@ -31,7 +31,7 @@ public class FollowerService {
     private final UserService userService;
     private final AuthService authService;
 
-    public Followers getFollowersPage(UUID followedId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
+    public Page<UserEntity> getFollowersPage(UUID followedId, Pageable pageable) throws IllegalArgumentException, EntityNotFoundException {
 
         if(pageable == null){
             throw new IllegalArgumentException("Paginacja jest wymagana");
@@ -41,20 +41,7 @@ public class FollowerService {
             throw new EntityNotFoundException("Nie istnieje użytkownik o takim id");
         }
 
-        Page<UserEntity> gotFollowers = userRepository.findByFollowersUsersFollowedId(followedId, pageable);
-
-        boolean didLoggedUserFollowed = false;
-
-        if(authService.isUserLogged()){
-
-            String loggedUserAccountId = authService.getLoggedUserAccountId();
-
-            if(followerRepository.existsByFollowerAccountIdAndFollowedId(loggedUserAccountId, followedId)){
-                didLoggedUserFollowed = true;
-            }
-        }
-
-        return new Followers(gotFollowers, didLoggedUserFollowed);
+        return userRepository.findByFollowersUsersFollowedId(followedId, pageable);
     }
 
     public Page<UserEntity> getFollowedPage(UUID followerId, Pageable pageable) throws IllegalArgumentException {
