@@ -33,7 +33,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://instagram-db:5432/instagram
       - SPRING_DATASOURCE_USERNAME=instagram
       - SPRING_DATASOURCE_PASSWORD=instagram-pass
-      - SPRING_PROFILES_ACTIVE=production
+      - SPRING_PROFILES_ACTIVE=dev
     ports:
       - "9000:9000"
     depends_on:
