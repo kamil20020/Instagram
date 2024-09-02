@@ -34,7 +34,7 @@ class FollowerAPIService {
     }
 
     delete(userId: string){
-        return axios.post(`${this.api}/${userId}/followers`)
+        return axios.delete(`${this.api}/${userId}/followers`)
     }
 }
 
