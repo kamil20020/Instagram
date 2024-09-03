@@ -43,6 +43,7 @@ const Search = () => {
       .then((response) => {
         const pagedResponse: Page = response.data
         setProfiles(pagedResponse.content);
+        console.log(pagedResponse.content)
       });
     } 
     else {
