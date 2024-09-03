@@ -85,15 +85,15 @@ Details:
 ## Swagger
 
 <p align="center">
-    <img src="swagger/1.png">
+    <img src="swagger/swagger-1.png">
 <p>
 
 <p align="center">
-    <img src="swagger/2.png">
+    <img src="swagger/swagger-2.png">
 <p>
 
 <p align="center">
-    <img src="swagger/3.png">
+    <img src="swagger/swagger-3.png">
 <p>
 
 ## Screen shots
@@ -153,7 +153,7 @@ Avatar in the menu will be refreshed after next login;
 
 #### Profile viewed by logged user:
 <p align="center">
-    <img src="screenshots/user-profile-.png">
+    <img src="screenshots/user-profile-other-logged.png">
 <p>
 
 ### Searching users:
