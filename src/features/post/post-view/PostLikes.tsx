@@ -26,29 +26,45 @@ const PostLikes = (props: {
   const [isLikedPost, setIsLikedPost] = React.useState<boolean>(props.isLikedPost)
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false)
 
+  const [page, setPage] = React.useState<number>(-1);
+  const [pagesCount, setPagesCount] = React.useState<number>(0);
+  const pageSize = 12;
+
   const {isAuthenticated} = useAuth0()
   
   const dispatch = useDispatch()
 
-  const handleShowLikes = () => {
+  const handleShowLikes = (doReplace: boolean = false) => {
 
     if(props.postLikes == 0){
       return;
     }
 
+    const newPage = doReplace ? 0 : page + 1
+
     const pagination: Pagination = {
-      page: 0,
-      size: 12
+      page: newPage,
+      size: pageSize
     };
 
     PostLikeAPIService.getPage(post.id, pagination)
     .then((response) => {
       const convertedResponse: PostLikesData = response.data;
-      const newLikes: UserHeader[] = convertedResponse.postLikes.content
+      const newLikesPage = convertedResponse.postLikes;
+      const newLikes: UserHeader[] = newLikesPage.content
 
       unstable_batchedUpdates(() => {
-        setUsers(newLikes)
         setIsDialogOpen(true)
+
+        if(doReplace){
+          setUsers(newLikes)
+        }
+        else{
+          setUsers([...users, ...newLikes])
+        }
+
+        setPage(newPage)
+        setPagesCount(newLikesPage.totalPages)
       })
     })
   }
@@ -95,7 +111,7 @@ const PostLikes = (props: {
         }
       </div>
       <div>
-        <h4 className="opacity-hover" onClick={handleShowLikes}>
+        <h4 className="opacity-hover" onClick={() => handleShowLikes(true)}>
           Liczba polubień: {!post.areHiddenLikes ? props.postLikes : 'Ukryte'}
         </h4>
         <span style={{ color: "rgb(115, 115, 115)", marginTop: 2}}>
@@ -105,6 +121,9 @@ const PostLikes = (props: {
       <UsersDialog
         users={users}
         isOpen={isDialogOpen}
+        page={page}
+        pagesCount={pagesCount}
+        loadUsers={() => handleShowLikes(false)}
         setIsOpen={setIsDialogOpen}
         handleClose={() => setIsDialogOpen(false)}
       />

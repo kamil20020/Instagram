@@ -15,6 +15,7 @@ import PostLikes from "../features/post/post-view/PostLikes";
 import { Post } from "../models/responses/PostDetails";
 import PostDescription from "../features/post/post-view/PostDescription";
 import { Link } from "react-router-dom";
+import { unstable_batchedUpdates } from "react-dom";
 
 const Home = () => {
 
@@ -22,23 +23,45 @@ const Home = () => {
 
     const [followedUsersPosts, setFollowedUsersPosts] = React.useState<Post[]>([])
 
-    useEffect(() => {
+    const [page, setPage] = React.useState<number>(0)
+    const [pagesCount, setPagesCount] = React.useState<number>(0)
+    const pageSize = 12;
 
-        if(!isAuthenticated){
-            return;
-        }
+    const handleLoadFollowedUsersPostsPage = (newPage: number, doReplace: boolean = false) => {
 
         const pagination: Pagination = {
-            page: 0,
-            size: 5
+            page: newPage,
+            size: pageSize
         }
 
         FollowerAPIService.getPostsPage(pagination)
         .then((response) => {
             const pagedResponse: Page = response.data
 
-            setFollowedUsersPosts(pagedResponse.content)
+            const newPosts: Post[] = pagedResponse.content
+
+            unstable_batchedUpdates(() => {
+
+                if(doReplace){
+                    setFollowedUsersPosts(newPosts)
+                }
+                else{
+                    setFollowedUsersPosts([...followedUsersPosts, ...newPosts])
+                }
+
+                setPage(newPage)
+                setPagesCount(pagedResponse.totalPages)
+            })
         })
+    }
+
+    useEffect(() => {
+
+        if(!isAuthenticated){
+            return;
+        }
+
+        handleLoadFollowedUsersPostsPage(0, true)
     }, [])
 
     if(!isAuthenticated){
@@ -74,6 +97,17 @@ const Home = () => {
                     </div>
                 </div>
             )))}
+            {page < (pagesCount - 1) &&
+                <div className="load-more-followed-users-posts" style={{display: "flex", justifyContent: "center"}}>
+                    <button 
+                        className="grey-button"
+                        style={{marginTop: 22, marginBottom: 20}}
+                        onClick={() => handleLoadFollowedUsersPostsPage(page + 1)} 
+                    >
+                        Doładuj posty
+                    </button>
+                </div>
+            }
         </div>
     )
 }

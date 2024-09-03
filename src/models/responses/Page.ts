@@ -1,5 +1,5 @@
 ﻿export interface Page {
-    page: number,
+    number: number,
     totalElement: number,
     totalPages: number,
     content: any[]

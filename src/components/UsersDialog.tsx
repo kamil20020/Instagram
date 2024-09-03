@@ -1,4 +1,5 @@
-﻿import { UserHeader } from "../models/responses/UserHeader";
+﻿import React from "react";
+import { UserHeader } from "../models/responses/UserHeader";
 import Dialog from "./Dialog";
 import SimpleProfileHeader from "./SimpleProfileHeader";
 
@@ -7,10 +8,13 @@ const UsersDialog = (props: {
     isOpen: boolean;
     height?: number;
     width?: number;
+    page: number;
+    pagesCount: number;
+    loadUsers: () => void;
     setIsOpen?: (isOpen: boolean) => void;
     handleClose?: () => void;
 }) => {
-
+    console.log(props.page)
     return (
         <Dialog
             isOpen={props.isOpen}
@@ -30,6 +34,15 @@ const UsersDialog = (props: {
                     {props.users.map((user: UserHeader) => (
                         <SimpleProfileHeader avatar={user.avatar} nickname={user.nickname} userId={user.id}/>
                     ))}
+                    {props.page < (props.pagesCount - 1) && 
+                        <button 
+                            className="grey-button"
+                            style={{marginTop: 22, marginBottom: 20}}
+                            onClick={props.loadUsers} 
+                        >
+                            Doładuj
+                        </button>
+                    }
                 </div>
             }
         />

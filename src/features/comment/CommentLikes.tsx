@@ -18,11 +18,17 @@ const CommentLikes = (props: {
     const [users, setUsers] = React.useState<UserHeader[]>([])
     const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false)
 
-    const handleShowLikes = () => {
+    const [page, setPage] = React.useState<number>(0);
+    const [pagesCount, setPagesCount] = React.useState<number>(0);
+    const pageSize = 12;
+
+    const handleShowLikes = (doReplace: boolean = false) => {
+
+        const newPage = doReplace ? 0 : page + 1
 
         const pagination: Pagination = {
-            page: 0,
-            size: 12
+            page: newPage,
+            size: pageSize
         };
       
         CommentLikeAPIService.getPage(props.commentId, pagination)
@@ -31,8 +37,17 @@ const CommentLikes = (props: {
             const newLikes: UserHeader[] = convertedResponse.content
         
             unstable_batchedUpdates(() => {
-                setUsers(newLikes)
                 setIsDialogOpen(true)
+
+                if(doReplace){
+                    setUsers(newLikes)
+                }
+                else{
+                    setUsers([...users, ...newLikes])
+                }
+
+                setPage(newPage)
+                setPagesCount(convertedResponse.totalPages)
             })
         })
     }
@@ -44,13 +59,16 @@ const CommentLikes = (props: {
     return (
         <>
             <button 
-                className="grey-button-outlined" onClick={handleShowLikes}
+                className="grey-button-outlined" onClick={() => handleShowLikes(true)}
             >
                 {props.commentLikes} polubień
             </button>
             <UsersDialog
                 users={users}
                 isOpen={isDialogOpen}
+                page={page}
+                pagesCount={pagesCount}
+                loadUsers={() => handleShowLikes(false)}
                 setIsOpen={setIsDialogOpen}
                 handleClose={() => setIsDialogOpen(false)}
             />
