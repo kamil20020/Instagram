@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  instagram-db:
+    image: kamil20/instagram-db
+    container_name: instagram-db
+    build:
+      context: ./db
+    restart: always
+    environment:
+      - POSTGRES_DB=instagram
+      - POSTGRES_USER=instagram
+      - POSTGRES_PASSWORD=instagram-pass
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  instagram-db-pgadmin:
+    image: dpage/pgadmin4
+    container_name: instagram-db-management
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: instagram
+    volumes:
+      - ./db/management-data:/var/lib/pgadmin
+
+  instagram-backend:
+    image: kamil20/instagram-backend
+    container_name: instagram-backend
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://instagram-db:5432/instagram
+      - SPRING_DATASOURCE_USERNAME=instagram
+      - SPRING_DATASOURCE_PASSWORD=instagram-pass
+      - SPRING_PROFILES_ACTIVE=production
+    ports:
+      - "9000:9000"
+    depends_on:
+      - instagram-db
+
+  instagram-frontend:
+    image: kamil20/instagram-frontend
+    container_name: instagram-frontend
+    build:
+      context: ./frontend
+    restart: always
+    environment:
+      - REACT_APP_API=http://instagram-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - instagram-backend

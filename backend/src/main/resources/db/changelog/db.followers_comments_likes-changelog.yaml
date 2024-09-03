@@ -1,0 +1,83 @@
+databaseChangeLog:
+- changeSet:
+    id: 1724860039960-3
+    author: Kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: followersPK
+            name: followed_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: followersPK
+            name: follower_id
+            type: UUID
+        tableName: followers
+- changeSet:
+    id: 1724860039960-4
+    author: Kamil (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: author_id
+        - column:
+            name: comment_id
+        indexName: IX_comments_likesPK
+        tableName: comments_likes
+        unique: true
+- changeSet:
+    id: 1724860039960-5
+    author: Kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: followed_id
+        baseTableName: followers
+        constraintName: FK7pe30s7pg313adqhkqaeys2x2
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: user_id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1724860039960-6
+    author: Kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: follower_id
+        baseTableName: followers
+        constraintName: FK9w6mv39vle9f9yacvvkfieai7
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: user_id
+        referencedTableName: users
+        validate: true
+- changeSet:
+      id: 1724860039960-1
+      author: Kamil (generated)
+      changes:
+          - dropPrimaryKey:
+                tableName: comments_likes
+- changeSet:
+    id: 1724860039960-7
+    author: Kamil (generated)
+    changes:
+    - dropColumn:
+        columnName: comment_like_id
+        tableName: comments_likes
+- changeSet:
+    id: 1724860039960-2
+    author: Kamil (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: author_id, comment_id
+        constraintName: comments_likesPK
+        tableName: comments_likes
+

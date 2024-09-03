@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: instagram-backend
+  labels:
+    app: instagram-backend
+spec:
+  selector:
+    app: instagram-backend
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP

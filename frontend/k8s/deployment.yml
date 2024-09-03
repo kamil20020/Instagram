@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instagram-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instagram-frontend
+  template:
+    metadata:
+      labels:
+        app: instagram-frontend
+    spec:
+      containers:
+        - name: instagram-frontend
+          image: kamil20/instagram-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_API
+              value: "http://instagram-backend"

@@ -1,0 +1,399 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1723398576553-1
+      author: Kamil (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: user_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_id
+                  type: VARCHAR(50)
+              - column:
+                  name: nickname
+                  type: VARCHAR(255)
+              - column:
+                  name: firstname
+                  type: VARCHAR(50)
+              - column:
+                  name: surname
+                  type: VARCHAR(50)
+              - column:
+                  name: tel
+                  type: VARCHAR(15)
+              - column:
+                  name: avatar
+                  type: BYTEA
+              - column:
+                  constraints:
+                    nullable: false
+                  name: creation_datetime
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: is_verified
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: is_private
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: followers_count
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: followings_count
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: posts_count
+                  type: INTEGER
+            tableName: users
+  - changeSet:
+      id: 1723398576553-2
+      author: Kamil (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: posts_pkey
+                  name: post_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: author_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: creation_datetime
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: content
+                  type: BYTEA
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: are_hidden_likes
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: are_disabled_comments
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: likes_count
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: comments_count
+                  type: INTEGER
+            tableName: posts
+  - changeSet:
+      id: 1723398576553-3
+      author: Kamil (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: comments_pkey
+                  name: comment_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: post_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: author_id
+                  type: UUID
+              - column:
+                  name: parent_comment_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: content
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: creation_datetime
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: likes_count
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+                  name: sub_comments_count
+                  type: INTEGER
+            tableName: comments
+  - changeSet:
+      id: 1723398576553-4
+      author: Kamil (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: account_id
+            constraintName: uq_users_account_id
+            tableName: users
+  - changeSet:
+      id: 1723398576553-5
+      author: Kamil (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: nickname
+            constraintName: uq_users_nickname
+            tableName: users
+  - changeSet:
+      id: 1723398576553-6
+      author: Kamil (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: author_id
+            indexName: ix_posts_author_id
+            tableName: posts
+  - changeSet:
+      id: 1723398576553-7
+      author: Kamil (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: creation_datetime
+            indexName: ix_posts_creation_datetime
+            tableName: posts
+  - changeSet:
+      id: 1723398576553-8
+      author: Kamil (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: parent_comment_id
+            indexName: ix_comments_parent_comment_id
+            tableName: comments
+  - changeSet:
+      id: 1723398576553-9
+      author: Kamil (generated)
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: creation_datetime
+            indexName: ix_comments_creation_datetime
+            tableName: comments
+  - changeSet:
+      id: 1723398576553-10
+      author: Kamil (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: comments_likes_pkey
+                  name: comment_like_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: comment_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: author_id
+                  type: UUID
+            tableName: comments_likes
+  - changeSet:
+      id: 1723398576553-11
+      author: Kamil (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: posts_likespk
+                  name: author_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: posts_likespk
+                  name: post_id
+                  type: UUID
+            tableName: posts_likes
+  - changeSet:
+      id: 1723398576553-12
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: comments
+            constraintName: fk_comments_author
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1723398576553-13
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: comments_likes
+            constraintName: fk_comments_likes_author
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1723398576553-14
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: comment_id
+            baseTableName: comments_likes
+            constraintName: fk_comments_likes_comment
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: comment_id
+            referencedTableName: comments
+            validate: true
+  - changeSet:
+      id: 1723398576553-15
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: parent_comment_id
+            baseTableName: comments
+            constraintName: fk_comments_parent_comment
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: comment_id
+            referencedTableName: comments
+            validate: true
+  - changeSet:
+      id: 1723398576553-16
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: comments
+            constraintName: fk_comments_post
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: post_id
+            referencedTableName: posts
+            validate: true
+  - changeSet:
+      id: 1723398576553-17
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: posts
+            constraintName: fk_posts_author
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1723398576553-18
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: posts_likes
+            constraintName: fk_posts_likes_author
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1723398576553-19
+      author: Kamil (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: posts_likes
+            constraintName: fk_posts_likes_post
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: post_id
+            referencedTableName: posts
+            validate: true

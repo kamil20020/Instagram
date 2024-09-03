@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instagram-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instagram-backend
+  template:
+    metadata:
+      labels:
+        app: instagram-backend
+    spec:
+      containers:
+        - name: instagram-backend
+          image: kamil20/instagram-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: host
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: host
+            - name: port
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: port
+            - name: db
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: db
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(host):$(port)/$(db)"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: user
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: instagram-db-secrets
+                  key: password
+            - name: SPRING_PROFILES_ACTIVE
+              value: "production"
