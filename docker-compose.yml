@@ -43,8 +43,6 @@ services:
     image: kamil20/instagram-frontend
     container_name: instagram-frontend
     restart: always
-    environment:
-      - REACT_APP_API=http://instagram-backend
     ports:
       - "3000:3000"
     depends_on:
