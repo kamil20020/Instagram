@@ -3,7 +3,6 @@ include:
  - ./code/instagram/docker-compose.yml
 
 services:
-
   db-pgadmin:
     image: dpage/pgadmin4
     container_name: instagram-db-management

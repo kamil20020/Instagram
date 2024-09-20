@@ -3,7 +3,7 @@ This app is mostly a simplified copy of Instagram in terms of its functions and 
 
 At this moment almost all basic instagram functions are done. I've not started working on chat yet.
 
-## Running app
+## Runing app
 Im my opinion the best way to run this app is to use docker-compose.yml file and command `docker-compose up`. To run app this way it is required to have docker installed.
 
 Details:
