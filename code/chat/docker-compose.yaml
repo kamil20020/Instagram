@@ -1,0 +1,52 @@
+services:
+  chat-db:
+    image: kamil20/chat-db
+    container_name: chat-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PG_PORT: ${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    command: -p ${DB_PORT}
+
+  messages-queue:
+    image: kamil20/messages-queue
+    container_name: messages-queue
+    restart: always
+    volumes:
+      - ./data/queue/data:/var/lib/rabbitmq
+      - ./data/queue/log:/var/log/rabbitmq
+    ports:
+      - "5672:5672"   # Listen messages port
+      - "15672:15672" # Management port
+
+  chat-backend:
+    image: kamil20/chat-backend
+    container_name: chat-backend
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://chat-db:${DB_PORT}/${DB}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      PORT: ${BACKEND_PORT}
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depends_on:
+      - chat-db
+      - messages-queue
+
+  chat-frontend:
+    image: kamil20/chat-frontend
+    container_name: chat-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - chat-backend
