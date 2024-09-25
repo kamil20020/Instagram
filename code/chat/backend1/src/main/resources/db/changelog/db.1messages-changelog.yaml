@@ -1,0 +1,31 @@
+databaseChangeLog:
+- changeSet:
+    id: 1727297509463-1
+    author: Kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: messages_pkey
+            name: message_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: sender_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: receiver_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: content
+            type: VARCHAR(255)
+        tableName: messages
+
