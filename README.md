@@ -1,7 +1,7 @@
 # Instagram copy 
 This app is mostly a simplified copy of Instagram in terms of its functions and website layout. This project is not done yet, but i am working on it regulary. Project is divided on 2 parts: first part is containing basic functions of instagram e.g. posts and other part is real time chat.
 
-At this moment almost all basic instagram functions are done. I've not started working on chat yet.
+At this moment almost all basic instagram functions are done. Recently I have started working on chat.
 
 ## Running app
 Im my opinion the best way to run this app is to use docker-compose.yml file and command `docker-compose up`. To run app this way it is required to have docker installed.
