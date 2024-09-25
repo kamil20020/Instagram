@@ -32,6 +32,7 @@
 		<org.liquibase.version>4.27.0</org.liquibase.version>
 		<rabbitmq.version>3.1.7</rabbitmq.version>
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
+		<maven.build.timestamp.format>dd-MM-yyyy_HH-mm-ss</maven.build.timestamp.format>
 		<testcontainers.version>1.19.8</testcontainers.version>
 	</properties>
 	<dependencies>
