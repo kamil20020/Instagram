@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-sender
+  labels:
+    app: chat-sender
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chat-sender
+  template:
+    metadata:
+      labels:
+        app: chat-sender
+    spec:
+      containers:
+        - name: chat-sender
+          image: kamil20/chat-sender
+          ports:
+            - containerPort: 9300
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-sender-service
+spec:
+  selector:
+    app: chat-sender
+  type: ClusterIP
+  ports:
+    - port: 9300
+      targetPort: 9300
