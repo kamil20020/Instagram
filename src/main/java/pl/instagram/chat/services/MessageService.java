@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.instagram.chat.MessagesProducer;
 import pl.instagram.chat.models.MessageEntity;
 import pl.instagram.chat.MessageRepository;
 import pl.instagram.chat.exception.UserIsNotLoggedException;
@@ -23,6 +24,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
 
     private final AuthService authService;
+    private final MessagesProducer messagesProducer;
 
     public List<String> getLatestSendersAccountsIds(int page, int size) throws UserIsNotLoggedException {
 
@@ -50,7 +52,7 @@ public class MessageService {
 
         String loggedUserAccountId = authService.getLoggedUserAccountId();
 
-        return messageRepository.save(
+        MessageEntity createdMessage = messageRepository.save(
             MessageEntity.builder()
                 .senderAccountId(loggedUserAccountId)
                 .receiverAccountId(receiverAccountId)
@@ -59,5 +61,11 @@ public class MessageService {
                 .read(false)
             .build()
         );
+
+        log.info("Sending message to rabbitmq {}", createdMessage);
+
+        messagesProducer.sendMessage(createdMessage);
+
+        return createdMessage;
     }
 }

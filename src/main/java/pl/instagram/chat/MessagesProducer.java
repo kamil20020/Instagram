@@ -1,4 +1,4 @@
-package pl.instagram.chat.config;
+package pl.instagram.chat;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,9 +8,9 @@ import pl.instagram.chat.models.MessageEntity;
 
 @Component
 @RequiredArgsConstructor
-public class MessagesProducerConfig {
+public class MessagesProducer {
 
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
     @Value("${rabbitmq.chat.routing-key}")
     private String chatRoutingKey;

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MESSAGES")
-public class MessageEntity {
+public class MessageEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
