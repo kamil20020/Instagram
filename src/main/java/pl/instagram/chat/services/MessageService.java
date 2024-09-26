@@ -1,5 +1,9 @@
 package pl.instagram.chat.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -11,6 +15,7 @@ import pl.instagram.chat.MessagesProducer;
 import pl.instagram.chat.models.MessageEntity;
 import pl.instagram.chat.MessageRepository;
 import pl.instagram.chat.exception.UserIsNotLoggedException;
+import pl.instagram.chat.models.MessageResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +30,13 @@ public class MessageService {
 
     private final AuthService authService;
     private final MessagesProducer messagesProducer;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    {
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     public List<String> getLatestSendersAccountsIds(int page, int size) throws UserIsNotLoggedException {
 
@@ -48,7 +60,7 @@ public class MessageService {
         return messageRepository.findConversationMessages(loggedUserAccountId, otherUserAccountId, pageable);
     }
 
-    public MessageEntity create(String receiverAccountId, String content) throws UserIsNotLoggedException {
+    public MessageEntity create(String receiverAccountId, String content) throws UserIsNotLoggedException, JsonProcessingException {
 
         String loggedUserAccountId = authService.getLoggedUserAccountId();
 
@@ -62,9 +74,11 @@ public class MessageService {
             .build()
         );
 
-        log.info("Sending message to rabbitmq {}", createdMessage);
+        String convertedMessage = objectMapper.writeValueAsString(createdMessage);
 
-        messagesProducer.sendMessage(createdMessage);
+        log.info("Sending message to rabbitmq {}", convertedMessage);
+
+        messagesProducer.sendMessage(convertedMessage);
 
         return createdMessage;
     }

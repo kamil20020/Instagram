@@ -1,5 +1,6 @@
 package pl.instagram.chat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageEntity> createMessage(@RequestBody @Valid CreateMessage createMessage){
+    public ResponseEntity<MessageEntity> createMessage(@RequestBody @Valid CreateMessage createMessage) throws JsonProcessingException {
 
         MessageEntity createdMessage = messageService.create(createMessage.receiverAccountId(), createMessage.content());
 
