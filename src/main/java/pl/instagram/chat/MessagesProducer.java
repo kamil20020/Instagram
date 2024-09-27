@@ -13,7 +13,7 @@ public class MessagesProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${rabbitmq.chat.routing-key}")
+    @Value("${rabbitmq.chat.routingkey}")
     private String chatRoutingKey;
 
     public void sendMessage(String message){
