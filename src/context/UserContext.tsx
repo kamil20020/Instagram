@@ -1,11 +1,8 @@
 ﻿import React, { useEffect } from "react"
 
 export interface UserData {
-    id: string,
     accountId: string,
     nickname: string,
-    firstname: string,
-    surname: string,
     avatar?: string
 }
 
@@ -13,7 +10,7 @@ export interface UserContextProps {
     user?: UserData,
     setUserData: (user: UserData) => void,
     clearUserData: () => void,
-    isUserRegistered: () => boolean,
+    isUserEmpty: () => boolean,
 }
 
 export const UserContext: React.Context<UserContextProps | undefined> =
@@ -56,7 +53,7 @@ const UserProvider = (props: {
         setUser(undefined)
     }
 
-    const isUserRegistered = (): boolean => {
+    const isUserEmpty = (): boolean => {
         return user !== undefined
     }
 
@@ -66,7 +63,7 @@ const UserProvider = (props: {
                 user,
                 setUserData,
                 clearUserData,
-                isUserRegistered
+                isUserEmpty
             }}
         >
             {props.children}

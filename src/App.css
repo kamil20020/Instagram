@@ -7,12 +7,14 @@
 
 #left-panel{
     background-color: deepskyblue;
-    padding: 32px;
+    display: flex;
+    flex-direction: column;
 }
 
 #contacts{
     background-color: deepskyblue;
-    margin-top: 48px;
+    flex-grow: 2;
+    overflow-y: scroll;
 }
 
 .contact{
@@ -26,7 +28,6 @@
 }
 
 #right-panel{
-    background-color: teal;
     display: flex;
     flex-direction: column;
 }
@@ -37,9 +38,34 @@
 }
 
 .conversation{
-    background-color: darkcyan;
     flex-grow: 2;
-    padding: 24px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+    overflow-y: scroll;
+}
+
+.message{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-date{
+    color: rgb(136, 136, 136);
+    width: 100%;
+    text-align: center;
+}
+
+.message-content{
+    background-color: white;
+    margin-top: 8px;
+    max-width: 40%;
+    padding: 22px;
+    border-radius: 28px;
+    align-self: flex-start;
+    border: 1px solid #e3e3e3;
 }
 
 .send-message{

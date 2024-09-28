@@ -4,6 +4,9 @@
         
         return `Authorization: Bearer ${accessToken}`
     }
+    public setAccessToken(accessToken: string){
+        localStorage.setItem("access_token", accessToken)
+    }
 }
 
 export default new AuthService()

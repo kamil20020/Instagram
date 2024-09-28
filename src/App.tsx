@@ -15,6 +15,7 @@ import Chat from './pages/Chat';
 import axios from 'axios';
 import AuthService from './services/AuthService';
 import UserProvider, { UserContext } from './context/UserContext';
+import Login from './features/auth/Login';
 
 axios.interceptors.request.use(function (config) {
 
@@ -47,6 +48,7 @@ function App() {
        <ProtectedRoute>
         <Chat/>
       </ProtectedRoute>
+      <Login/>
     </UserProvider>
   );
 }
