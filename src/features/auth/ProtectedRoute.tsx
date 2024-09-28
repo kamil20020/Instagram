@@ -1,9 +1,8 @@
 ﻿import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "../../info/Loading";
+import { Outlet } from "react-router";
 
-const ProtectedRoute = (props: {
-    children: React.ReactNode
-}) => {
+const ProtectedRoute = () => {
 
     const {isAuthenticated, isLoading, loginWithRedirect} = useAuth0()
 
@@ -20,9 +19,7 @@ const ProtectedRoute = (props: {
     }
 
     return (
-        <>
-            {props.children}
-        </>
+        <Outlet/>
     )
 }
 

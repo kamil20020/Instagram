@@ -1,5 +1,5 @@
 ﻿const Loading = () => (
-    <div>
+    <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
         <h3>Ładowanie...</h3>
     </div>
 )

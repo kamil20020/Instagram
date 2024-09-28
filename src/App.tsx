@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { createRoutesFromElements } from "react-router";
 import {
+  BrowserRouter,
   createBrowserRouter,
   Outlet,
   Route,
@@ -16,6 +17,7 @@ import axios from 'axios';
 import AuthService from './services/AuthService';
 import UserProvider, { UserContext } from './context/UserContext';
 import Login from './features/auth/Login';
+import EmptyChat from './pages/EmptyChat';
 
 axios.interceptors.request.use(function (config) {
 
@@ -34,29 +36,20 @@ function App() {
     createRoutesFromElements(
       <Route
         path="/"
-        element={
-          <ProtectedRoute>
-            <Chat/>
-          </ProtectedRoute>
-        }
-      />
+        element={<ProtectedRoute/>}
+      >
+        <Route index element={<EmptyChat/>}/>
+        <Route path=":userId" element={<Chat/>}/>
+      </Route>
     )
   )
   
   return (
     <UserProvider>
-       <ProtectedRoute>
-        <Chat/>
-      </ProtectedRoute>
+      <RouterProvider router={router}/>
       <Login/>
     </UserProvider>
   );
 }
-
-// <div>
-//   {messages.map((message: Message) => (
-//     <div key={message.id}>{message.content}</div>
-//   ))}
-// </div>
 
 export default App;

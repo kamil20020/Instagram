@@ -1,11 +1,13 @@
-﻿const Contact = (props: {
-    contact: number
+﻿import { Link } from "react-router-dom";
+
+const Contact = (props: {
+    contact: string
 }) => {
 
     return (
-        <div className="contact">
+        <Link className="contact" to={`/${props.contact as string}`}>
             {props.contact}
-        </div>
+        </Link>
     )
 }
 

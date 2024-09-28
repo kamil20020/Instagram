@@ -5,12 +5,6 @@ import SendMessage from "./SendMessage";
 
 const RightPanel = () => {
 
-    const {user} = useAuth0()
-
-    const userAccountId = user?.sub
-
-    console.log(user)
-
     return (
         <div id="right-panel">
             <ConversationUser/>

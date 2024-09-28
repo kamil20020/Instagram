@@ -1,14 +1,14 @@
 ﻿import Contact from "./Contact";
 
-const contacts: number[] = [
-    1, 2, 3, 4, 5, 6, 7, 8
+const contacts: string[] = [
+    "1", "2", "3"
 ]
 
 const Contacts = () => {
 
     return (
         <div id="contacts">
-            {contacts.map((contact: number) => (
+            {contacts.map((contact: string) => (
                 <Contact key={contact} contact={contact}/>
             ))}
         </div>
