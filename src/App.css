@@ -6,35 +6,34 @@
 }
 
 #left-panel{
-    background-color: deepskyblue;
     display: flex;
     flex-direction: column;
+    border-right: solid 1px #cccccc;
 }
 
 #contacts{
-    background-color: deepskyblue;
     flex-grow: 2;
     overflow-y: scroll;
 }
 
 .contact{
-    background-color: orange;
-    padding: 12px 22px;
+    padding: 12px 56px;
 }
 
 .contact:hover{
     cursor: pointer;
-    background-color: brown;
+    background-color: rgb(226, 226, 226);
 }
 
 #right-panel{
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 .conversation-user{
-    background-color: silver;
     padding: 28px;
+    border-bottom: solid 1px #cccccc;
 }
 
 .conversation{
@@ -69,8 +68,8 @@
 }
 
 .send-message{
-    background-color: darkgoldenrod;
     padding: 24px;
+    border-top: 1px solid #e3e3e3;
 }
 
 @media (max-width: 800px) {
