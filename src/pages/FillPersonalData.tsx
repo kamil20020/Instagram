@@ -83,6 +83,7 @@ const FillPersonalData = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
+        width: "70%"
       }}
     >
       <div

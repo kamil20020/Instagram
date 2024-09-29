@@ -22,6 +22,7 @@ const PostViewPage = () => {
   return (
     <div
       style={{
+        width: "70%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

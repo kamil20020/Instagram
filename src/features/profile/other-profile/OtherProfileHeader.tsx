@@ -12,7 +12,7 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
   const {isAuthenticated} = useAuth0()
 
   return (
-    <div className="user-header">
+    <div className="user-header" style={{marginBottom: 12}}>
       <Avatar image={userProfile?.avatar} width={200} height={200} />
       <div className="user-details">
         <div className="user-actions">

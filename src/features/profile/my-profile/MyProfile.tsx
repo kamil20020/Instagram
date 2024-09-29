@@ -8,7 +8,7 @@ const MyProfile = (props: {userProfile: UserProfile}) => {
   return (
     <div
       className="profile"
-      style={{ display: "grid", rowGap: "50px", padding: "30px 20px 20px 0" }}
+      style={{ width: "70%", display: "flex", flexDirection: "column", rowGap: "40px", padding: "30px 20px 20px 0" }}
     >
       <MyProfileHeader userProfile={props.userProfile} />
       <HorizontalLine />

@@ -69,7 +69,7 @@ const Home = () => {
     }
 
     return (
-        <div style={{display: "flex", flexDirection: "column", rowGap: 100, marginTop: 40}}>
+        <div style={{width: "70%", display: "flex", flexDirection: "column", rowGap: 100, marginTop: 40}}>
             {followedUsersPosts.map((post => (
                 <div className="post-view">
                     <PostImage img={`data:image/png;base64,${post.content}`} />
