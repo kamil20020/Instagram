@@ -153,6 +153,7 @@ class UserControllerTest {
         UserEntityForLoggedUser user = new UserEntityForLoggedUser();
         UserProfile userProfile = new UserProfile(
             userId.toString(),
+            "1",
             "kamil",
             "Kamil",
             "Kowalski",
