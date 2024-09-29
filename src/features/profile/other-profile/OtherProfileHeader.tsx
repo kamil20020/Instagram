@@ -5,11 +5,19 @@ import { UserProfile } from "../../../models/responses/UserProfile";
 import UserFollowed from "../UserFollowed";
 import UserFollowers from "../UserFollowers";
 import FollowUser from "./FollowUser";
+import { useNavigate } from "react-router-dom";
 
 const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
   const userProfile = props.userProfile;
 
   const {isAuthenticated} = useAuth0()
+
+  const navigate = useNavigate()
+
+  const handleRedirectToMessenger = () => {
+
+    navigate(`/chat/${userProfile.accountId}`)
+  }
 
   return (
     <div className="user-header" style={{marginBottom: 12}}>
@@ -19,7 +27,14 @@ const OtherProfileHeader = (props: {userProfile: UserProfile}) => {
           <h3 style={{ marginRight: 12 }}>{userProfile?.nickname}</h3>
           <div className="user-actions-buttons">
             <FollowUser userId={userProfile.id} doesFollow={userProfile.didLoggedUserFollow}/>
-            {isAuthenticated && <button className="grey-button">Wyślij wiadomość</button>}
+            {isAuthenticated && 
+              <button 
+                className="grey-button"
+                onClick={handleRedirectToMessenger}
+              >
+                Wyślij wiadomość
+              </button>
+            }
           </div>
           {/* <button className="outlined-button" style={{ marginLeft: 4 }}>
             <IconWithText iconName="more_horiz" />

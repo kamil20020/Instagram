@@ -19,6 +19,7 @@ import ProtectedRoute from "./features/auth/ProtectedRoute";
 import axios from "axios";
 import AuthService from "./services/AuthService";
 import Chat from "./pages/Chat";
+import EmptyChat from "./pages/EmptyChat";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("access_token");
@@ -43,7 +44,8 @@ const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/post/:id" element={<PostViewPage />} />
-      <Route path="/chat" element={<Chat/>} />
+      <Route path="/chat" element={<EmptyChat/>} />
+      <Route path="/chat/:userId" element={<Chat/>} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )
