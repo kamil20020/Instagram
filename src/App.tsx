@@ -20,23 +20,14 @@ import Login from './features/auth/Login';
 import EmptyChat from './pages/EmptyChat';
 import Logout from './features/auth/Logout';
 
-const usersApiUrl = process.env.REACT_APP_USER_API_URL as string
-
 axios.interceptors.request.use((request) => {
 
   let accessToken = ""
 
-  console.log(window.localStorage)
-
-  if(request.url?.startsWith(usersApiUrl)){
-    accessToken = AuthService.getUsersAccessToken() as string
-  }
-  else{
-    accessToken = AuthService.getMessagesAccessToken() as string
-  }
+  accessToken = AuthService.getAccessToken() as string
 
   if(accessToken){
-    request.headers['Authorization'] = AuthService.getAuthorizationBearerHeader(accessToken)
+    request.headers.Authorization = AuthService.getAuthorizationBearerHeader(accessToken)
   }
 
   return request
