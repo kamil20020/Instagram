@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: chat-backend-receiver
-          image: chat-backend-receiver:latest
+          image: kamil20/chat-backend-receiver:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 9300
