@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: messages-queue
-          image: kamil20/messages-queue
+          image: kamil20/messages-queue:latest
+          imagePullPolicy: Always
           ports:
             - name: dashboard
               containerPort: 15672
