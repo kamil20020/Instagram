@@ -22,6 +22,7 @@ spec:
                 configMapKeyRef:
                   name: chat-db-configmap
                   key: DATABASE_NAME
+                  
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -51,5 +52,5 @@ spec:
     app: chat-db
   type: ClusterIP
   ports:
-    - port: 5433
+    - port: 5432
       targetPort: 5432
