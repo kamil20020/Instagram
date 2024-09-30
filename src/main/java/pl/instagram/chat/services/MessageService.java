@@ -54,7 +54,7 @@ public class MessageService {
         pageable = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),
-            Sort.by(Sort.Direction.DESC, "creationDate")
+            Sort.by(Sort.Direction.ASC, "creationDate")
         );
 
         return messageRepository.findConversationMessages(loggedUserAccountId, otherUserAccountId, pageable);

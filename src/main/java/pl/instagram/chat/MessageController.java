@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
+@CrossOrigin(origins = "*")
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = "/messages")
