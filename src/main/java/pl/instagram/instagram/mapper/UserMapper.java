@@ -38,4 +38,6 @@ public interface UserMapper {
     @Mapping(source = "private", target = "isPrivate")
     @Mapping(source = "verified", target = "isVerified")
     UserProfile userEntityToUserProfileInfo(UserEntity userEntity);
+
+    List<UserProfile> userEntityListToUserProfileList(List<UserEntity> userEntityList);
 }

@@ -84,6 +84,15 @@ public class UserService {
         return userRepository.findAllById(ids);
     }
 
+    public List<UserEntity> getUsersByAccountsIds(List<String> accountIds) throws IllegalArgumentException {
+
+        if(accountIds == null || accountIds.size() == 0){
+            throw new IllegalArgumentException("Nie podano id konta użytkowników");
+        }
+
+        return userRepository.findAllByAccountIdIn(accountIds);
+    }
+
     public Page<UserEntity> searchUsers(String phrase, Pageable pageable) throws IllegalArgumentException {
 
         if(pageable == null){
