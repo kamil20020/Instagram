@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: chat-sender
-          image: kamil20/chat-sender
+          image: kamil20/chat-sender:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 9300
 ---
