@@ -9,7 +9,8 @@ spec:
       app: chat-frontend
   template:
     metadata:
-      app: chat-frontend
+      labels:
+        app: chat-frontend
     spec:
       containers:
         - name: chat-frontend
