@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-sender
+  labels:
+    app: chat-sender
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-sender
+  template:
+    metadata:
+      labels:
+        app: chat-sender
+    spec:
+      containers:
+        - name: chat-sender
+          image: kamil20/chat-backend-sender:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: chat-db-configmap
+                  key: DATABASE_URL
+
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: chat-db-configmap
+                  key: DATABASE_NAME
+
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(DATABASE_URL)/$(DATABASE_NAME)"
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: chat-db-secret
+                  key: POSTGRES_USER
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chat-db-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: HOST
+
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: PORT
+
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: messages-queue-secret
+                  key: USERNAME
+
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: messages-queue-secret
+                  key: PASSWORD
+
+            - name: SPRING_RABBITMQ_TEMPLATE_EXCHANGE
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: EXCHANGE
+
+            - name: RABBITMQ_CHAT_ROUTINGKEY
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: ROUTING_KEY
+
+          ports:
+            - containerPort: 9300
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-sender-service
+spec:
+  selector:
+    app: chat-sender
+  type: ClusterIP
+  ports:
+    - port: 9300
+      targetPort: 9300
