@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: messages-queue-configmap
+data:
+  HOST: messages-queue-service
+  PORT: "5672"
+  EXCHANGE: chat.exchange
+  ROUTING_KEY: chat.routing-key
+  QUEUE: chat.queue
+  STOMP_PORT: "61613"
