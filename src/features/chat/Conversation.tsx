@@ -75,7 +75,7 @@ const Conversation = () => {
 
         loadMessages()
         listenNewMessages()
-    }, [])
+    }, [otherUserAccountId])
 
     return (
         <>

@@ -25,7 +25,7 @@ const ConversationUser = (props: {
             console.log(response.data)
             setUser(response.data)
         })
-    }, [])
+    }, [userAccountId])
 
     if(!user){
         return <Loading/>

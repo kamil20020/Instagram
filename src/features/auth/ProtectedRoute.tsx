@@ -39,9 +39,12 @@ const ProtectedRoute = () => {
             console.log("Kamil2")
             console.log(error)
 
-            await loginWithRedirect({
+            await loginWithPopup({
                 authorizationParams: {
-                    redirect_uri: `${window.location.origin}/?login=${true}`
+                    redirect_uri: `${window.location.origin}/?login=${true}`,
+                    prompt: "consent",
+                    audience: audience,
+                    scope: scope
                 },
             })
 

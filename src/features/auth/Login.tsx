@@ -7,9 +7,26 @@ import { useCookies } from "react-cookie";
 
 const Login = () => {
 
-    const {isAuthenticated, user} = useAuth0()
+    const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
+
+    const audience = process.env.REACT_APP_AUTH0_AUDIENCE as string
+    const scope = process.env.REACT_APP_AUTH0_SCOPE as string
 
     const userContext = useContext(UserContext)
+
+    const setAccessToken = async () => {
+
+        const accessToken = await getAccessTokenSilently({
+            authorizationParams: {
+                audience: audience,
+                scope: scope,
+            },
+        })
+
+        console.log("Kamil1")
+
+        AuthService.setAccessToken(accessToken)
+    }
 
     useEffect(() => {
 
@@ -22,6 +39,8 @@ const Login = () => {
             accountId: user?.sub as string,
             avatar: user?.picture
         })
+
+        setAccessToken()
     }, [isAuthenticated])
 
     return <></>
