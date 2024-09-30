@@ -103,6 +103,15 @@ input:focus{
     outline: none;
 }
 
+img{
+    border-radius: 50%;
+}
+
+.user-header{
+    display: flex;
+    column-gap: 18px;
+}
+
 @media (max-width: 800px) {
     #chat{
         grid-template-columns: 40% 60%;

@@ -1,14 +1,39 @@
-﻿import { useParams } from "react-router";
+﻿import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { UserContext, UserData } from "../../context/UserContext";
+import UserService from "../../services/UserService";
+import { User } from "../../models/User";
+import Loading from "../../info/Loading";
+import UserHeader from "../../components/UserHeader";
 
-const ConversationUser = () => {
+const ConversationUser = (props: {
+    user?: UserData
+}) => {
 
-    const params = useParams()
+    const userAccountId = useParams().accountId as string
 
-    const userAccountId = params.userId
+    const [user, setUser] = useState<UserData | undefined>(props.user)
+
+    useEffect(() => {
+
+        if(props.user){
+            return;
+        }
+
+        UserService.getUserHeaderByAccountId(userAccountId)
+        .then((response) => {
+            console.log(response.data)
+            setUser(response.data)
+        })
+    }, [])
+
+    if(!user){
+        return <Loading/>
+    }
 
     return (
         <div className="conversation-user">
-            Użytkownik {userAccountId}
+            <UserHeader nickname={user.nickname} avatar={user.avatar}/>
         </div>
     )
 }

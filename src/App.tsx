@@ -18,16 +18,28 @@ import AuthService from './services/AuthService';
 import UserProvider, { UserContext } from './context/UserContext';
 import Login from './features/auth/Login';
 import EmptyChat from './pages/EmptyChat';
+import Logout from './features/auth/Logout';
 
-axios.interceptors.request.use(function (config) {
+const usersApiUrl = process.env.REACT_APP_USER_API_URL as string
 
-  const accessToken = localStorage.getItem("access_token")
+axios.interceptors.request.use((request) => {
 
-  if(accessToken){
-    config.headers.Authorization = AuthService.getAuthorizationBearerHeader(accessToken)
+  let accessToken = ""
+
+  console.log(window.localStorage)
+
+  if(request.url?.startsWith(usersApiUrl)){
+    accessToken = AuthService.getUsersAccessToken() as string
+  }
+  else{
+    accessToken = AuthService.getMessagesAccessToken() as string
   }
 
-  return config
+  if(accessToken){
+    request.headers['Authorization'] = AuthService.getAuthorizationBearerHeader(accessToken)
+  }
+
+  return request
 })
 
 function App() {
@@ -39,7 +51,7 @@ function App() {
         element={<ProtectedRoute/>}
       >
         <Route index element={<EmptyChat/>}/>
-        <Route path=":userId" element={<Chat/>}/>
+        <Route path=":accountId" element={<Chat/>}/>
       </Route>
     )
   )
@@ -48,6 +60,7 @@ function App() {
     <UserProvider>
       <RouterProvider router={router}/>
       <Login/>
+      <Logout/>
     </UserProvider>
   );
 }

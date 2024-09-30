@@ -9,8 +9,6 @@ const MessageView = (props: {
 
     const userAccountId = user?.sub
 
-    console.log(user)
-
     const message = props.message
 
     const getMessagePositionStyle = (): string => {
@@ -33,7 +31,7 @@ const MessageView = (props: {
 
     return (
         <div className="message">
-            <h5 className="message-date">{message.creationDate.toLocaleString()}</h5>
+            <h5 className="message-date">{new Date(message.creationDate).toLocaleString()}</h5>
             <div 
                 className="message-content" 
                 style={{

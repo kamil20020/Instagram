@@ -9,7 +9,6 @@ const RightPanel = () => {
         <div id="right-panel">
             <ConversationUser/>
             <Conversation/>
-            <SendMessage/>
         </div>
     )
 }
