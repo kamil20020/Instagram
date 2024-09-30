@@ -4,10 +4,10 @@ const Chat = () => {
 
     const chatUrl = process.env.REACT_APP_CHAT_URL
 
-    const userId = useParams().userId
+    const accountId = useParams().accountId
 
     return (
-        <iframe src={`${chatUrl}/${userId}`} height="100%" width="100%">
+        <iframe src={`${chatUrl}/${accountId}`} height="100%" width="100%">
         </iframe>
     )
 }

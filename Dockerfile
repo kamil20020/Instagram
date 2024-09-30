@@ -1,4 +1,4 @@
-FROM node:16.14.0 as build
+FROM node:16.14.0 AS build
 WORKDIR /frontend
 COPY package.json .
 RUN npm install

@@ -45,7 +45,7 @@ const router = createBrowserRouter(
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/post/:id" element={<PostViewPage />} />
       <Route path="/chat" element={<EmptyChat/>} />
-      <Route path="/chat/:userId" element={<Chat/>} />
+      <Route path="/chat/:accountId" element={<Chat/>} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )
