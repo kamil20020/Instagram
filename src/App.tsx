@@ -20,6 +20,7 @@ import axios from "axios";
 import AuthService from "./services/AuthService";
 import Chat from "./pages/Chat";
 import EmptyChat from "./pages/EmptyChat";
+import { basename } from "path";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("access_token");
