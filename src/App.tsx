@@ -48,7 +48,7 @@ function App() {
       </Route>
     ),
     {
-      basename: `${window.location.origin}/${urlPostFix}`
+      basename: `/${urlPostFix}`
     }
   )
   
