@@ -25,3 +25,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/instagram-frontend:latest
+          build-args: |
+            REACT_APP_API=/instagram-backend
+            CHAT-FRONTEND=/chat-frontend
