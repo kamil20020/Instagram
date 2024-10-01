@@ -53,7 +53,7 @@ const router = createBrowserRouter(
     </Route>
   ),
   {
-    basename: `${window.location.origin}/${urlPostFix}`
+    basename: `/instagram-frontend`
   }
 );
 
