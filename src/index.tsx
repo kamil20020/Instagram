@@ -9,6 +9,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+const urlPostFix = process.env.REACT_APP_URL_POSTFIX
 const auth0Domain = process.env.REACT_APP_AUTH0_DOMAIN as string
 const auth0ClientId = process.env.REACT_APP_AUTH0_CLIENT_ID as string
 const auth0Audience = process.env.REACT_APP_AUTH0_MESSAGES_AUDIENCE
@@ -21,7 +22,7 @@ root.render(
     authorizationParams={{
       audience: auth0Audience,
       scope: auth0Scope,
-      redirect_uri: window.location.origin
+      redirect_uri: `${window.location.origin}/${urlPostFix}`,
     }}
   >
       <App />

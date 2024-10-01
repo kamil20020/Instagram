@@ -9,6 +9,7 @@ const ProtectedRoute = () => {
 
     const {isAuthenticated, isLoading, loginWithRedirect, loginWithPopup, getAccessTokenSilently, user} = useAuth0()
 
+    const urlPostFix = process.env.REACT_APP_URL_POSTFIX
     const audience = process.env.REACT_APP_AUTH0_AUDIENCE as string
     const scope = process.env.REACT_APP_AUTH0_SCOPE as string
 
@@ -41,7 +42,7 @@ const ProtectedRoute = () => {
 
             await loginWithPopup({
                 authorizationParams: {
-                    redirect_uri: `${window.location.origin}/?login=${true}`,
+                    redirect_uri: `${window.location.origin}/${urlPostFix}/?login=${true}`,
                     prompt: "consent",
                     audience: audience,
                     scope: scope
