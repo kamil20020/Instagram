@@ -7,7 +7,12 @@ const Chat = () => {
     const accountId = useParams().accountId
 
     return (
-        <iframe src={`${chatUrl}/${accountId}`} height="100%" width="100%" sandbox="allow-popups allow-scripts allow-same-origin allow-forms">
+        <iframe 
+            src={`${window.location.origin}/${chatUrl}/${accountId}`} 
+            height="100%" 
+            width="100%" 
+            sandbox="allow-popups allow-scripts allow-same-origin allow-forms"
+        >
         </iframe>
     )
 }
