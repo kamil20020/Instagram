@@ -32,6 +32,8 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
+const urlPostFix = process.env.REACT_APP_URL_POSTFIX
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
@@ -49,7 +51,10 @@ const router = createBrowserRouter(
       <Route path="/chat/:accountId" element={<Chat/>} />
       <Route path="*" element={<NotFound />} />
     </Route>
-  )
+  ),
+  {
+    basename: `${window.location.origin}/${urlPostFix}`
+  }
 );
 
 function App() {
