@@ -18,6 +18,4 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-          env:
-            - name: REACT_APP_API
-              value: "http://instagram-backend"
+      
