@@ -198,7 +198,7 @@ I do not propose to use docker-compose.yml and docker-compose-dev.yml files to r
 
 ### The most general view:
 <p align="center">
-    <img src="architecture/architecture1.png">
+    <img src="project/architecture/architecture1.png">
 <p>
 
 Most important info:
@@ -215,7 +215,7 @@ Most important info:
 
 ### Microservices details and communication:
 <p align="center">
-    <img src="architecture/architecture.png">
+    <img src="project/architecture/architecture.png">
 <p>
 
 Most important info:
@@ -229,14 +229,14 @@ Most important info:
 
 ### Microfrontend architecture:
 <p align="center">
-    <img src="architecture/architecture2.png">
+    <img src="project/architecture/architecture2.png">
 <p>
 
 Microfrontend arrchitecture is implemented here by including chat app inside instagram service.
 
 ### Communication with chat frontend:
 <p align="center">
-    <img src="architecture/architecture3.png">
+    <img src="project/architecture/architecture3.png">
 <p>
 
 Most imortant info:
