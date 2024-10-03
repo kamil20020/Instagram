@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: chat-frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: chat-frontend
@@ -26,7 +26,8 @@ metadata:
 spec:
   selector:
     app: chat-frontend
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 3000
       targetPort: 3000
+      protocol: TCP
