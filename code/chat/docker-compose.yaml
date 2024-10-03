@@ -29,7 +29,7 @@ services:
       - "61613:61613" # Stomp port
 
   chat-backend-sender:
-    image: kamil20/chat-backend-sender
+    image: kamil20/chat-backend-sender-compose
     container_name: chat-backend-sender
     restart: always
     environment:
