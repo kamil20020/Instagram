@@ -12,6 +12,8 @@ const Logout = () => {
   const { logout } = useAuth0();
   const dispatch = useDispatch();
 
+  const urlPostFix = process.env.REACT_APP_URL_POSTFIX
+
   const handleLogout = () => {
 
     dispatch(logout1());
@@ -19,7 +21,7 @@ const Logout = () => {
     AuthService.removeRequestsAccessToken()
     
     logout({
-      logoutParams: { returnTo: window.location.origin },
+      logoutParams: { returnTo: `${window.location.origin}/${urlPostFix}` },
     })
   };
 

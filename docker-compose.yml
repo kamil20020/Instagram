@@ -1,6 +1,7 @@
 version: '3.9'
 include:
  - ./code/instagram/docker-compose.yml
+ - ./code/chat/docker-compose.yaml
 
 services:
   db-pgadmin:

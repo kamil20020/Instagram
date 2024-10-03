@@ -141,3 +141,7 @@ h4{
   cursor: pointer;
   opacity: 0.6;
 }
+
+iframe{
+  border: none;
+}

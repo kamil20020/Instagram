@@ -1,38 +1,119 @@
-.App {
-  text-align: center;
+#chat{
+    height: 100%;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#left-panel{
+    display: flex;
+    flex-direction: column;
+    border-right: solid 1px #cccccc;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#contacts{
+    flex-grow: 2;
+    overflow-y: scroll;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.contact{
+    display: block;
+    padding: 12px 56px;
+    color: black;
+    text-decoration: none;
 }
 
-.App-link {
-  color: #61dafb;
+.contact:hover{
+    cursor: pointer;
+    background-color: rgb(226, 226, 226);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#right-panel{
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.conversation-user{
+    padding: 28px;
+    border-bottom: solid 1px #cccccc;
+}
+
+.conversation{
+    flex-grow: 2;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+    overflow-y: scroll;
+}
+
+.message{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-date{
+    color: rgb(136, 136, 136);
+    width: 100%;
+    text-align: center;
+}
+
+.message-content{
+    background-color: white;
+    margin-top: 8px;
+    max-width: 40%;
+    padding: 22px;
+    border-radius: 28px;
+    align-self: flex-start;
+    border: 1px solid #e3e3e3;
+}
+
+.send-message{
+    padding: 24px;
+}
+
+input{
+    box-sizing: border-box;
+    width: 100%;
+    padding: 22px 36px;
+    border: 1.5px solid #c3c3c3;
+    border-radius: 32px;
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+}
+
+button{
+    color: deepskyblue;
+    border: none;
+    background-color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: -100px;
+}
+
+button:hover{
+    cursor: pointer;
+    color: navy;
+}
+
+input:focus{
+    outline: none;
+}
+
+img{
+    border-radius: 50%;
+}
+
+.user-header{
+    display: flex;
+    column-gap: 18px;
+}
+
+@media (max-width: 800px) {
+    #chat{
+        grid-template-columns: 40% 60%;
+    }
 }

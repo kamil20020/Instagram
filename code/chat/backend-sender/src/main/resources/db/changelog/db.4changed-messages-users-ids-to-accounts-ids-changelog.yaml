@@ -1,0 +1,40 @@
+databaseChangeLog:
+- changeSet:
+    id: 1727365380151-1
+    author: Kamil (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: receiver_account_id
+            type: varchar(50)
+        tableName: messages
+- changeSet:
+    id: 1727365380151-2
+    author: Kamil (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: sender_account_id
+            type: varchar(50)
+        tableName: messages
+- changeSet:
+    id: 1727365380151-3
+    author: Kamil (generated)
+    changes:
+    - dropColumn:
+        columnName: receiver_id
+        tableName: messages
+- changeSet:
+    id: 1727365380151-4
+    author: Kamil (generated)
+    changes:
+    - dropColumn:
+        columnName: sender_id
+        tableName: messages
+

@@ -168,6 +168,15 @@ public class UserController {
         return ResponseEntity.ok(foundUsersHeaders);
     }
 
+    @GetMapping("/accountsIds")
+    ResponseEntity<List<UserProfile>> getUsersByAccountsIds(@RequestParam(name = "accountIds") List<String> accountsIdStrs) {
+
+        List<UserEntity> foundUsers = userService.getUsersByAccountsIds(accountsIdStrs);
+        List<UserProfile> foundUsersProfiles = userMapper.userEntityListToUserProfileList(foundUsers);
+
+        return ResponseEntity.ok(foundUsersProfiles);
+    }
+
     @Operation(
         summary = "Search users by phrase",
         parameters = {

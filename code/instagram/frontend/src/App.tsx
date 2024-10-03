@@ -18,6 +18,9 @@ import PostViewPage from "./pages/PostViewPage";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
 import axios from "axios";
 import AuthService from "./services/AuthService";
+import Chat from "./pages/Chat";
+import EmptyChat from "./pages/EmptyChat";
+import { basename } from "path";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("access_token");
@@ -28,6 +31,8 @@ axios.interceptors.request.use(function (config) {
    
   return config;
 });
+
+const urlPostFix = process.env.REACT_APP_URL_POSTFIX
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,9 +47,14 @@ const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/post/:id" element={<PostViewPage />} />
+      <Route path="/chat" element={<EmptyChat/>} />
+      <Route path="/chat/:accountId" element={<Chat/>} />
       <Route path="*" element={<NotFound />} />
     </Route>
-  )
+  ),
+  {
+    basename: `/${urlPostFix}`
+  }
 );
 
 function App() {

@@ -1,0 +1,9 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-configmap
+data:
+  INSTAGRAM-BACKEND: /instagram-backend
+  CHAT-FRONTEND: /chat-frontend
+  CHAT-BACKEND-SENDER: chat-backend-sender
+  CHAT-BACKEND-RECEIVER: chat-backend-receiver

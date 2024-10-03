@@ -30,23 +30,49 @@ services:
     ports:
       - "5672:5672"   # Listen messages port
       - "15672:15672" # Management port
+      - "61613:61613" # Stomp port
 
-  chat-backend:
-    image: kamil20/chat-backend
-    container_name: chat-backend
+  chat-backend-sender:
+    image: kamil20/chat-backend-sender
+    container_name: chat-backend-sender
     build:
-      context: ./backend
+      context: ./backend-sender
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://chat-db:${DB_PORT}/${DB}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      PORT: ${BACKEND_PORT}
+      SPRING_RABBITMQ_HOST: messages-queue
+      SPRING_RABBITMQ_PORT: ${MESSAGES_QUEUE_PORT}
+      SPRING_RABBITMQ_USERNAME: ${MESSAGES_QUEUE_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${MESSAGES_QUEUE_PASSWORD}
+      SPRING_RABBITMQ_TEMPLATE_EXCHANGE: ${MESSAGES_QUEUE_EXCHANGE}
+      RABBITMQ_CHAT_ROUTINGKEY: ${MESSAGES_QUEUE_ROUTINGKEY}
+      PORT: ${BACKEND_SENDER_PORT}
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_SENDER_PORT}:${BACKEND_SENDER_PORT}"
     depends_on:
       - chat-db
       - messages-queue
+  
+  chat-backend-receiver:
+    image: kamil20/chat-backend-receiver
+    container_name: chat-backend-receiver
+    build:
+      context: ./backend-receiver
+    restart: always
+    environment:
+      SPRING_RABBITMQ_HOST: messages-queue
+      SPRING_RABBITMQ_PORT: ${MESSAGES_QUEUE_PORT}
+      SPRING_RABBITMQ_USERNAME: ${MESSAGES_QUEUE_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${MESSAGES_QUEUE_PASSWORD}
+      RABBITMQ_CHAT_QUEUE_NAME: chat.queue
+      RABBITMQ_STOMP_PORT: 61613
+      PORT: ${BACKEND_RECEIVER_PORT}
+    ports:
+      - "${BACKEND_RECEIVER_PORT}:${BACKEND_RECEIVER_PORT}"
+    depends_on:
+      - chat-backend-sender
 
   chat-frontend:
     image: kamil20/chat-frontend
@@ -55,6 +81,6 @@ services:
       context: ./frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "3100:3100"
     depends_on:
-      - chat-backend
+      - chat-backend-sender

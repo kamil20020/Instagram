@@ -1,0 +1,7 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-db-configmap
+data:
+  DATABASE_URL: chat-db-service
+  DATABASE_NAME: chat

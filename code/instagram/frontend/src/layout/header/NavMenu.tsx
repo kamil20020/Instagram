@@ -19,6 +19,8 @@ const NavMenu = () => {
 
   const ref = useComponentVisible(() => setIsActive(false));
 
+  const urlPostFix = process.env.REACT_APP_URL_POSTFIX
+
   const SettingsItem = () => (
     <div className="nav-menu-container">
       <NavMenuItem content="Ustawienia" onClick={() => navigate("/settings")} />
@@ -31,7 +33,7 @@ const NavMenu = () => {
       onClick={() =>
         loginWithRedirect({
           authorizationParams: {
-            redirect_uri: `${window.location.origin}/?login=${true}`,
+            redirect_uri: `${window.location.origin}/${urlPostFix}/?login=${true}`,
           },
         })
       }
@@ -45,7 +47,7 @@ const NavMenu = () => {
         loginWithRedirect({
           authorizationParams: {
             screen_hint: "signup",
-            redirect_uri: `${window.location.origin}/?register=${true}`,
+            redirect_uri: `${window.location.origin}/${urlPostFix}/?register=${true}`,
           },
         })
       }

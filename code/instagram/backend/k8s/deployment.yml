@@ -46,5 +46,3 @@ spec:
                 secretKeyRef:
                   name: instagram-db-secrets
                   key: password
-            - name: SPRING_PROFILES_ACTIVE
-              value: "production"

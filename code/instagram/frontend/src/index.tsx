@@ -11,6 +11,7 @@ import Notification from "./components/Notification";
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 
+const urlPostFix = process.env.REACT_APP_URL_POSTFIX
 const audience = process.env.REACT_APP_AUTH0_AUDIENCE
 const scope = process.env.REACT_APP_AUTH0_SCOPE
 
@@ -23,7 +24,7 @@ root.render(
         authorizationParams={{
           audience: audience,
           scope: scope,
-          redirect_uri: window.location.origin,
+          redirect_uri: `${window.location.origin}/${urlPostFix}`,
         }}
       >
         <App />

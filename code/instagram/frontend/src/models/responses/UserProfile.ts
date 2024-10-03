@@ -1,5 +1,6 @@
 ﻿export interface UserProfile {
     id: string,
+	accountId: string,
     nickname: string,
     firstname: string,
     surname: string,

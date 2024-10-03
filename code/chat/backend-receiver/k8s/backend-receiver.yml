@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-backend-receiver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-backend-receiver
+  template:
+    metadata:
+      labels:
+        app: chat-backend-receiver
+    spec:
+      containers:
+        - name: chat-backend-receiver
+          image: kamil20/chat-backend-receiver:latest
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: HOST
+
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: PORT
+            
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: messages-queue-secret
+                  key: USERNAME
+
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: messages-queue-secret
+                  key: PASSWORD
+
+            - name: RABBITMQ_CHAT_QUEUE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: QUEUE
+            
+            - name: RABBITMQ_STOMP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: messages-queue-configmap
+                  key: STOMP_PORT
+                  
+          ports:
+            - containerPort: 9300
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-backend-receiver-service
+spec:
+  selector:
+    app: chat-backend-receiver
+  ports:
+    - port: 9300
+      targetPort: 9300

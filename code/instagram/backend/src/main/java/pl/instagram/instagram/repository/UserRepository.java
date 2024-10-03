@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pl.instagram.instagram.model.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID>, JpaSpec
     boolean existsByAccountId(String accountId);
     boolean existsByNicknameContainingIgnoreCase(String nickname);
     Optional<UserEntity> findByAccountId(String accountId);
+    List<UserEntity> findAllByAccountIdIn(List<String> accountsIds);
     Page<UserEntity> findByFollowersUsersFollowedId(UUID followedId, Pageable pageable);
     Page<UserEntity> findByFollowedUsersFollowerId(UUID followerId, Pageable pageable);
 

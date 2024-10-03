@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1727350103413-1
+    author: Kamil (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: creation_date
+            type: timestamp(6)
+        tableName: messages
+

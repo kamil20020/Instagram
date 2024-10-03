@@ -58,7 +58,7 @@ const UserPosts = () => {
   }
 
   return (
-    <div style={{display: "flex", flexDirection: "column"}}>
+    <div style={{display: "flex", flexDirection: "column", marginTop: 30}}>
       <div className="posts">
         {posts.map((post: PostHeader) => (
           <PostHeaderView key={post.id} postHeader={post}/>

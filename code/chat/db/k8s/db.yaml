@@ -1,0 +1,56 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-db
+  template:
+    metadata:
+      labels:
+        app: chat-db
+    spec:
+      containers:
+        - name: chat-db
+          image: kamil20/chat-db:latest
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: chat-db-configmap
+                  key: DATABASE_NAME
+                  
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: chat-db-secret
+                  key: POSTGRES_USER
+            
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name:  chat-db-secret
+                  key: POSTGRES_PASSWORD
+
+          ports:
+            - containerPort: 5432
+
+      volumes:
+        - name: chat-db-volume
+          persistentVolumeClaim:
+            claimName: chat-db-volume-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-db-service
+spec:
+  selector:
+    app: chat-db
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432

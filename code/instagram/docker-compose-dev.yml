@@ -48,6 +48,9 @@ services:
     container_name: instagram-frontend
     build:
       context: ./frontend
+      args:
+        - REACT_APP_API=/instagram-backend
+        - REACT_APP_CHAT_URL=/chat-frontend
     restart: always
     ports:
       - "3000:3000"

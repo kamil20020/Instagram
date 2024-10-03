@@ -1,0 +1,23 @@
+databaseChangeLog:
+- changeSet:
+    id: 1727351978731-2
+    author: Kamil (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: read
+            type: boolean
+        tableName: messages
+- changeSet:
+    id: 1727351978731-1
+    author: Kamil (generated)
+    changes:
+    - addNotNullConstraint:
+        columnDataType: timestamp(6)
+        columnName: creation_date
+        tableName: messages
+        validate: true
+
