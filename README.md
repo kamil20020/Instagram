@@ -11,7 +11,7 @@ https://instagram-copy-edgna2drbnapfrg7.polandcentral-01.azurewebsites.net/insta
 
 In this version login and register options are disabled, because I decided to not moderate created content on this website. Because of this reason, if you try to login or register new account, you should get similar error message to this:
 <p align="center">
-    <img src="project/screenshots/auth0-error.png">
+    <img src="screenshots/auth0/auth0-error.png">
 <p>
 
 ### Local light Kubernetes cluster
@@ -81,7 +81,7 @@ for all yaml files in the `code/argocd-apps` directory (eventually tools can be 
 
 In ArgoCD's dashboard 3 required applications look like this:
 <p align="center">
-    <img src="project/argo/argo.png">
+    <img src="screenshots/argo/argo.png">
 <p>
 
 There is a chance, that backends sender and receiver will be down or not working properly. One of possible reasons is that, these backend were started before running message queue. The solution to solve this problem is restarting these backends.
@@ -104,11 +104,13 @@ Details:
 * On the start mainly 3 accounts are created:
 
 <p align="center">
+
 | **E-mail**                 | **Password** |
 |----------------------------|--------------|
 | adam@kopia-instagrama.pl   | KamilKamil1% |
 | kamil@kopia-instagrama.pl  | KamilKamil1% |
 | michał@kopia-instagrama.pl | KamilKamil1% |
+
 </p>
 
 ### Docker-compose
@@ -196,7 +198,7 @@ I do not propose to use docker-compose.yml and docker-compose-dev.yml files to r
 
 ### The most general view:
 <p align="center">
-    <img src="swagger/architecture/architecture1.png">
+    <img src="architecture/architecture1.png">
 <p>
 
 Most important info:
@@ -213,7 +215,7 @@ Most important info:
 
 ### Microservices details and communication:
 <p align="center">
-    <img src="swagger/architecture/architecture.png">
+    <img src="architecture/architecture.png">
 <p>
 
 Most important info:
@@ -227,14 +229,14 @@ Most important info:
 
 ### Microfrontend architecture:
 <p align="center">
-    <img src="swagger/architecture/architecture2.png">
+    <img src="architecture/architecture2.png">
 <p>
 
 Microfrontend arrchitecture is implemented here by including chat app inside instagram service.
 
 ### Communication with chat frontend:
 <p align="center">
-    <img src="swagger/architecture/architecture3.png">
+    <img src="architecture/architecture3.png">
 <p>
 
 Most imortant info:
@@ -454,12 +456,12 @@ I would like to show sample test conversation between Kamil and Michal.
 
 ### Kamil perspective:
 <p align="center">
-    <img src="project/screenshots/chat/chat1.png">
+    <img src="screenshots/chat/chat1.png">
 <p>
 
 ### Michal perspective:
 <p align="center">
-    <img src="project/screenshots/chat/chat2.png">
+    <img src="screenshots/chat/chat2.png">
 <p>
 
 After running chat by both sides, it was possible to communicate in real time.
@@ -468,12 +470,12 @@ After running chat by both sides, it was possible to communicate in real time.
 
 Chat can be used independently, without instagram frontend:
 <p align="center">
-    <img src="project/screenshots/chat/chat3.png">
+    <img src="screenshots/chat/chat3.png">
 <p>
 
 ## Other screenshots
 
 ### Auth0 config - 4 apps:
 <p align="center">
-    <img src="project/screenshots/auth0/auth0.png">
+    <img src="screenshots/auth0/auth0.png">
 <p>
