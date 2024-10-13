@@ -5,15 +5,6 @@ I finished both instagram and chat.
 
 ## Running app
 
-### In my opinion the best way
-Im my opinion the best way to check this app is to visit it on azure under link:
-https://instagram-copy-edgna2drbnapfrg7.polandcentral-01.azurewebsites.net/instagram-frontend
-
-In this version login and register options are disabled, because I decided to not moderate created content on this website. Because of this reason, if you try to login or register new account, you should get similar error message to this:
-<p align="center">
-    <img src="screenshots/auth0/auth0-error.png">
-<p>
-
 ### Local light Kubernetes cluster
 To test all app's functionalities, I prefer to setup the app locally in the Kubernetes cluster.
 One of the most popular light versions of Kubernetes is [minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download).
