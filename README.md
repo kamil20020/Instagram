@@ -1,7 +1,7 @@
 # Instagram copy 
 This app is mostly a simplified copy of Instagram in terms of its functions and website layout. This project finished. It is divided on 2 parts: first part is containing basic functions of instagram e.g. posts and other part is real time chat.
 
-I finished both instagram and chat.
+I finished both instagram and chat. 
 
 ## Running app
 
