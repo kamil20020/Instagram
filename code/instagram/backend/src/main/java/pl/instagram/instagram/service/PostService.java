@@ -29,7 +29,6 @@ import java.util.UUID;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
 
     private final UserService userService;

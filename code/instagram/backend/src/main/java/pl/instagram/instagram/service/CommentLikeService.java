@@ -27,17 +27,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CommentLikeService {
 
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    private final AuthService authService;
     private final CommentService commentService;
     private final UserService userService;
 
-    private final CommentMapper commentMapper;
-
-    private CommentLikeEntity getById(CommentLikeEntity.CommentLikeEntityId id){
+    public CommentLikeEntity getById(CommentLikeEntity.CommentLikeEntityId id){
 
         return commentLikeRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Nie istnieje polubienie komentarza o takim id"));

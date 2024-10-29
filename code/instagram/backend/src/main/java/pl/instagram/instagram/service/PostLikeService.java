@@ -29,7 +29,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostLikeService {
 
-    private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
 
     private final PostService postService;

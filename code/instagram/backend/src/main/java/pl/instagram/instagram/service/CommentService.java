@@ -31,7 +31,6 @@ import java.util.UUID;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     private final PostService postService;

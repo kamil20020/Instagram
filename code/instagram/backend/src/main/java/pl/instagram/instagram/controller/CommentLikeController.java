@@ -31,7 +31,6 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     private final UUIDMapper uuidMapper;
-    private final CommentMapper commentMapper;
     private final UserMapper userMapper;
 
     private static final String COMMENT_MESSAGE = "komentarza";
