@@ -7,10 +7,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.instagram.instagram.exception.EntityNotFoundException;
+import pl.instagram.instagram.model.entity.CommentEntity;
 import pl.instagram.instagram.model.entity.CommentLikeEntity;
+import pl.instagram.instagram.model.entity.UserEntity;
 import pl.instagram.instagram.repository.CommentLikeRepository;
 import pl.instagram.instagram.repository.CommentRepository;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +67,57 @@ public class CommentLikeServiceTest {
 
         //then
         assertThrows(EntityNotFoundException.class, () -> commentLikeRepository.findById(commentLikeEntityId));
+    }
 
+    @Test
+    public void shouldDeleteCommentLike(){
+
+        //given
+        UUID commentId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        UserEntity user = UserEntity.builder()
+            .id(userId)
+            .likedComments(new HashSet<>())
+            .build();
+
+        CommentEntity comment = CommentEntity.builder()
+            .id(commentId)
+            .commentLikes(new HashSet<>())
+            .likesCount(1)
+            .build();
+
+        CommentLikeEntity.CommentLikeEntityId commentLikeId = new CommentLikeEntity.CommentLikeEntityId(userId, commentId);
+        CommentLikeEntity commentLike = new CommentLikeEntity(user, comment);
+
+        //when
+        Mockito.when(commentService.getById(any())).thenReturn(comment);
+        Mockito.when(userService.getLoggedUser()).thenReturn(user);
+        Mockito.when(commentLikeRepository.findById(any())).thenReturn(Optional.of(commentLike));
+
+        commentLikeService.deleteCommentLike(commentId);
+
+        //then
+        assertEquals(0, user.getLikedComments().size());
+        assertEquals(Integer.valueOf(0), comment.getLikesCount());
+        assertEquals(0, comment.getCommentLikes().size());
+
+        Mockito.verify(userService).getLoggedUser();
+        Mockito.verify(commentLikeRepository).deleteById(commentLikeId);
+    }
+
+    @Test
+    public void shouldNotDeleteLikeWithNotExistingComment(){
+
+        //given
+        UUID commentId = UUID.randomUUID();
+
+        //when
+        Mockito.when(commentService.getById(any())).thenThrow(EntityNotFoundException.class);
+
+        //then
+        assertThrows(EntityNotFoundException.class, () -> commentLikeService.deleteCommentLike(commentId));
+
+        Mockito.verify(commentService).getById(commentId);
     }
 }
