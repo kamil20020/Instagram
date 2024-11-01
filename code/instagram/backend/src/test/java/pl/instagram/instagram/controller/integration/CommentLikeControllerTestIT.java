@@ -57,7 +57,8 @@ class CommentLikeControllerTestIT {
     @Autowired
     private CommentLikeRepository commentLikeRepository;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJwSFlTYkVhVFpKa3NtN09TcDNYMEtsT2d1RmNETUhBWEBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzMwMjE0MjE4LCJleHAiOjE3MzAzMDA2MTgsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6InBIWVNiRWFUWkprc203T1NwM1gwS2xPZ3VGY0RNSEFYIn0.d1nIs3Yh3BPZ_Msxk9dRJx54AQj8cT8BVFZ8iWNh8EqA1M5h-PSZd_t9uT8rSWTMtjMDHELlNULj-Ns_HgFOS4J4_YeNJNGqb0y-Av9mCyEv27DmPYGR2dPIx9oHa2f4sCxWs9eNY9-iOV7FuMi0xyjqZYiJu5zGQnm3kMEDL_ztfUFBKwk6l3sL_l0KSLMY9vRltpPUgxj40EYAlrpJ0hEFeLpa27j2Hgs9Cc_NLqcPZnlNI5tFW9GSA8O3Uh1Azo-drjyLRoZ970035dDyNhIMy79xklLnV0yezpeptCGNZ21PVFmwtgQWD11prlMi1TQzskgjigUtLDo5Dr8sxg";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJFUnRKcG1leFhfcjJSVVNWMFZ4RSJ9.eyJpc3MiOiJodHRwczovL2Rldi0ybzJtbnhnMHBsY2xodGM3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJwSFlTYkVhVFpKa3NtN09TcDNYMEtsT2d1RmNETUhBWEBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2luc3RhZ3JhbS5jb20vIiwiaWF0IjoxNzMwNTAwMzI3LCJleHAiOjE3MzA1ODY3MjcsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6InBIWVNiRWFUWkprc203T1NwM1gwS2xPZ3VGY0RNSEFYIn0.Hpuiwy3gCVrNQnPxFSkGOG87FphVUXOe-uCPIqGK8_vOFL8HxZC7kycbWvaaUDdin_T3U_1XhCiWcoFbACcjFusfmg-G7aZwYiNuwqQ-2VEaG6lPoJFSVTXf-qCRnP2La0k7hGJ6efUeusWizSs_BsMFG8Jk63nsdYc6uxigiC6adHioZ6hAYTWqCmZSc6SUCp_FXpmHC8hffzaE5q2ynZHUZBu0O-lDhLQk3a_wWt3z4uDdcP27ZLMCldzwfxi92SaHPymS3vlBCH2S3p7pkkWlB99UK-8kNgIZh4Yv7DldALxbmcn3W45je9sWAzbVp-q1hTgy7UPrNK1Tge1geQ";
+
     @BeforeEach
     public void setUp(){
 
@@ -214,6 +215,77 @@ class CommentLikeControllerTestIT {
 
         assertEquals(author.getId().toString(), createdLike.id());
         assertEquals(author.isVerified(), createdLike.isVerified());
+    }
+
+    @Test
+    @WithMockUser(username = "BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+    public void shouldNotCreateSameLike(){
+
+        //given
+        UserEntity author = UserEntity.builder()
+            .accountId("BfAKNnakE9MuAwwURT0Eu2OZZ6F6d3ji@clients")
+            .creationDatetime(LocalDateTime.now())
+            .isVerified(true)
+            .isPrivate(false)
+            .followers(1)
+            .followings(2)
+            .numberOfPosts(1)
+            .posts(new HashSet<>())
+            .comments(new HashSet<>())
+            .likedComments(new HashSet<>())
+            .followedUsers(new HashSet<>())
+            .followersUsers(new HashSet<>())
+            .build();
+
+        author = userRepository.save(author);
+
+        PostEntity post = PostEntity.builder()
+            .creationDatetime(LocalDateTime.now())
+            .description("Opis postu")
+            .content(("Zawartość postu").getBytes(StandardCharsets.UTF_8))
+            .areHiddenLikes(true)
+            .areDisabledComments(false)
+            .likesCount(1)
+            .commentsCount(1)
+            .author(author)
+            .comments(new HashSet<>())
+            .build();
+
+        post = postRepository.save(post);
+
+        CommentEntity comment = CommentEntity.builder()
+            .content("Zawartość komentarza")
+            .creationDatetime(LocalDateTime.now())
+            .subCommentsCount(1)
+            .likesCount(1)
+            .post(post)
+            .author(author)
+            .commentLikes(new HashSet<>())
+            .build();
+
+        comment = commentRepository.save(comment);
+
+        CommentLikeEntity createdCommentLike = commentLikeRepository.save(
+            new CommentLikeEntity(author, comment)
+        );
+
+        author.getPosts().add(post);
+        author.getComments().add(comment);
+        author.getLikedComments().add(createdCommentLike);
+
+        post.getComments().add(comment);
+
+        comment.getCommentLikes().add(createdCommentLike);
+
+        //when
+        given()
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + ACCESS_TOKEN)
+        .when()
+            .post("{commentId}/likes", comment.getId())
+        .then()
+            .statusCode(409);
+
+        //then
     }
 
     @Test
