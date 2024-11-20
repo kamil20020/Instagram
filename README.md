@@ -166,7 +166,6 @@ I do not propose to use docker-compose.yml and docker-compose-dev.yml files to r
     * Spring Boot,
     * Spring Data JPA,
     * Spring Security,
-	* Spring Cloud (in the future),
 	* Liquibase,
 	* REST Assured,
 	* Testcontainers.
